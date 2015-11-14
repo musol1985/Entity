@@ -10,6 +10,7 @@ import com.entity.anot.RunGLThread;
 import com.entity.core.EntityManager;
 import com.entity.core.Injector;
 import com.entity.core.injectors.CameraInjector;
+import com.entity.core.injectors.EffectInjector;
 import com.entity.core.injectors.EntityInjector;
 import com.entity.core.injectors.FieldInjector;
 import com.entity.core.injectors.InputInjector;
@@ -39,6 +40,7 @@ public class SceneBuilder extends Builder<Scene>{
         addInjector(new CameraInjector<Scene>());
         addInjector(new ScrollCameraInjector<Scene>());
         addInjector(new TerrainInjector<Scene>());
+        addInjector(new EffectInjector<Scene>());
                 
                 Class<? extends Injector>[] customInjectors=EntityManager.getSceneCustomInjectors();
 		if(customInjectors!=null){

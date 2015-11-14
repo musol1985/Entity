@@ -6,5 +6,5 @@ import com.jme3.input.KeyInput;
 
 @KeyInputMapping(action="avanzar",keys={KeyInput.KEY_W})
 public class Level extends Scene {
-
+	public void test(){}
 }

@@ -1,6 +1,10 @@
 package com.entity.core;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 import org.reflections.Reflections;
@@ -15,9 +19,14 @@ import com.jme3.network.Client;
 import com.jme3.network.Server;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.network.serializing.Serializer;
+import com.jme3.post.Filter;
+import com.jme3.post.FilterPostProcessor;
 
 public abstract class EntityGame extends SimpleApplication{
 	private Field networkField;
+	
+	private FilterPostProcessor postProcessor;
+	private List<Filter> filters;
 	
 	@Override
 	public void simpleInitApp() {
@@ -82,6 +91,31 @@ public abstract class EntityGame extends SimpleApplication{
 				}
 			}
 		}
+	}
+	
+	public void addPostProcessor(Filter f)throws Exception{
+		if(postProcessor==null){
+			postProcessor=new FilterPostProcessor(EntityManager.getAssetManager());
+			filters=new ArrayList<Filter>();
+			viewPort.addProcessor(postProcessor);
+		}
+		postProcessor.removeAllFilters();
+		filters.add(f);
+		Collections.sort(filters, new Comparator<Filter>() {
+			@Override
+			public int compare(Filter o1, Filter o2) {
+				return 0;
+			}
+		});
+		
+		for(Filter filter:filters){
+			postProcessor.addFilter(filter);
+		}
+	}
+	
+	public void removePostProcessor(Filter f)throws Exception{
+		postProcessor.removeFilter(f);
+		filters.remove(f);
 	}
 	
 	public Server getNetworkServer(){

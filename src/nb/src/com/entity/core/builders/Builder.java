@@ -50,17 +50,7 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 			loadField(c, f);
 		}
                 
-                                
-                System.out.println("PreOrder Injectors: ");
-                for(Injector i: usedInjectors){
-                    System.out.println("            "+i);
-		}
-                Collections.sort(usedInjectors);
-                
-                System.out.println("PostOrder Injectors: ");
-                for(Injector i: usedInjectors){
-                    System.out.println("            "+i);
-		}
+        Collections.sort(usedInjectors);
 	}
 
 	@Override
@@ -72,7 +62,7 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 			i.onInstance(item, builder);
 		}
                 
-                item.onInstance(this);
+        item.onInstance(this);
 	}
 
 	public <T extends Injector> T getInjector(Class<T> injector){

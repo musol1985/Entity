@@ -47,6 +47,11 @@
 		<version>3.0.10</version>
 	</dependency>
 	<dependency>
+		<groupId>com.jme3</groupId>
+		<artifactId>jme3-effects</artifactId>
+		<version>3.0.10</version>
+	</dependency>
+	<dependency>
 	<groupId>com.google.auto.service</groupId>
 	<artifactId>auto-service</artifactId>
 	<version>1.0-rc1</version>
