@@ -26,9 +26,6 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 		
 		for(Entry<Class<BaseInjector>, BaseInjector> e: injectors.entrySet()){
 			e.getValue().onCreate(c);		
-			if(e.getValue() instanceof InjectorAttachable){
-				attachableInjectors.add((InjectorAttachable) e.getValue());
-			}
 		}
 
 		for(Method m:c.getDeclaredMethods()){
@@ -48,6 +45,12 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 				}
 			}
 			loadField(c, f);
+		}
+                
+                for(BaseInjector e: usedInjectors){		
+			if(e instanceof InjectorAttachable){
+				attachableInjectors.add((InjectorAttachable) e);
+			}
 		}
                 
         Collections.sort(usedInjectors);

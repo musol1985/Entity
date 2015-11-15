@@ -6,5 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Input {
 	String action();
-
+	boolean guiLeftButton() default false;
+	boolean guiRightButton() default false;
 }
