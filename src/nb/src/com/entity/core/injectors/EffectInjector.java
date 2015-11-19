@@ -25,7 +25,6 @@ public class EffectInjector<T  extends IEntity> extends BaseInjector<T> implemen
 
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
-            System.out.println("******************************"+c+"     "+f+"          "+f.isAnnotationPresent(WaterEffect.class));
 		if(EffectBean.isWaterEffect(f)){
 			f.setAccessible(true);
 			effects.add(new EffectBean(f, f.getAnnotation(WaterEffect.class)));

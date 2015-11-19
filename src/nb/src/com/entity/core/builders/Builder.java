@@ -3,22 +3,25 @@ package com.entity.core.builders;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.entity.anot.DAO;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
 import com.entity.core.Injector;
 import com.entity.core.InjectorAttachable;
 import com.entity.core.injectors.BaseInjector;
-import java.util.Collections;
 
 public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 	private HashMap<Class<BaseInjector>, BaseInjector> injectors=new HashMap<Class<BaseInjector>, BaseInjector>();
 	private List<BaseInjector> usedInjectors=new ArrayList<BaseInjector>();
 	private List<InjectorAttachable> attachableInjectors=new ArrayList<InjectorAttachable>();
+	
+	private List<Field> daoFields=new ArrayList<Field>();
 
 	@Override
 	public void onCreate(Class<T> c) throws Exception {
@@ -26,6 +29,9 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 		
 		for(Entry<Class<BaseInjector>, BaseInjector> e: injectors.entrySet()){
 			e.getValue().onCreate(c);		
+			if(e.getValue() instanceof InjectorAttachable){
+				attachableInjectors.add((InjectorAttachable) e.getValue());
+			}
 		}
 
 		for(Method m:c.getDeclaredMethods()){
@@ -45,12 +51,6 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 				}
 			}
 			loadField(c, f);
-		}
-                
-                for(BaseInjector e: usedInjectors){		
-			if(e instanceof InjectorAttachable){
-				attachableInjectors.add((InjectorAttachable) e);
-			}
 		}
                 
         Collections.sort(usedInjectors);
@@ -107,6 +107,10 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
     public void injectInstance(T e) throws Exception{
         e.setBuilder(this);
     }
+
+	public List<Field> getDaoFields() {
+		return daoFields;
+	}
 	
 	
 }

@@ -1,17 +1,14 @@
 package com.entity.core.items;
 
+import java.lang.reflect.Method;
+
 import com.entity.anot.BuilderDefinition;
-import com.entity.anot.network.MessageListener;
 import com.entity.core.EntityCollisionManager;
 import com.entity.core.EntityGame;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
-import com.entity.core.Injector;
 import com.entity.core.builders.SceneBuilder;
-import com.entity.core.injectors.MessageListenerInjector;
-import com.entity.core.injectors.SkyInjector;
-import com.entity.core.injectors.TriggerInjector;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -32,6 +29,7 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 	private Node node;
 	
 	private IBuilder builder;
+
 	
 	@Override
 	public Node getNode(){
@@ -103,14 +101,6 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 		return physics;
 	}
 
-	
-	/*private void initNetwork()throws Exception{
-		EntityManager.getBuilder(getClass()).getInjector(MessageListener.class).register(getApp(), this);
-	}
-
-	private void cleanupNetwork()throws Exception{
-		EntityManager.getBuilder(getClass()).getInjector(MessageListener.class).unRegister(getApp(), this);
-	}*/
 	
 	@Override
 	public void onAttachToParent(IEntity parent) throws Exception {

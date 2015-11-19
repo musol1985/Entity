@@ -13,7 +13,6 @@ import com.entity.adapters.NetworkMessageListener;
 import com.entity.anot.CustomInjectors;
 import com.entity.anot.entities.SceneEntity;
 import com.entity.anot.network.Network;
-import com.entity.core.interceptors.ClickInterceptor;
 import com.entity.core.items.Scene;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Client;
@@ -23,12 +22,11 @@ import com.jme3.network.serializing.Serializer;
 import com.jme3.post.Filter;
 import com.jme3.post.FilterPostProcessor;
 
-public abstract class EntityGame extends SimpleApplication {
+public abstract class EntityGame extends SimpleApplication{
 	private Field networkField;
 	
 	private FilterPostProcessor postProcessor;
 	private List<Filter> filters;
-	private ClickInterceptor clickInterceptor;
 	
 	@Override
 	public void simpleInitApp() {
@@ -157,14 +155,4 @@ public abstract class EntityGame extends SimpleApplication {
 			e.printStackTrace();
 		}
 	}
-
-	public void setClickInterceptor(ClickInterceptor clickInterceptor) {
-		this.clickInterceptor = clickInterceptor;
-	}
-
-	public ClickInterceptor getClickInterceptor() {
-		return clickInterceptor;
-	}
-	
-	
 }

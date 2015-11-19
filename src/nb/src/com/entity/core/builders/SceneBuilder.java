@@ -50,14 +50,14 @@ public class SceneBuilder extends Builder<Scene>{
 		}
 	}
 	
-	
-	@Override
-	public void loadField(Class<Scene> cls, Field f) throws Exception {
-		System.out.println(f.getName());
-	}
-	
 	private void buildTrigger(Class<Scene> cls, Field f) throws Exception{
 
+	}
+	
+	@Override
+	public void loadField(Class<Scene> c, Field f) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -85,6 +85,8 @@ public class SceneBuilder extends Builder<Scene>{
 	public boolean isMustEnhance() {
 		return mustEnhance;
 	}
+
+
 
 
 

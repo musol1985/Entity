@@ -6,14 +6,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.entity.anot.DAO;
 import com.entity.anot.Instance;
 import com.entity.anot.OnCollision;
 import com.entity.anot.RayPick;
 import com.entity.anot.RunGLThread;
-import com.entity.anot.components.model.RigidBodyComponent;
 import com.entity.anot.components.model.SubModelComponent;
-import com.entity.anot.components.model.collision.CompBoxCollisionShape;
-import com.entity.anot.components.model.collision.CompSphereCollisionShape;
 import com.entity.anot.entities.ModelEntity;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
@@ -24,14 +22,11 @@ import com.entity.core.injectors.EntityInjector;
 import com.entity.core.injectors.InputInjector;
 import com.entity.core.injectors.LightInjector;
 import com.entity.core.injectors.MaterialInjector;
+import com.entity.core.injectors.BodyInjector;
 import com.entity.core.injectors.TerrainInjector;
 import com.entity.core.injectors.TriggerInjector;
 import com.entity.core.injectors.UpdateInjector;
 import com.entity.core.items.Model;
-import com.entity.test.BoxCollisionShape;
-import com.entity.test.CollisionShape;
-import com.entity.test.PhysicsRigidBody;
-import com.entity.test.SphereCollisionShape;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -46,9 +41,9 @@ public class ModelBuilder extends Builder<Model>{
 
 	private List<Field> subModels=new ArrayList<Field>();
 	
-	private List<Field> rigidBody=new ArrayList<Field>();
-	
 	private HashMap<Class<Model>, Method> collisions=new HashMap<Class<Model>, Method>();
+	
+	private List<Field> daoFields=new ArrayList<Field>();
 
 	@Override
 	public void loadInjectors(Class<Model> c) throws Exception {
@@ -61,6 +56,7 @@ public class ModelBuilder extends Builder<Model>{
         addInjector(new TerrainInjector<Model>());
         addInjector(new MaterialInjector<Model>());
         addInjector(new EffectInjector<Model>());
+        addInjector(new BodyInjector<Model>());
 		
 		model=c.getAnnotation(ModelEntity.class);
                 
@@ -74,15 +70,13 @@ public class ModelBuilder extends Builder<Model>{
 	
 	
 	@Override
-	public void loadField(Class<Model> cls, Field f) throws Exception {
-		System.out.println(f.getName());
-		
-		if(f.isAnnotationPresent(RigidBodyComponent.class)){
-			f.setAccessible(true);
-			rigidBody.add(f);
-		}else if(f.isAnnotationPresent(SubModelComponent.class)){
+	public void loadField(Class<Model> cls, Field f) throws Exception {		
+		if(f.isAnnotationPresent(SubModelComponent.class)){
 			f.setAccessible(true);
 			subModels.add(f);
+		}else if(f.isAnnotationPresent(DAO.class)){
+			f.setAccessible(true);
+			daoFields.add(f);
 		}
 		
 	}
@@ -107,10 +101,6 @@ public class ModelBuilder extends Builder<Model>{
     public void onInstance(Model e, IBuilder builder) throws Exception {
         super.onInstance(e, builder);
         		injectModel(e);
-		injectRigidBodies(e);
-		//injectTerrain(e);
-		//injectMaterials(e);
-		//injectLights(e);
     }
         
         
@@ -143,30 +133,6 @@ public class ModelBuilder extends Builder<Model>{
 			e.attachChild(n);
 		}
 	}
-	
-	private void injectRigidBodies(Model e)throws Exception{
-		for(Field f:rigidBody){
-			RigidBodyComponent anot=f.getAnnotation(RigidBodyComponent.class);	
-			
-			PhysicsRigidBody body=new PhysicsRigidBody(anot.mass(), getCollisionShape(f));
-			f.set(e, body);
-		}
-	}
-	
-	private CollisionShape getCollisionShape(Field f){
-		CollisionShape shape=null;
-		
-		if(f.isAnnotationPresent(CompSphereCollisionShape.class)){
-			shape=new SphereCollisionShape(f.getAnnotation(CompSphereCollisionShape.class).radius());
-		}else if(f.isAnnotationPresent(CompBoxCollisionShape.class)){
-			CompBoxCollisionShape anot=f.getAnnotation(CompBoxCollisionShape.class);
-			
-			shape=new BoxCollisionShape(anot.x(), anot.y(), anot.z());
-		}
-		
-		return shape;
-	}
-
 
 	
 	public Method collidesWith(Model e){
