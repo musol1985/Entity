@@ -28,14 +28,8 @@ import com.jme3.bullet.control.RigidBodyControl;
  *
  * @author Edu
  */
-public class BodyInjector<T extends IEntity> implements Injector<T>, InjectorAttachable<T>,Comparable<BodyInjector>{
+public class BodyInjector<T extends IEntity> extends BaseInjector<T> implements InjectorAttachable<T>{
     private List<RigidBodyBean> bodies=new ArrayList<RigidBodyBean>();
-	
-	
-    @Override
-    public int compareTo(BodyInjector t) {
-        return -1;
-    }
 
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
@@ -87,6 +81,8 @@ public class BodyInjector<T extends IEntity> implements Injector<T>, InjectorAtt
 				if(bean.getComponentField()!=null){
 					IEntity node=(IEntity) bean.getComponentField().get(instance);
 					node.getNode().addControl(body);
+				}else{
+					instance.getNode().addControl(body);
 				}
 				EntityManager.getCurrentScene().getPhysics().add(body);
 			}
@@ -101,11 +97,16 @@ public class BodyInjector<T extends IEntity> implements Injector<T>, InjectorAtt
 				if(bean.getComponentField()!=null){
 					IEntity node=(IEntity) bean.getComponentField().get(instance);
 					node.getNode().removeControl(body);
+				}else{
+					instance.getNode().removeControl(body);
 				}
 				EntityManager.getCurrentScene().getPhysics().remove(body);
 			}
 		}
 	}
 	
-	
+	@Override
+    public int compareTo(BaseInjector t) {
+        return 1;
+    }
 }

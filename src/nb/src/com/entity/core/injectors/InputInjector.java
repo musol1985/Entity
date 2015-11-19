@@ -36,18 +36,30 @@ public class InputInjector<T extends IEntity>  extends BaseInjector<T>{
 			EntityManager.getInputManager().addListener(listener, m.getAnnotation(Input.class).action());	
 		}
 		
-		for(final Method m:inputsDigital){			
+		for(final Method m:inputsDigital){	
+			final Input anot=m.getAnnotation(Input.class);
+			
 			InputListener listener=new ActionListener() {
 				public void onAction(String arg0, boolean arg1, float arg2) {
 					try {
-						m.invoke(e, arg1, arg2);
+						if(anot.guiLeftButton()){
+							if(!EntityManager.getGame().getClickInterceptor().onLeftClick(arg1, arg2)){
+								m.invoke(e, arg1, arg2);
+							}
+						}else if(anot.guiRightButton()){
+							if(!EntityManager.getGame().getClickInterceptor().onRightClick(arg1, arg2)){
+								m.invoke(e, arg1, arg2);
+							}
+						}else{
+							m.invoke(e, arg1, arg2);
+						}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 			};
-			System.out.println("Registering digitalInput listener for "+m.getAnnotation(Input.class).action());
-			EntityManager.getInputManager().addListener(listener, m.getAnnotation(Input.class).action());	
+			System.out.println("Registering digitalInput listener for "+anot.action());
+			EntityManager.getInputManager().addListener(listener, anot.action());	
 		}
 		
 	}

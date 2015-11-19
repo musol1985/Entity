@@ -20,7 +20,7 @@ public class RigidBodyBean {
 		anot=f.getAnnotation(PhysicsBodyComponent.class);
 		this.f=f;
 		if(f.isAnnotationPresent(ApplyToComponent.class)){
-			componentField=c.getField(f.getAnnotation(ApplyToComponent.class).component());
+			componentField=c.getDeclaredField(f.getAnnotation(ApplyToComponent.class).component());
 			if(componentField==null)
 				throw new Exception("Can't apply RigidBodyControl to field "+f.getAnnotation(ApplyToComponent.class).component()+" in "+c.getName());
 			componentField.setAccessible(true);

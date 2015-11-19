@@ -11,10 +11,13 @@ import org.reflections.Reflections;
 
 import com.entity.adapters.NetworkMessageListener;
 import com.entity.anot.CustomInjectors;
+import com.entity.anot.Physics;
 import com.entity.anot.entities.SceneEntity;
 import com.entity.anot.network.Network;
+import com.entity.core.interceptors.ClickInterceptor;
 import com.entity.core.items.Scene;
 import com.jme3.app.SimpleApplication;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.network.Client;
 import com.jme3.network.Server;
 import com.jme3.network.serializing.Serializable;
@@ -27,11 +30,20 @@ public abstract class EntityGame extends SimpleApplication{
 	
 	private FilterPostProcessor postProcessor;
 	private List<Filter> filters;
+	private ClickInterceptor clickInterceptor;
 	
 	@Override
 	public void simpleInitApp() {
 		try{
 			EntityManager.StartEntityFramework(this);
+			
+			Physics physics=getClass().getAnnotation(Physics.class);
+			if(physics!=null){
+				BulletAppState bullet = new BulletAppState();
+				if(physics.debug())
+					bullet.setDebugEnabled(true);
+				getStateManager().attach(bullet);
+			}
 			
 			Scene autoload=null;
 			for(Field f:getClass().getDeclaredFields()){
@@ -155,4 +167,14 @@ public abstract class EntityGame extends SimpleApplication{
 			e.printStackTrace();
 		}
 	}
+
+	public void setClickInterceptor(ClickInterceptor clickInterceptor) {
+		this.clickInterceptor = clickInterceptor;
+	}
+
+	public ClickInterceptor getClickInterceptor() {
+		return clickInterceptor;
+	}
+	
+	
 }
