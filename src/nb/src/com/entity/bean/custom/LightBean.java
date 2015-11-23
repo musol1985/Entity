@@ -32,9 +32,9 @@ public class LightBean extends AnnotationFieldBean{
 	}
 	
 	public Light createLight(IEntity instance)throws Exception{
-		if(annot.getClass()==AmbientLightComponent.class){
+		if(annot.annotationType()==AmbientLightComponent.class){
 			return createAmbientLight(f, instance);
-		}else if(annot.getClass()==DirectionalLightComponent.class){
+		}else if(annot.annotationType()==DirectionalLightComponent.class){
 			return createDirectionalLight(f, instance);
 		}
 		throw new Exception("No type defined for light "+annot.getClass());

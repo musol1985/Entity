@@ -6,6 +6,7 @@ import com.entity.anot.components.model.MaterialComponent;
 import com.entity.anot.modificators.ApplyToComponent;
 import com.entity.anot.modificators.ApplyToGeometry;
 import com.entity.anot.modificators.GetFromComponent;
+import com.entity.anot.modificators.GetFromGeometry;
 import com.entity.bean.AnnotationFieldBean;
 import com.entity.core.EntityManager;
 import com.entity.core.items.Model;
@@ -45,9 +46,9 @@ public class MaterialBean extends AnnotationFieldBean<MaterialComponent>{
 			}
 		}else{
 			if(isGetFromComponent(material)){
-				component=clas.getField(material.getAnnotation(ApplyToComponent.class).component());
+				component=clas.getField(material.getAnnotation(GetFromComponent.class).component());
 			}else{
-				geometry=material.getAnnotation(ApplyToGeometry.class).geometry();
+				geometry=material.getAnnotation(GetFromGeometry.class).geometry();
 			}
 		}
 	}

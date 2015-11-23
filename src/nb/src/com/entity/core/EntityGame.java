@@ -22,6 +22,7 @@ import com.entity.core.interceptors.ClickInterceptor;
 import com.entity.core.items.Scene;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.network.Client;
 import com.jme3.network.Server;
 import com.jme3.network.serializing.Serializable;
@@ -35,6 +36,7 @@ public abstract class EntityGame extends SimpleApplication{
 	private FilterPostProcessor postProcessor;
 	private List<Filter> filters;
 	private ClickInterceptor clickInterceptor;
+	private BulletAppState bullet;
 	
 	private HashMap<Class, HashMap<Type, AnnotationFieldBean<NetSync>>> netSyncFields=new HashMap<Class, HashMap<Type, AnnotationFieldBean<NetSync>>>();
 	
@@ -45,7 +47,7 @@ public abstract class EntityGame extends SimpleApplication{
 			
 			Physics physics=getClass().getAnnotation(Physics.class);
 			if(physics!=null){
-				BulletAppState bullet = new BulletAppState();
+				bullet = new BulletAppState();
 				if(physics.debug())
 					bullet.setDebugEnabled(true);
 				getStateManager().attach(bullet);
@@ -190,5 +192,8 @@ public abstract class EntityGame extends SimpleApplication{
 		return netSyncFields.get(c);
 	}
 	
+	public PhysicsSpace getPhysics(){
+		return bullet.getPhysicsSpace();
+	}
 	
 }

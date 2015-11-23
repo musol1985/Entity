@@ -8,6 +8,7 @@ import com.entity.anot.entities.ModelEntity;
 import com.entity.anot.modificators.ApplyToComponent;
 import com.entity.anot.modificators.ApplyToGeometry;
 import com.entity.core.items.Model;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 

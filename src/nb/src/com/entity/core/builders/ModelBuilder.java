@@ -99,8 +99,8 @@ public class ModelBuilder extends Builder<Model>{
 
     @Override
     public void onInstance(Model e, IBuilder builder) throws Exception {
-        super.onInstance(e, builder);
-        		injectModel(e);
+        injectModel(e);
+        super.onInstance(e, builder);        		
     }
         
         

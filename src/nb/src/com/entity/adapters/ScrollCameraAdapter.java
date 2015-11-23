@@ -86,9 +86,9 @@ public class ScrollCameraAdapter extends Model{
 	        }
     	}else{
     		if(valor>0){
-    			camNode.rotate(0, rotateSpeed*tpf, 0);
+    			rotate(0, rotateSpeed*tpf, 0);
     		}else if(valor<0){
-    			camNode.rotate(0, -rotateSpeed*tpf, 0);
+    			rotate(0, -rotateSpeed*tpf, 0);
     		}
     	}
     }
@@ -96,9 +96,9 @@ public class ScrollCameraAdapter extends Model{
     @Input(action = MOUSE_MOVE_Y)
     public void mouseMoveY(float valor, float tpf){
         if(EntityManager.getInputManager().getCursorPosition().y<offset){
-            moveZ=speed;
-        }else if(EntityManager.getInputManager().getCursorPosition().y>EntityManager.getGame().getContext().getSettings().getHeight()-offset){
             moveZ=-speed;
+        }else if(EntityManager.getInputManager().getCursorPosition().y>EntityManager.getGame().getContext().getSettings().getHeight()-offset){
+            moveZ=speed;
         }else{
             moveZ=0;
         }

@@ -8,13 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.entity.anot.DAO;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
 import com.entity.core.Injector;
 import com.entity.core.InjectorAttachable;
 import com.entity.core.injectors.BaseInjector;
+import com.jme3.app.state.AbstractAppState;
+import com.jme3.scene.Node;
 
 public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 	private HashMap<Class<BaseInjector>, BaseInjector> injectors=new HashMap<Class<BaseInjector>, BaseInjector>();
@@ -34,7 +35,18 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 			}
 		}
 
-		for(Method m:c.getDeclaredMethods()){
+		System.out.println("------------>"+c.getName());
+        processMethod(c, c);
+		processField(c, c);
+                
+        Collections.sort(usedInjectors);
+	}
+	
+	private void processMethod(Class c, Class current)throws Exception{
+		if(current!=Node.class && current!=AbstractAppState.class && current!=java.lang.Object.class && current!=null)
+			processMethod(c, current.getSuperclass());
+		
+		for(Method m:current.getDeclaredMethods()){
 			for(Entry<Class<BaseInjector>, BaseInjector> e: injectors.entrySet()){
 				e.getValue().loadMethod(c, m);
 				if(e.getValue().hasInjections() && !usedInjectors.contains(e.getValue())){
@@ -43,7 +55,15 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 			}
 			loadMethod(c, m);
 		}
-		for(Field f:c.getDeclaredFields()){
+	}
+	
+	
+	private void processField(Class c, Class current)throws Exception{		
+		if(current!=Node.class && current!=AbstractAppState.class && current!=java.lang.Object.class && current!=null)
+			processField(c, current.getSuperclass());
+		
+		for(Field f:current.getDeclaredFields()){
+            System.out.println("---------------------------------->"+f.getName());
 			for(Entry<Class<BaseInjector>, BaseInjector> e: injectors.entrySet()){
 				e.getValue().loadField(c, f);
 				if(e.getValue().hasInjections() && !usedInjectors.contains(e.getValue())){
@@ -51,9 +71,7 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 				}
 			}
 			loadField(c, f);
-		}
-                
-        Collections.sort(usedInjectors);
+		}		
 	}
 
 	@Override

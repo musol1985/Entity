@@ -12,6 +12,7 @@ import com.entity.anot.network.NetSync;
 import com.entity.core.items.NetworkModel;
 import com.entity.network.IFieldUpdateListener;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.math.Ray;
@@ -37,7 +38,7 @@ public class Player extends NetworkModel implements IFieldUpdateListener{
 	@RunGLThread
 	public void onTest(){
 		System.out.println("onTest");
-		body.test();
+		//body.test();
 		System.out.println(node2);
 		System.out.println(geo);
 	}
