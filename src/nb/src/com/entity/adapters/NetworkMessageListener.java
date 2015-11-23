@@ -4,9 +4,13 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import com.entity.anot.network.Broadcast;
+import com.entity.anot.network.NetSync;
+import com.entity.bean.AnnotationFieldBean;
 import com.entity.core.EntityGame;
 import com.entity.core.EntityManager;
+import com.entity.core.IEntity;
 import com.entity.core.items.Scene;
+import com.entity.network.SyncMessage;
 import com.jme3.network.Filters;
 import com.jme3.network.Message;
 import com.jme3.network.MessageConnection;
@@ -14,6 +18,9 @@ import com.jme3.network.MessageListener;
 
 public class NetworkMessageListener implements MessageListener<MessageConnection>{
 	private HashMap<Class<? extends Message>, Method> methods=new HashMap<Class<? extends Message>, Method>();
+	
+	
+	private boolean ignoreSync;
 	
 	public NetworkMessageListener() {
 		 for(Method m:getClass().getDeclaredMethods()){
@@ -24,6 +31,20 @@ public class NetworkMessageListener implements MessageListener<MessageConnection
         }
 	}
 	
+	
+	
+	public boolean isIgnoreSync() {
+		return ignoreSync;
+	}
+
+
+
+	public void setIgnoreSync(boolean ignoreSync) {
+		this.ignoreSync = ignoreSync;
+	}
+
+
+
 	private Class<? extends Message> getMessageParamMethod(Method m){
 		for(Class param:m.getParameterTypes()){
 			if(param.isAssignableFrom(Message.class))
@@ -37,8 +58,19 @@ public class NetworkMessageListener implements MessageListener<MessageConnection
 	public void messageReceived(MessageConnection cnn, Message msg) {
 
         try {            
+        	
+        	if(msg instanceof SyncMessage){
+        		Scene s=EntityManager.getCurrentScene();
+        		if(s!=null)
+        			s.getNetSync().onMessage(cnn, (SyncMessage) msg);
+        		
+        		if(ignoreSync)
+        			return;
+    		}
+
+        	
         	Method m=methods.get(msg.getClass());
-        	Broadcast anot=m.getAnnotation(Broadcast.class);
+        	Broadcast anot=m.getAnnotation(Broadcast.class);        	        	
         	
         	Boolean res=false;
         	

@@ -8,7 +8,9 @@ import com.entity.anot.components.model.RigidBodyComponent;
 import com.entity.anot.components.model.SubModelComponent;
 import com.entity.anot.components.model.collision.CompBoxCollisionShape;
 import com.entity.anot.entities.ModelEntity;
-import com.entity.core.items.Model;
+import com.entity.anot.network.NetSync;
+import com.entity.core.items.NetworkModel;
+import com.entity.network.IFieldUpdateListener;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -17,7 +19,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
 @ModelEntity(asset="Models/player.j3o", name="Girl")
-public class Player extends Model{
+public class Player extends NetworkModel implements IFieldUpdateListener{
 	
 	@RigidBodyComponent
 	@CompBoxCollisionShape(x=1, y=3, z=4)
@@ -28,6 +30,9 @@ public class Player extends Model{
 	
 	@SubModelComponent(name="geom1")
 	private Geometry geo;
+	
+	@NetSync(timeout=10)
+	private NetPosition position;
 
 	@RunGLThread
 	public void onTest(){
@@ -45,7 +50,19 @@ public class Player extends Model{
 	
 	@OnUpdate
 	public void update(float tpf){
-		
+		geo.setLocalTranslation(position.pos);
+		geo.rotate(0, position.ang, 0);
+	}
+	
+
+	@Override
+	public void onFieldUpdate(String fieldName, Object value) {
+		if(value instanceof NetPosition){
+			geo.setLocalTranslation(((NetPosition) value).pos);
+		}
+		if(fieldName.equals("position")){
+			
+		}
 	}
 	
 	@OnCollision
@@ -72,4 +89,7 @@ public class Player extends Model{
 	public void rayEnemy(Ray ray, CollisionResults results){
 		
 	}
+
+	
+	
 }

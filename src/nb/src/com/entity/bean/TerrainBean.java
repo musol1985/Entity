@@ -9,27 +9,23 @@ import com.entity.anot.components.terrain.ImageHeightTerrain;
 import com.entity.anot.components.terrain.TerrainComponent;
 import com.entity.anot.modificators.ApplyToComponent;
 import com.entity.core.IEntity;
-import com.entity.core.items.Model;
 import com.jme3.asset.AssetManager;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 
-public class TerrainBean {
-	private Field terrain;
+public class TerrainBean extends AnnotationFieldBean<TerrainComponent>{
 	private Field heightField;
 	private Method heightMethod;
 	private String height;
-	private TerrainComponent anot;
 	private String name;
 
 	
 	
-	public TerrainBean(Field terrain, Class clas, TerrainComponent anot)throws Exception{
-		this.terrain=terrain;
-		this.anot=anot;
+	public TerrainBean(Field terrain, Class clas)throws Exception{
+		super(terrain, TerrainComponent.class);
 		
-		if("".equals(anot.getName()))
+		if("".equals(annot.getName()))
 			name=terrain.getName();
 		
 		if(terrain.isAnnotationPresent(ImageHeightTerrain.class)){
@@ -48,7 +44,7 @@ public class TerrainBean {
 				for(Method m:clas.getDeclaredMethods()){
 					if(m.isAnnotationPresent(ApplyToComponent.class) && m.isAnnotationPresent(CustomHeightTerrain.class)){
 						if(m.getAnnotation(ApplyToComponent.class).component().equals(terrain.getName())){
-                                                        m.setAccessible(true);
+                            m.setAccessible(true);
 							heightMethod=m;
 							break;
 						}
@@ -80,14 +76,14 @@ public class TerrainBean {
 				return getImageHeight(heightField, e, asset);
 			}
 		}else if(isHeightMethod()){
-			return (AbstractHeightMap) heightMethod.invoke(e, terrain.get(e));
+			return (AbstractHeightMap) heightMethod.invoke(e, f.get(e));
 		}else if(height!=null){
 			return getImageHeight(height, asset);
 		}else{
-                    return new TerrainFlatHeight();
-                }
+            return new TerrainFlatHeight();
+        }
 		
-		throw new Exception("Cant load height for terrain "+terrain.getName());
+		throw new Exception("Cant load height for terrain "+f.getName());
 	}
 	
 	private AbstractHeightMap getImageHeight(Field f, IEntity e, AssetManager asset)throws Exception{
@@ -109,15 +105,8 @@ public class TerrainBean {
 	    return heightmap;
 	}
 
-	public TerrainComponent getAnot() {
-		return anot;
-	}
 	
 	public String getName(){
 		return name;
-	}
-	
-	public Field getTerrainField(){
-		return terrain;
 	}
 }

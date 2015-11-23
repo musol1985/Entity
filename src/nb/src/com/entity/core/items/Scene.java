@@ -1,7 +1,6 @@
 package com.entity.core.items;
 
-import java.lang.reflect.Method;
-
+import com.entity.adapters.NetSyncAdapter;
 import com.entity.anot.BuilderDefinition;
 import com.entity.core.EntityCollisionManager;
 import com.entity.core.EntityGame;
@@ -29,6 +28,8 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 	private Node node;
 	
 	private IBuilder builder;
+	
+	private NetSyncAdapter netSync;
 
 	
 	@Override
@@ -58,6 +59,8 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 		builder.onAttachInstance(this);
 
 		initPhysics();
+		
+		netSync=new NetSyncAdapter();
 	}
 
 	
@@ -91,7 +94,9 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 		super.cleanup();
 	}
 	
-	
+	public NetSyncAdapter getNetSync(){
+		return netSync;
+	}
 	
 	public T getApp(){
 		return app;

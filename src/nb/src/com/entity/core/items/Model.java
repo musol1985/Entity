@@ -17,7 +17,7 @@ import com.jme3.scene.Spatial;
 
 @BuilderDefinition(builderClass=ModelBuilder.class)
 public abstract class Model extends Node implements IEntity{
-	private ModelBuilder builder;
+	protected ModelBuilder builder;
 	
 	protected boolean isCollidableWith(Model e){
 		return false;

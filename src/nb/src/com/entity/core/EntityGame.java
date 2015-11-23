@@ -1,9 +1,11 @@
 package com.entity.core;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -13,7 +15,9 @@ import com.entity.adapters.NetworkMessageListener;
 import com.entity.anot.CustomInjectors;
 import com.entity.anot.Physics;
 import com.entity.anot.entities.SceneEntity;
+import com.entity.anot.network.NetSync;
 import com.entity.anot.network.Network;
+import com.entity.bean.AnnotationFieldBean;
 import com.entity.core.interceptors.ClickInterceptor;
 import com.entity.core.items.Scene;
 import com.jme3.app.SimpleApplication;
@@ -31,6 +35,8 @@ public abstract class EntityGame extends SimpleApplication{
 	private FilterPostProcessor postProcessor;
 	private List<Filter> filters;
 	private ClickInterceptor clickInterceptor;
+	
+	private HashMap<Class, HashMap<Type, AnnotationFieldBean<NetSync>>> netSyncFields=new HashMap<Class, HashMap<Type, AnnotationFieldBean<NetSync>>>();
 	
 	@Override
 	public void simpleInitApp() {
@@ -174,6 +180,14 @@ public abstract class EntityGame extends SimpleApplication{
 
 	public ClickInterceptor getClickInterceptor() {
 		return clickInterceptor;
+	}
+	
+	public void addSyncFields(Class c, HashMap<Type, AnnotationFieldBean<NetSync>> beans){
+		netSyncFields.put(c, beans);
+	}
+
+	public HashMap<Type, AnnotationFieldBean<NetSync>> getSyncFieldsByClass(Class c){
+		return netSyncFields.get(c);
 	}
 	
 	

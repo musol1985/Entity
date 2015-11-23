@@ -1,43 +1,61 @@
 package com.entity.adapters;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
-import com.entity.anot.network.NetSync;
 import com.entity.core.EntityManager;
-import com.entity.core.items.Model;
 import com.entity.network.FieldSync;
 import com.entity.network.SyncMessage;
+import com.jme3.network.MessageConnection;
 
 
 public class NetSyncAdapter extends ControlAdapter{
-	private List<FieldSync> fields=new ArrayList<FieldSync>();
+	private HashMap<String, FieldSync> syncLocal=new HashMap<String, FieldSync>();
+	private HashMap<String, FieldSync> syncExternal=new HashMap<String, FieldSync>();
+	private boolean isClientNetwork;
 	
-	@Override
-	public void update(float arg0) {
-		for(FieldSync f:fields){
-			if(System.currentTimeMillis()-f.getLastSend()>f.getTimeout()){
-				if(isDiferentValue(f)){
-					if(f.isClient()){
-						EntityManager.getCurrentScene().getApp().getNetworkClient().send(f.getMsg());
-					}else{
-						EntityManager.getCurrentScene().getApp().getNetworkServer().broadcast(f.getMsg());
-					}
-				
-					f.sended();
+	public NetSyncAdapter(){
+		isClientNetwork=EntityManager.getCurrentScene().getApp().getNetworkClient()!=null;
+	}
+	
+	
+	public void update(float tpf) {
+		for(Entry<String, FieldSync> field:syncLocal.entrySet()){
+			if(field.getValue().mustSend()){
+				if(isClientNetwork){
+					EntityManager.getCurrentScene().getApp().getNetworkClient().send(field.getValue().getMsg());
+				}else{
+					EntityManager.getCurrentScene().getApp().getNetworkServer().broadcast(field.getValue().getMsg());
 				}
 			}
 		}
 	}
 	
-	public boolean isDiferentValue(FieldSync f){
-		return (f.getLastMsg()!=null && f.getLastMsg()!=f.getMsg() && f.getLastMsg().compareTo(f.getMsg())!=0);
+	public void addField(FieldSync field){
+		syncExternal.put(field.getID(), field);
 	}
-
-	public void addField(Field f, Model e)throws Exception{
-		NetSync anot=f.getAnnotation(NetSync.class);
-		f.setAccessible(true);
-		fields.add(new FieldSync((SyncMessage) f.get(e), anot.timeout(), EntityManager.getCurrentScene().getApp().getNetworkClient()!=null));
+	
+	public void removeField(String fieldId){
+		syncExternal.remove(fieldId);
+		syncLocal.remove(fieldId);
+	}
+	
+	public void controlField(String fieldId){
+		FieldSync field=syncExternal.remove(fieldId);
+		syncLocal.put(fieldId, field);
+	}
+	
+	public void unControlField(String fieldId){
+		FieldSync field=syncLocal.remove(fieldId);
+		syncExternal.put(fieldId, field);
+	}
+	
+	//Called from networkMessageListener
+	public void onMessage(MessageConnection cnn, SyncMessage msg)throws Exception{
+		FieldSync field=syncExternal.get(msg.getId());
+		if(field==null)
+			throw new Exception("Null fieldsync for "+msg.getId());
+		
+		field.onMessage(msg);
 	}
 }
