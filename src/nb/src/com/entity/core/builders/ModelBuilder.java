@@ -22,6 +22,8 @@ import com.entity.core.injectors.field.CameraInjector;
 import com.entity.core.injectors.field.EffectInjector;
 import com.entity.core.injectors.field.EntityInjector;
 import com.entity.core.injectors.field.LightInjector;
+import com.entity.core.injectors.field.ListInjector;
+import com.entity.core.injectors.field.MapInjector;
 import com.entity.core.injectors.field.MaterialInjector;
 import com.entity.core.injectors.field.TerrainInjector;
 import com.entity.core.injectors.input.InputInjector;
@@ -57,6 +59,8 @@ public class ModelBuilder extends Builder<Model>{
         addInjector(new MaterialInjector<Model>());
         addInjector(new EffectInjector<Model>());
         addInjector(new BodyInjector<Model>());
+        addInjector(new ListInjector<Model>());
+        addInjector(new MapInjector<Model>());
 		
 		model=c.getAnnotation(ModelEntity.class);
                 

@@ -15,6 +15,8 @@ import com.entity.core.injectors.field.CameraInjector;
 import com.entity.core.injectors.field.EffectInjector;
 import com.entity.core.injectors.field.EntityInjector;
 import com.entity.core.injectors.field.LightInjector;
+import com.entity.core.injectors.field.ListInjector;
+import com.entity.core.injectors.field.MapInjector;
 import com.entity.core.injectors.field.MessageListenerInjector;
 import com.entity.core.injectors.field.ScrollCameraInjector;
 import com.entity.core.injectors.field.SkyInjector;
@@ -41,6 +43,8 @@ public class SceneBuilder extends Builder<Scene>{
         addInjector(new ScrollCameraInjector<Scene>());
         addInjector(new TerrainInjector<Scene>());
         addInjector(new EffectInjector<Scene>());
+        addInjector(new ListInjector<Model>());
+        addInjector(new MapInjector<Model>());
                 
                 Class<? extends Injector>[] customInjectors=EntityManager.getSceneCustomInjectors();
 		if(customInjectors!=null){
