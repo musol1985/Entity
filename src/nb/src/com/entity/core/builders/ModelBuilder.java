@@ -33,89 +33,38 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-public class ModelBuilder extends Builder<Model>{
-	public static final String ENTITY_MODEL_REFERENCE="EntityModelReference";
-	public static final String ENTITY_GEOMETRY_REFERENCE="EntityGeometryReference";
-	
-	private boolean mustEnhance;
-	
+public class ModelBuilder extends BaseModelBuilder<Model>{
 	private ModelEntity model;
-
 	private List<Field> subModels=new ArrayList<Field>();
 	
-	private HashMap<Class<Model>, Method> collisions=new HashMap<Class<Model>, Method>();
-	
-	private List<Field> daoFields=new ArrayList<Field>();
-
 	@Override
 	public void loadInjectors(Class<Model> c) throws Exception {
-		addInjector(new UpdateInjector<Model>());
-		addInjector(new InputInjector<Model>());
-		addInjector(new LightInjector<Model>());
-		addInjector(new EntityInjector<Model>());
-        addInjector(new CameraInjector<Model>());
-        addInjector(new TriggerInjector<Model>());
-        addInjector(new TerrainInjector<Model>());
-        addInjector(new MaterialInjector<Model>());
-        addInjector(new EffectInjector<Model>());
-        addInjector(new BodyInjector<Model>());
-        addInjector(new ListInjector<Model>());
-        addInjector(new MapInjector<Model>());
+		super.loadInjectors(c);
 		
 		model=c.getAnnotation(ModelEntity.class);
-                
-        Class<? extends Injector>[] customInjectors=EntityManager.getModelCustomInjectors();
-		if(customInjectors!=null){
-			for(Class<? extends Injector> cInj:customInjectors){
-				addInjector(cInj.newInstance());
-			}
-		}
 	}
 	
 	
-	@Override
-	public void loadField(Class<Model> cls, Field f) throws Exception {		
-		if(f.isAnnotationPresent(SubModelComponent.class)){
+	
+    @Override
+	public void loadField(Class<Model> cls, Field f) throws Exception {
+    	if(f.isAnnotationPresent(SubModelComponent.class)){
 			f.setAccessible(true);
 			subModels.add(f);
-		}else if(f.isAnnotationPresent(DAO.class)){
-			f.setAccessible(true);
-			daoFields.add(f);
+		}else{
+			super.loadField(cls, f);
 		}
-		
 	}
+
+
 
 	@Override
-	public void loadMethod(Class<Model> c, Method m) throws Exception {
-		if(!mustEnhance){
-			if(m.isAnnotationPresent(RunGLThread.class)){
-				mustEnhance=true;
-                        }else if(m.isAnnotationPresent(Instance.class)){
-                            mustEnhance=true;
-                        }else if(m.isAnnotationPresent(RayPick.class)){
-                            mustEnhance=true;
-                        }
-		}
-		if(m.isAnnotationPresent(OnCollision.class)){
-			collisions.put((Class<Model>) m.getParameterTypes()[0], m);
-		}	
-	}
-
-    @Override
     public void onInstance(Model e, IBuilder builder) throws Exception {
         injectModel(e);
         super.onInstance(e, builder);        		
     }
-        
-        
-
-
-	@Override
-	public boolean isMustEnhance() {
-		return mustEnhance;
-	}
-	
-	private void injectModel(Model e)throws Exception{		
+    
+    private void injectModel(Model e)throws Exception{		
 		if(model.name().length()>0)
 			e.setName(model.name());
 		
@@ -137,12 +86,5 @@ public class ModelBuilder extends Builder<Model>{
 			e.attachChild(n);
 		}
 	}
-
 	
-	public Method collidesWith(Model e){
-		return collisions.get(e.getClass());
-	}
-
-
-
 }
