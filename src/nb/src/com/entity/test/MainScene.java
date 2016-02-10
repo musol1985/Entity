@@ -27,6 +27,11 @@ public class MainScene extends Scene<TestEntityGame>{
 		player.netControl();
 		player.netUnControl();
 	}
+
+    @Override
+    public void loadScene() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 	
 }

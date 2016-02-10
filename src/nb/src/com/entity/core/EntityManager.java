@@ -1,19 +1,23 @@
 package com.entity.core;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.zip.GZIPInputStream;
 
 import com.entity.anot.BuilderDefinition;
 import com.entity.anot.Instance;
 import com.entity.anot.RayPick;
+import com.entity.anot.entities.SceneEntity;
 import com.entity.core.interceptors.RayPickInterceptor;
 import com.entity.core.items.Scene;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import com.jme3.system.AppSettings;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -28,8 +32,15 @@ public abstract class EntityManager {
     private static Class[] sceneCustomInjectors;
 	private static Class[] modelCustomInjectors;
 	
-	public static void StartEntityFramework(EntityGame game){
-		EntityManager.game=game;
+	public static <T extends EntityGame> T startGame(Class<T> gameClass)throws Exception{
+		return startGame(gameClass, true);
+	}
+	
+	public static <T extends EntityGame> T startGame(Class<T> gameClass, boolean autostart)throws Exception{
+		game=(EntityGame) Enhancer.create(gameClass, gameInterceptor);
+		game.setPauseOnLostFocus(false);
+		game.start();
+		return (T) game;
 	}
 	
 	public static IBuilder getBuilder(Class entityClass)throws Exception{
@@ -143,6 +154,17 @@ public abstract class EntityManager {
 			}
 		}
 	};
+	
+	private static MethodInterceptor gameInterceptor=new MethodInterceptor() {
+		public Object intercept(Object obj,  Method method,  Object[] args,  MethodProxy proxy)
+				throws Throwable {
+			if(method.isAnnotationPresent(SceneEntity.class)){
+				return game.showScene(method, proxy);
+			}else{
+				return proxy.invokeSuper(obj, args);
+			}
+		}
+	};
 
 	public static void setCustomInjectors(Class[] sceneInjectors, Class[] modelInjectos){
 		EntityManager.sceneCustomInjectors=sceneInjectors;
@@ -157,4 +179,43 @@ public abstract class EntityManager {
 		return modelCustomInjectors;
 	}
 
+    /*public void save(Object obj){
+        if(changed){
+            changed=false;
+            try{
+                FileOutputStream fileOut = new FileOutputStream(getFileName());
+                GZIPOutputStream gz = new GZIPOutputStream(fileOut);
+                ObjectOutputStream out = new ObjectOutputStream(gz);
+                out.writeObject(this);
+                out.close();
+                gz.close();
+                fileOut.close();
+                System.out.println("Serialized data "+getFileName());
+                if(this instanceof CeldaDAO){
+                    System.out.println("Estaticos de la celda: "+id+" "+((CeldaDAO)this).estaticos.size());
+                }
+             }catch(IOException i){
+                 i.printStackTrace();
+             }
+        }
+    }*/
+    
+    
+    public static <T> T loadPersistable(String file){
+        T obj=null;
+        file=getGame().getPath()+"/"+file;
+        if(new File(file).exists()){
+            try{
+               FileInputStream fileIn = new FileInputStream(file);
+               GZIPInputStream gz = new GZIPInputStream(fileIn);
+               ObjectInputStream in = new ObjectInputStream(gz);
+               obj = (T) in.readObject();
+               in.close();
+               fileIn.close();
+            }catch(Exception i){
+               i.printStackTrace();
+            }
+        }
+        return obj;
+    }
 }	

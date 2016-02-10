@@ -76,6 +76,7 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 
 	@Override
 	public void onInstance(T item, IBuilder builder) throws Exception {
+		item.onPreInject(builder);
 		injectInstance(item);
                 
 		for(Injector i: usedInjectors){

@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 
 import com.entity.core.EntityManager;
 import com.entity.network.FieldSync;
+import com.entity.network.NetMessage;
 import com.entity.network.SyncMessage;
 import com.jme3.network.MessageConnection;
 
@@ -12,20 +13,15 @@ import com.jme3.network.MessageConnection;
 public class NetSyncAdapter extends ControlAdapter{
 	private HashMap<String, FieldSync> syncLocal=new HashMap<String, FieldSync>();
 	private HashMap<String, FieldSync> syncExternal=new HashMap<String, FieldSync>();
-	private boolean isClientNetwork;
-	
-	public NetSyncAdapter(){
-		isClientNetwork=EntityManager.getCurrentScene().getApp().getNetworkClient()!=null;
-	}
 	
 	
 	public void update(float tpf) {
 		for(Entry<String, FieldSync> field:syncLocal.entrySet()){
 			if(field.getValue().mustSend()){
-				if(isClientNetwork){
-					EntityManager.getCurrentScene().getApp().getNetworkClient().send(field.getValue().getMsg());
+				if(EntityManager.getGame().getNet().isNetClientGame()){
+					EntityManager.getGame().getNet().getClient().send(field.getValue().getMsg());
 				}else{
-					EntityManager.getCurrentScene().getApp().getNetworkServer().broadcast(field.getValue().getMsg());
+					EntityManager.getGame().getNet().getServer().broadcast(field.getValue().getMsg());
 				}
 			}
 		}
@@ -57,5 +53,16 @@ public class NetSyncAdapter extends ControlAdapter{
 			throw new Exception("Null fieldsync for "+msg.getId());
 		
 		field.onMessage(msg);
+	}
+	
+	public boolean forceSync(NetMessage msg)throws Exception{
+		boolean sent=false;
+		/*FieldSync field=syncLocal.get(msg.getId());
+		if(field!=null){
+			field.forceSend();
+			sent=true;
+		}*/
+		
+		return sent;
 	}
 }

@@ -25,7 +25,10 @@ public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<Annota
 		for(AnnotationFieldBean<Entity> bean:beans){
 			IEntity entity=(IEntity) EntityManager.instanceGeneric(bean.getField().getType());			
             entity.onInstance(builder);
-			bean.getField().set(e, entity);                        
+			bean.getField().set(e, entity);   
+			
+			if(!bean.getAnnot().name().isEmpty())
+				entity.getNode().setName(bean.getAnnot().name());
 			
 			if(bean.getAnnot().attach())
 				entity.attachToParent((IEntity) e);

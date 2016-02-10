@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Entity {
-	boolean attach() default true;
-	String name() default "";
+public @interface Persistable {
+	String fileName() default "";
+	boolean newOnNull() default true;
 }

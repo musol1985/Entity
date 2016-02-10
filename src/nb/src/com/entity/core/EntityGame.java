@@ -1,6 +1,7 @@
 package com.entity.core;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,43 +10,45 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import net.sf.cglib.proxy.MethodProxy;
+
 import org.reflections.Reflections;
 
-import com.entity.adapters.NetworkMessageListener;
 import com.entity.anot.CustomInjectors;
 import com.entity.anot.Physics;
 import com.entity.anot.entities.SceneEntity;
 import com.entity.anot.network.NetSync;
 import com.entity.anot.network.Network;
 import com.entity.bean.AnnotationFieldBean;
+import com.entity.bean.MethodSceneBean;
 import com.entity.core.interceptors.ClickInterceptor;
 import com.entity.core.items.Scene;
+import com.entity.network.core.NetGame;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.network.Client;
-import com.jme3.network.Server;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.network.serializing.Serializer;
 import com.jme3.post.Filter;
 import com.jme3.post.FilterPostProcessor;
 
 public abstract class EntityGame extends SimpleApplication{
-	private Field networkField;
-	
 	private FilterPostProcessor postProcessor;
 	private List<Filter> filters;
 	private ClickInterceptor clickInterceptor;
 	private BulletAppState bullet;
 	
 	private HashMap<Class, HashMap<Type, AnnotationFieldBean<NetSync>>> netSyncFields=new HashMap<Class, HashMap<Type, AnnotationFieldBean<NetSync>>>();
+	private HashMap<String, MethodSceneBean> scenes=new HashMap<String, MethodSceneBean>();
+	
+	private String path;
+	
+	protected NetGame net;
 	
 	@Override
 	public void simpleInitApp() {
-		try{
-			EntityManager.StartEntityFramework(this);
-			
-			Physics physics=getClass().getAnnotation(Physics.class);
+		try{						 			
+			Physics physics=getClass().getSuperclass().getAnnotation(Physics.class);
 			if(physics!=null){
 				bullet = new BulletAppState();
 				if(physics.debug())
@@ -53,25 +56,36 @@ public abstract class EntityGame extends SimpleApplication{
 				getStateManager().attach(bullet);
 			}
 			
-			Scene autoload=null;
-			for(Field f:getClass().getDeclaredFields()){
-				if(f.isAnnotationPresent(Network.class)){
-					 Reflections reflections = new Reflections(f.getAnnotation(Network.class).messagesPackage());
+			Network network=getClass().getSuperclass().getAnnotation(Network.class);
+			if(network!=null){
+				for(String pack:network.messagesPackage()){
+					 Reflections reflections = new Reflections(pack);
 		
 					 Set<Class<?>> messages=reflections.getTypesAnnotatedWith(Serializable.class);
 					 
 					 for(Class<?> message:messages){
 						 Serializer.registerClass(message);
 					 }
-					 
-					 networkField=f;
-					 return;
-				}else if(f.isAnnotationPresent(SceneEntity.class)){
-					Object scene=EntityManager.instanceGeneric(f.getType());
-					f.setAccessible(true);
-					f.set(this, scene);
-					if(f.getAnnotation(SceneEntity.class).attach())
-						autoload=(Scene) scene;
+				}
+				net=new NetGame(network);
+			}
+			
+			Method firstScene=null;
+			MethodSceneBean firstBean=null;
+			for(Method m:getClass().getSuperclass().getDeclaredMethods()){
+				if(m.isAnnotationPresent(SceneEntity.class)){
+					SceneEntity anot=m.getAnnotation(SceneEntity.class);
+					Scene scene=null;
+					if(anot.preLoad()){
+						scene=(Scene) EntityManager.instanceGeneric(m.getParameterTypes()[0]);
+					}
+					MethodSceneBean bean=new MethodSceneBean(scene, anot);
+					
+					scenes.put(m.getName(), bean);
+					if(anot.first()){						
+						firstScene=getClass().getMethod(m.getName(), m.getParameterTypes());
+						firstBean=bean;						
+					}
 				}
 			}
                         
@@ -80,36 +94,12 @@ public abstract class EntityGame extends SimpleApplication{
 				EntityManager.setCustomInjectors(customs.sceneInjectors(), customs.modelInjectors());
 			}
                         
-			if(autoload!=null)
-				setScene(autoload);
+			if(firstScene!=null){
+				firstScene.invoke(this, firstBean.getS());
+			}
+				//setScene((Scene) firstScene.invoke(this, null));
 		}catch(Exception e){
 			e.printStackTrace();
-		}
-	}
-
-	public void addMessageListener(NetworkMessageListener listener)throws Exception{
-		if(isNetworkGame()){
-			if(networkField.get(this)==Client.class){
-				Client client=(Client) networkField.get(this);
-				client.addMessageListener(listener);
-			}else if(networkField.get(this).getClass()==Server.class){
-				Server server=(Server) networkField.get(this);
-				server.addMessageListener(listener);
-			}
-		}
-	}
-	
-	public void removeMessageListener(NetworkMessageListener listener)throws Exception{
-		if(networkField!=null){
-			networkField.setAccessible(true);
-			Object net=networkField.get(this);
-			if(net!=null){
-				if(net instanceof Client){
-					((Client) net).removeMessageListener(listener);
-				}else if(net instanceof Server){
-					((Server) net).removeMessageListener(listener);
-				}
-			}
 		}
 	}
 	
@@ -138,31 +128,7 @@ public abstract class EntityGame extends SimpleApplication{
 		filters.remove(f);
 	}
 	
-	public Server getNetworkServer(){
-		if(networkField!=null){
-			try {
-				return (Server)networkField.get(this);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return null;
-	}
-	
-	public Client getNetworkClient(){
-		if(networkField!=null){
-			try {
-				return (Client)networkField.get(this);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return null;
-	}
-	
-	public boolean isNetworkGame(){
-		return networkField!=null;
-	}	
+
 	
 	public void setScene(Scene scene){
 		try {
@@ -195,5 +161,36 @@ public abstract class EntityGame extends SimpleApplication{
 	public PhysicsSpace getPhysics(){
 		return bullet.getPhysicsSpace();
 	}
+
+	
+	protected Scene showScene(Method m, MethodProxy proxy)throws Exception, Throwable{
+		MethodSceneBean bean=scenes.get(m.getName());
+
+		if(!bean.getAnot().singleton() || bean.getS()==null){
+			Scene scene=(Scene) EntityManager.instanceGeneric(m.getParameterTypes()[0]);
+			bean.setS(scene);
+		}
+		proxy.invokeSuper(this, new Object[]{bean.getS()});
+		//m.invoke(this, new Object[]{bean.getS()});
+		
+		setScene(bean.getS());
+
+		return bean.getS();
+	}
+	
+	public String getPath(){
+		return path;
+	}
+	
+	public void setPath(String path){
+		this.path=path;
+	}
+
+	public NetGame getNet() {
+		if(net==null)
+			throw new RuntimeException("No network started");
+		return net;
+	}
+	
 	
 }

@@ -1,4 +1,4 @@
-package com.entity.anot;
+package com.entity.anot.collections;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Entity {
-	boolean attach() default true;
-	String name() default "";
+public @interface MapNameEntity {
+	MapEntryNameEntity	[] entries();
+	boolean attachAllItems() default false;
 }

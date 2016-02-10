@@ -18,6 +18,7 @@ import com.entity.core.injectors.field.LightInjector;
 import com.entity.core.injectors.field.ListInjector;
 import com.entity.core.injectors.field.MapInjector;
 import com.entity.core.injectors.field.MessageListenerInjector;
+import com.entity.core.injectors.field.PersistableInjector;
 import com.entity.core.injectors.field.ScrollCameraInjector;
 import com.entity.core.injectors.field.SkyInjector;
 import com.entity.core.injectors.field.TerrainInjector;
@@ -45,6 +46,7 @@ public class SceneBuilder extends Builder<Scene>{
         addInjector(new EffectInjector<Scene>());
         addInjector(new ListInjector<Model>());
         addInjector(new MapInjector<Model>());
+        addInjector(new PersistableInjector<Scene>());
                 
                 Class<? extends Injector>[] customInjectors=EntityManager.getSceneCustomInjectors();
 		if(customInjectors!=null){
@@ -67,14 +69,14 @@ public class SceneBuilder extends Builder<Scene>{
 	@Override
 	public void loadMethod(Class<Scene> c, Method m) throws Exception {
 		if(!mustEnhance){
-                    if(m.isAnnotationPresent(RunGLThread.class)){
-                            mustEnhance=true;
-                    }else if(m.isAnnotationPresent(Instance.class)){
-                        mustEnhance=true;
-                    }else if(m.isAnnotationPresent(RayPick.class)){
-                        mustEnhance=true;
-                    }
-                }
+            if(m.isAnnotationPresent(RunGLThread.class)){
+                    mustEnhance=true;
+            }else if(m.isAnnotationPresent(Instance.class)){
+                mustEnhance=true;
+            }else if(m.isAnnotationPresent(RayPick.class)){
+                mustEnhance=true;
+            }
+        }
 	}
 
 

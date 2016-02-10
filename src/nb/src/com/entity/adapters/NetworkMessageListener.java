@@ -4,8 +4,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import com.entity.anot.network.Broadcast;
-import com.entity.anot.network.NetSync;
-import com.entity.bean.AnnotationFieldBean;
 import com.entity.core.EntityGame;
 import com.entity.core.EntityManager;
 import com.entity.core.IEntity;
@@ -16,10 +14,10 @@ import com.jme3.network.Message;
 import com.jme3.network.MessageConnection;
 import com.jme3.network.MessageListener;
 
-public class NetworkMessageListener implements MessageListener<MessageConnection>{
+public class NetworkMessageListener<T extends IEntity> implements MessageListener<MessageConnection>{
 	private HashMap<Class<? extends Message>, Method> methods=new HashMap<Class<? extends Message>, Method>();
 	
-	
+	private T entity;
 	private boolean ignoreSync;
 	
 	public NetworkMessageListener() {
@@ -33,6 +31,18 @@ public class NetworkMessageListener implements MessageListener<MessageConnection
 	
 	
 	
+	public void setEntity(T entity) {
+		this.entity = entity;
+	}
+
+
+
+	public T getEntity() {
+		return entity;
+	}
+
+
+
 	public boolean isIgnoreSync() {
 		return ignoreSync;
 	}
@@ -56,6 +66,7 @@ public class NetworkMessageListener implements MessageListener<MessageConnection
 
 
 	public void messageReceived(MessageConnection cnn, Message msg) {
+
 
         try {            
         	
@@ -126,13 +137,13 @@ public class NetworkMessageListener implements MessageListener<MessageConnection
 		return false;
 	}
 
-	private void broadCast(MessageConnection cnn, Message msg, boolean excludeSender)throws Exception{
+	protected void broadCast(MessageConnection cnn, Message msg, boolean excludeSender)throws Exception{
 		Scene<? extends EntityGame> scene=EntityManager.getCurrentScene();
 		if(scene!=null){
 			if(!excludeSender){
-				scene.getApp().getNetworkServer().broadcast(msg);
+				scene.getApp().getNet().getServer().broadcast(msg);
 			}else{
-				scene.getApp().getNetworkServer().broadcast(Filters.notEqualTo(cnn), msg);
+				scene.getApp().getNet().getServer().broadcast(Filters.notEqualTo(cnn), msg);
 			}
 		}else{
 			throw new Exception("Can't broadcast a message. No scene loaded!");

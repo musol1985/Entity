@@ -17,7 +17,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
-public class Scene<T extends EntityGame> extends AbstractAppState implements IEntity{
+public abstract class Scene<T extends EntityGame> extends AbstractAppState implements IEntity{
 	protected T app;
 	
 	private PhysicsSpace physics;
@@ -45,6 +45,8 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 	public void onInstance(IBuilder builder) {
 
 	}
+	
+	public abstract void loadScene() throws Exception;
 
 
 	@SuppressWarnings("unchecked")
@@ -61,6 +63,12 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 		initPhysics();
 		
 		netSync=new NetSyncAdapter();
+		
+		try{
+			loadScene();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	
@@ -149,5 +157,12 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
     public void setBuilder(IBuilder builder) {
         this.builder=builder;
     }
+
+	@Override
+	public void onPreInject(IBuilder builder) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 	
+    
 }

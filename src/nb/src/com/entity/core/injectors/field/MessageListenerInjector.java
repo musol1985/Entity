@@ -26,15 +26,18 @@ public class MessageListenerInjector<T extends IEntity>  extends ListBeanSinglet
 
 	@Override
 	public <G extends EntityGame> void onAttach(G app, T instance) throws Exception {
-		for(SingletonBean bean:beans){			
-			app.addMessageListener((NetworkMessageListener)bean.getInstance(instance));
+		for(SingletonBean bean:beans){	
+			NetworkMessageListener listener=(NetworkMessageListener)bean.getInstance(instance);
+			listener.setEntity(instance);
+			app.getNet().addMsgListener(listener);
 		}
 	}
 
 	@Override
 	public <G extends EntityGame> void onDettach(G app, T instance) throws Exception {		
 		for(SingletonBean bean:beans){			
-			app.removeMessageListener((NetworkMessageListener)bean.getInstance(instance));
+			NetworkMessageListener listener=(NetworkMessageListener)bean.getInstance(instance);
+			app.getNet().removeMsgListener(listener);
 		}
 	}
 }
