@@ -1,7 +1,6 @@
 package com.entity.core;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,8 +8,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-
-import net.sf.cglib.proxy.MethodProxy;
 
 import org.reflections.Reflections;
 
@@ -20,7 +17,7 @@ import com.entity.anot.entities.SceneEntity;
 import com.entity.anot.network.NetSync;
 import com.entity.anot.network.Network;
 import com.entity.bean.AnnotationFieldBean;
-import com.entity.bean.MethodSceneBean;
+import com.entity.bean.FieldSceneBean;
 import com.entity.core.interceptors.ClickInterceptor;
 import com.entity.core.items.Scene;
 import com.entity.network.core.NetGame;
@@ -39,7 +36,6 @@ public abstract class EntityGame extends SimpleApplication{
 	private BulletAppState bullet;
 	
 	private HashMap<Class, HashMap<Type, AnnotationFieldBean<NetSync>>> netSyncFields=new HashMap<Class, HashMap<Type, AnnotationFieldBean<NetSync>>>();
-	private HashMap<String, MethodSceneBean> scenes=new HashMap<String, MethodSceneBean>();
 	
 	private String path;
 	
@@ -47,8 +43,10 @@ public abstract class EntityGame extends SimpleApplication{
 	
 	@Override
 	public void simpleInitApp() {
+                if(EntityManager.getGame()==null)
+                    EntityManager.setGame(this);
 		try{						 			
-			Physics physics=getClass().getSuperclass().getAnnotation(Physics.class);
+			Physics physics=getClass().getAnnotation(Physics.class);
 			if(physics!=null){
 				bullet = new BulletAppState();
 				if(physics.debug())
@@ -56,7 +54,7 @@ public abstract class EntityGame extends SimpleApplication{
 				getStateManager().attach(bullet);
 			}
 			
-			Network network=getClass().getSuperclass().getAnnotation(Network.class);
+			Network network=getClass().getAnnotation(Network.class);
 			if(network!=null){
 				for(String pack:network.messagesPackage()){
 					 Reflections reflections = new Reflections(pack);
@@ -70,32 +68,38 @@ public abstract class EntityGame extends SimpleApplication{
 				net=new NetGame(network);
 			}
 			
-			Method firstScene=null;
-			MethodSceneBean firstBean=null;
-			for(Method m:getClass().getSuperclass().getDeclaredMethods()){
-				if(m.isAnnotationPresent(SceneEntity.class)){
-					SceneEntity anot=m.getAnnotation(SceneEntity.class);
-					Scene scene=null;
-					if(anot.preLoad()){
-						scene=(Scene) EntityManager.instanceGeneric(m.getParameterTypes()[0]);
-					}
-					MethodSceneBean bean=new MethodSceneBean(scene, anot);
+			Scene firstScene=null;
+			for(Field f:getClass().getDeclaredFields()){
+				if(f.isAnnotationPresent(SceneEntity.class)){
+					SceneEntity anot=f.getAnnotation(SceneEntity.class);
 					
-					scenes.put(m.getName(), bean);
-					if(anot.first()){						
-						firstScene=getClass().getMethod(m.getName(), m.getParameterTypes());
-						firstBean=bean;						
-					}
+					Scene scene=null;
+					if(anot.preLoad() || anot.first()){
+						scene=(Scene) EntityManager.instanceGeneric(f.getType());
+						f.set(this, scene);
+						if(anot.first())
+							firstScene=scene;
+						if(anot.singleton())
+							scene.setProxy(new FieldSceneBean(f, this, anot));
+					}else{
+						FieldSceneBean fsb=new FieldSceneBean(f, this, anot);
+						scene=(Scene) f.getType().newInstance();
+						scene.setProxy(fsb);
+						f.set(this, scene);
+					}					
 				}
 			}
+		
                         
             CustomInjectors customs=getClass().getAnnotation(CustomInjectors.class);
 			if(customs!=null){
 				EntityManager.setCustomInjectors(customs.sceneInjectors(), customs.modelInjectors());
 			}
-                        
+			
 			if(firstScene!=null){
-				firstScene.invoke(this, firstBean.getS());
+				setScene(firstScene);
+			}else{
+				System.out.println("No first scene defined");
 			}
 				//setScene((Scene) firstScene.invoke(this, null));
 		}catch(Exception e){
@@ -130,7 +134,7 @@ public abstract class EntityGame extends SimpleApplication{
 	
 
 	
-	public void setScene(Scene scene){
+	protected void setScene(Scene scene){
 		try {
 			Scene current=getStateManager().getState(Scene.class);
 			if(current!=null)
@@ -163,20 +167,23 @@ public abstract class EntityGame extends SimpleApplication{
 	}
 
 	
-	protected Scene showScene(Method m, MethodProxy proxy)throws Exception, Throwable{
-		MethodSceneBean bean=scenes.get(m.getName());
-
-		if(!bean.getAnot().singleton() || bean.getS()==null){
-			Scene scene=(Scene) EntityManager.instanceGeneric(m.getParameterTypes()[0]);
-			bean.setS(scene);
+	public <T extends Scene> T showScene(T scene)throws Exception{
+		if(!scene.isPreLoaded()){
+			FieldSceneBean bean=scene.getProxy();
+			scene=(T) EntityManager.instanceGeneric(bean.getF().getType());
+			
+			bean.getF().set(bean.getG(), scene);
+			
+			if(bean.getAnot().singleton())
+				scene.setProxy(bean);
 		}
-		proxy.invokeSuper(this, new Object[]{bean.getS()});
-		//m.invoke(this, new Object[]{bean.getS()});
 		
-		setScene(bean.getS());
+		setScene(scene);
 
-		return bean.getS();
+		return scene;
 	}
+	
+	
 	
 	public String getPath(){
 		return path;

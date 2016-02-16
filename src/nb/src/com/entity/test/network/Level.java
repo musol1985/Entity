@@ -17,7 +17,6 @@ public class Level extends Scene {
 	private TestNetCharacter e2;
 	
 
-	@Override
 	public void loadScene() {
 		//sets player and enemies name ID
 		player.setName("Mike");

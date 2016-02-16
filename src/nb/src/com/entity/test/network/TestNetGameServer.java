@@ -13,7 +13,7 @@ public class TestNetGameServer extends EntityGame{
 	public static void main(String[] args)throws Exception{
 		EntityManager.startGame(TestNetGameServer.class);
 	}
-
+/*
 	@SceneEntity(first=true)
 	public SelectWorldScene showSelectWorld(){
 		return new SelectWorldScene();
@@ -27,5 +27,5 @@ public class TestNetGameServer extends EntityGame{
 	@SceneEntity(preLoad=false, singleton=false)
 	public LobbyScene showGame(){
 		return new LobbyScene();
-	}
+	}*/
 }

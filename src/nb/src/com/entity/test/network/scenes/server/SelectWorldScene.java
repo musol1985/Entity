@@ -6,11 +6,11 @@ import com.entity.test.network.TestNetGameServer;
 
 public class SelectWorldScene extends Scene<TestNetGameServer>{
 
-	@Override
+
 	public void loadScene() throws Exception {
 		EntityManager.getGame().getNet().setMatchName("Mundo 1");
 		
-		getApp().showLobby();
+		//getApp().showLobby();
 	}
 
 }

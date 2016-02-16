@@ -21,7 +21,7 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 
 public class RayPickInterceptor {
 
-	public static Object rayPick(Object obj, Method m, Object[] args, MethodProxy proxy)throws Exception, Throwable{
+	public static Object rayPick(Object obj, Method m, Object[] args, MethodProxy mp, BaseMethodInterceptor mi)throws Exception, Throwable{
 		RayPick anot=m.getAnnotation(RayPick.class);
 		
 		if(args.length>3)
@@ -95,14 +95,14 @@ public class RayPickInterceptor {
                                             argsProcesed[argsEntity]=entity;
                                             if(argsCollisionResult>-1)
                                                 argsProcesed[argsCollisionResult]=colision;
-                                            Object res=proxy.invokeSuper(obj, argsProcesed);
+                                            Object res=mi.callSuper(obj, m, mp,argsProcesed);
                                             if(res!=null)
                                                     return res;
                                     }
                                 }
 			}else{
 				if(anot.EntityFilter().length==0){
-					Object res=proxy.invokeSuper(obj, argsProcesed);
+					Object res=mi.callSuper(obj, m, mp,argsProcesed);
 					if(res!=null)
 						return res;
 				}else{
@@ -121,7 +121,7 @@ public class RayPickInterceptor {
 				argsProcesed[0]=resultsFiltered;
 			}
 			
-			return proxy.invokeSuper(obj, argsProcesed);
+			return mi.callSuper(obj, m, mp,argsProcesed);
 		}
 		return null;
 	}

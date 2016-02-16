@@ -10,17 +10,16 @@ import java.util.zip.GZIPInputStream;
 import com.entity.anot.BuilderDefinition;
 import com.entity.anot.Instance;
 import com.entity.anot.RayPick;
-import com.entity.anot.entities.SceneEntity;
+import com.entity.core.interceptors.BaseMethodInterceptor;
 import com.entity.core.interceptors.RayPickInterceptor;
 import com.entity.core.items.Scene;
+import com.google.dexmaker.stock.ProxyBuilder;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
-import com.jme3.system.AppSettings;
 
 import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 public abstract class EntityManager {
@@ -37,7 +36,7 @@ public abstract class EntityManager {
 	}
 	
 	public static <T extends EntityGame> T startGame(Class<T> gameClass, boolean autostart)throws Exception{
-		game=(EntityGame) Enhancer.create(gameClass, gameInterceptor);
+		game=gameClass.newInstance();
 		game.setPauseOnLostFocus(false);
 		game.start();
 		return (T) game;
@@ -88,6 +87,10 @@ public abstract class EntityManager {
         public static EntityGame getGame(){
             return game;
         }
+        
+        public static <T extends EntityGame> void setGame(T game){
+            EntityManager.game=game;
+        }
 	
 	public static Node getRootNode(){
 		return game.getRootNode();
@@ -108,8 +111,8 @@ public abstract class EntityManager {
 	}
         
         public static Class getClass(Class cls)throws Exception{
-            if(cls.getName().contains("CGLIB"))
-                return Class.forName((cls).getGenericSuperclass().getTypeName());
+            /*if(cls.getName().contains("CGLIB"))
+                return Class.forName((cls).getGenericSuperclass().getTypeName());*/
             return cls;
         }
 	
@@ -119,7 +122,11 @@ public abstract class EntityManager {
 		try{
 			IBuilder template=EntityManager.getBuilder(c);
 			if(template.isMustEnhance()){
-				res=(IEntity)Enhancer.create(c, interceptor);
+				if(EntityManager.isAndroidGame()){
+					res=(IEntity)ProxyBuilder.forClass(c).handler(interceptor).build();
+				}else{
+					res=(IEntity)Enhancer.create(c, interceptor);
+				}
 			}else{
 				res=(IEntity) c.newInstance();
 			}
@@ -131,37 +138,25 @@ public abstract class EntityManager {
 		return res;
 	}
 	
-	private static MethodInterceptor interceptor=new MethodInterceptor() {
-		
-		public Object intercept(Object obj,  Method method,  Object[] args,  MethodProxy proxy)
-				throws Throwable {
+	private static BaseMethodInterceptor interceptor=new BaseMethodInterceptor() {
 
+		@Override
+		public Object interceptMethod(Object obj, Method method, MethodProxy mp, Object[] args) throws Throwable {
 			if(method.isAnnotationPresent(RayPick.class)){
-				return RayPickInterceptor.rayPick(obj, method, args, proxy);
+				return RayPickInterceptor.rayPick(obj, method, args, mp, this);
 			}else if(method.isAnnotationPresent(Instance.class)){
-                            IEntity instance=(IEntity)instanceGeneric(method.getParameterTypes()[0]);
-                            Instance anot=method.getAnnotation(Instance.class);
-                            if("this".equals(anot.attachTo())){
-                                IEntity e=(IEntity)obj;
-                                instance.attachToParent(e);
-                            }else{
-                                IEntity e=(IEntity)obj.getClass().getField(anot.attachTo()).get(obj);
-                                instance.attachToParent(e);
-                            }
-                            return proxy.invokeSuper(obj, new Object[]{instance});
-                        }else{
-                            return proxy.invokeSuper(obj, args);
-			}
-		}
-	};
-	
-	private static MethodInterceptor gameInterceptor=new MethodInterceptor() {
-		public Object intercept(Object obj,  Method method,  Object[] args,  MethodProxy proxy)
-				throws Throwable {
-			if(method.isAnnotationPresent(SceneEntity.class)){
-				return game.showScene(method, proxy);
-			}else{
-				return proxy.invokeSuper(obj, args);
+                IEntity instance=(IEntity)instanceGeneric(method.getParameterTypes()[0]);
+                Instance anot=method.getAnnotation(Instance.class);
+                if(Instance.THIS.equals(anot.attachTo())){
+                    IEntity e=(IEntity)obj;
+                    instance.attachToParent(e);
+                }else{
+                    IEntity e=(IEntity)obj.getClass().getField(anot.attachTo()).get(obj);
+                    instance.attachToParent(e);
+                }
+                return callSuper(obj, method, mp, new Object[]{instance});
+            }else{
+                return callSuper(obj, method, mp,  args);
 			}
 		}
 	};
@@ -217,5 +212,9 @@ public abstract class EntityManager {
             }
         }
         return obj;
+    }
+    
+    public static boolean isAndroidGame(){
+    	return game instanceof AndroidGame;
     }
 }	

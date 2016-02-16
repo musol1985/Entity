@@ -38,7 +38,6 @@ public abstract class LobbyClientScene<T extends LobbyClientMessageListener, W e
 		EntityManager.getGame().getNet().getClient().addClientStateListener(this);
 	}
 
-	@Override
 	public void loadScene() throws Exception{
 		EntityManager.getGame().getNet().getClient().start();
 	}

@@ -50,7 +50,7 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, W e
 		
 	}
 
-	@Override
+
 	public void loadScene() throws Exception{
 		System.out.println("Starting server... ");
 		EntityManager.getGame().getNet().getServer().start();

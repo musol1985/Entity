@@ -2,6 +2,7 @@ package com.entity.core.items;
 
 import com.entity.adapters.NetSyncAdapter;
 import com.entity.anot.BuilderDefinition;
+import com.entity.bean.FieldSceneBean;
 import com.entity.core.EntityCollisionManager;
 import com.entity.core.EntityGame;
 import com.entity.core.EntityManager;
@@ -17,7 +18,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
-public abstract class Scene<T extends EntityGame> extends AbstractAppState implements IEntity{
+public class Scene<T extends EntityGame> extends AbstractAppState implements IEntity{
 	protected T app;
 	
 	private PhysicsSpace physics;
@@ -30,6 +31,24 @@ public abstract class Scene<T extends EntityGame> extends AbstractAppState imple
 	private IBuilder builder;
 	
 	private NetSyncAdapter netSync;
+	
+	private FieldSceneBean proxy;
+	
+	public Scene(){
+		
+	}
+	
+	public void setProxy(FieldSceneBean proxy){
+		this.proxy=proxy;
+	}
+	
+	public FieldSceneBean getProxy(){
+		return proxy;
+	}
+	
+	public boolean isPreLoaded(){
+		return proxy==null;
+	}
 
 	
 	@Override
@@ -46,7 +65,9 @@ public abstract class Scene<T extends EntityGame> extends AbstractAppState imple
 
 	}
 	
-	public abstract void loadScene() throws Exception;
+	public void onLoadScene() throws Exception{
+		
+	}
 
 
 	@SuppressWarnings("unchecked")
@@ -65,7 +86,7 @@ public abstract class Scene<T extends EntityGame> extends AbstractAppState imple
 		netSync=new NetSyncAdapter();
 		
 		try{
-			loadScene();
+			onLoadScene();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -92,7 +113,8 @@ public abstract class Scene<T extends EntityGame> extends AbstractAppState imple
 				getApp().getRootNode().detachChild(node);
 			}
 			
-			builder.onDettachInstance(this);
+                        if(builder!=null)
+                            builder.onDettachInstance(this);
 			
 			EntityManager.setCurrentScene(null);				
 		}catch(Exception e){

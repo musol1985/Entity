@@ -16,5 +16,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Instance {
-    String attachTo() default "this";
+	public static final String THIS="this";
+    String attachTo() default THIS;
 }
