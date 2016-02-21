@@ -25,13 +25,13 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, W e
 	
 	@Persistable(fileName="worlds",newOnNull=true)
 	private HashMap<String, W> worlds;
-	
-	private boolean adminConnected;
 
 	@Override
 	public void connectionAdded(Server server, HostedConnection cnn) {
 		if(server.getConnections().size()>getMaxPlayers()){
 			cnn.close("Max players");
+		}else if(server.getConnections().size()>1 && !isWorldSelected()){
+			cnn.close("El admin no ha seleccionado mundo todavía");
 		}
 	}
 
@@ -66,12 +66,24 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, W e
 	}
 	
 
-	public boolean isAdminConnected() {
-		return adminConnected;
+	public boolean isWorldSelected(){
+		return getWorld()!=null;
+	}
+	
+	/**
+	 * Comprueba si world!=null(hay world seleccionado/creado)
+	 * @return
+	 */
+	public boolean canPlayersJoin(){
+		return isWorldSelected();
 	}
 
-	public void setAdminConnected(boolean adminConnected) {
-		this.adminConnected = adminConnected;
+	public W getWorld() {
+		return (W) EntityManager.getGame().getNet().getWorld();
+	}
+
+	public void setWorld(W world) {
+		EntityManager.getGame().getNet().setWorld(world);
 	}
 
 	public abstract void onPlayerJoined(P player);

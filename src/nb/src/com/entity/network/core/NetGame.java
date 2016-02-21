@@ -2,6 +2,8 @@ package com.entity.network.core;
 
 import com.entity.adapters.NetworkMessageListener;
 import com.entity.anot.network.Network;
+import com.entity.core.EntityManager;
+import com.entity.network.core.bean.NetPlayer;
 import com.entity.network.core.bean.NetWorld;
 import com.jme3.network.Client;
 import com.jme3.network.Server;
@@ -14,6 +16,7 @@ public class NetGame{
 	private int port;
 	private Network anot;
 	private NetWorld world;
+	private NetPlayer player;
 	
 	public NetGame(Network anot){
 		this.anot=anot;
@@ -110,6 +113,16 @@ public class NetGame{
 	public void setWorld(NetWorld world) {
 		this.world = world;
 	}
+
+	public NetPlayer getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(NetPlayer player) {
+		this.player = player;
+	}
 	
-	
+	public boolean isWorldSelected(){
+		return EntityManager.getGame().getNet().getWorld()!=null;
+	}
 }

@@ -10,6 +10,7 @@ public class NetWorld<T extends NetPlayer> implements Serializable{
 	private long timestamp;
 	private int maxPlayers=10;
 	private transient boolean created;
+	private String playerCreator;
 	
 	public HashMap<String, T> getPlayers() {
 		return players;
@@ -58,7 +59,7 @@ public class NetWorld<T extends NetPlayer> implements Serializable{
 	public void setMaxPlayers(int maxPlayers) {
 		this.maxPlayers = maxPlayers;
 	}
-	public boolean isCreated() {
+	public boolean isNewCreated() {
 		return created;
 	}
 	public void setCreated(boolean created) {
@@ -68,4 +69,11 @@ public class NetWorld<T extends NetPlayer> implements Serializable{
 	public NetPlayer getNewPlayer(){
 		return new NetPlayer();
 	}
+	public String getPlayerCreator() {
+		return playerCreator;
+	}
+	public void setPlayerCreator(String playerCreator) {
+		this.playerCreator = playerCreator;
+	}
+	
 }
