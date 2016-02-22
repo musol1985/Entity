@@ -14,6 +14,7 @@ import com.entity.network.core.bean.NetPlayer;
 import com.entity.network.core.bean.NetWorld;
 import com.entity.network.core.builders.LobbyBuilder;
 import com.entity.network.core.listeners.LobbyServerMessageListener;
+import com.entity.network.core.msg.MsgListWorlds;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Server;
@@ -21,17 +22,21 @@ import com.jme3.network.Server;
 @BuilderDefinition(builderClass=LobbyBuilder.class)
 public abstract class LobbyServerScene<T extends LobbyServerMessageListener, W extends NetWorld, P extends NetPlayer> extends Scene  implements ConnectionListener {
 	@MessageListener
-	private T listener;
+	public T listener;
 	
 	@Persistable(fileName="worlds",newOnNull=true)
-	private HashMap<String, W> worlds;
+	public HashMap<String, W> worlds;
 
 	@Override
 	public void connectionAdded(Server server, HostedConnection cnn) {
+		System.out.println("Connection added!");
 		if(server.getConnections().size()>getMaxPlayers()){
 			cnn.close("Max players");
 		}else if(server.getConnections().size()>1 && !isWorldSelected()){
-			cnn.close("El admin no ha seleccionado mundo todavía");
+			cnn.close("El admin no ha seleccionado mundo todavia");
+		}else if(server.getConnections().size()==1){
+			//Is admin, send worlds list
+			cnn.send(new MsgListWorlds(worlds));
 		}
 	}
 
@@ -50,8 +55,8 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, W e
 		
 	}
 
-
-	public void loadScene() throws Exception{
+	@Override
+	public void onLoadScene() throws Exception{
 		System.out.println("Starting server... ");
 		EntityManager.getGame().getNet().getServer().start();
 	}
@@ -87,4 +92,5 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, W e
 	}
 
 	public abstract void onPlayerJoined(P player);
+	
 }

@@ -4,5 +4,4 @@ import com.entity.core.builders.SceneBuilder;
 
 public class LobbyBuilder extends SceneBuilder{
 
-
 }

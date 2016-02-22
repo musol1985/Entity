@@ -6,6 +6,7 @@ import com.entity.adapters.NetworkMessageListener;
 import com.entity.anot.network.MessageListener;
 import com.entity.bean.SingletonBean;
 import com.entity.core.EntityGame;
+import com.entity.core.EntityManager;
 import com.entity.core.IEntity;
 import com.entity.core.InjectorAttachable;
 import com.entity.core.injectors.ListBeanSingletonInjector;
@@ -14,9 +15,9 @@ public class MessageListenerInjector<T extends IEntity>  extends ListBeanSinglet
 
 	@Override
 	public void loadField(Class<IEntity> c, Field f) throws Exception {
-		if(f.isAnnotationPresent(MessageListener.class)){
+		if(EntityManager.isAnnotationPresent(MessageListener.class, f)){
 			f.setAccessible(true);
-			if(f.getAnnotation(MessageListener.class).singleton()){
+			if(EntityManager.getAnnotation(MessageListener.class, f).singleton()){
 				beans.add(new SingletonBean(f.getType().newInstance(), f));
 			}else{
 				beans.add(new SingletonBean(f));

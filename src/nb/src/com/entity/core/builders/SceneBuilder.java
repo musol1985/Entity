@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 
 import com.entity.anot.RunGLThread;
 import com.entity.core.EntityManager;
+import com.entity.core.IBuilder;
 import com.entity.core.Injector;
 import com.entity.core.injectors.FieldInjector;
 import com.entity.core.injectors.TriggerInjector;
@@ -90,6 +91,12 @@ public class SceneBuilder extends Builder<Scene>{
 	@Override
 	public boolean isMustEnhance() {
 		return mustEnhance;
+	}
+
+	@Override
+	public void onInstance(Scene item, IBuilder builder) throws Exception {
+		item.setApp(EntityManager.getGame());
+		super.onInstance(item, builder);
 	}
 
 

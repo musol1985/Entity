@@ -62,7 +62,7 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 		if(current!=Node.class && current!=AbstractAppState.class && current!=java.lang.Object.class && current!=null)
 			processField(c, current.getSuperclass());
 		
-		for(Field f:current.getDeclaredFields()){
+		for(Field f:current.getFields()){
             System.out.println("---------------------------------->"+f.getName());
 			for(Entry<Class<BaseInjector>, BaseInjector> e: injectors.entrySet()){
 				e.getValue().loadField(c, f);

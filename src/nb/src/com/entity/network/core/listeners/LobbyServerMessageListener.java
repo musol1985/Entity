@@ -6,6 +6,7 @@ import com.entity.network.core.bean.NetWorld;
 import com.entity.network.core.items.LobbyServerScene;
 import com.entity.network.core.msg.MsgCreateWorld;
 import com.entity.network.core.msg.MsgOnNewPlayer;
+import com.entity.network.core.msg.MsgOnStartGame;
 import com.entity.network.core.msg.MsgOnWorldCreatedSelected;
 import com.entity.network.core.msg.MsgSelectWorld;
 import com.entity.network.core.msg.MsgStartGame;
@@ -14,6 +15,8 @@ import com.jme3.network.HostedConnection;
 public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServerScene>{
 
 	public void onNewPlayer(MsgOnNewPlayer msg, HostedConnection cnn)throws Exception{
+		System.out.println("On new player!"+msg.nickname);
+		
 		if(!getEntity().canPlayersJoin()){
 			cnn.close("No world selected");
 			return ;
@@ -25,7 +28,7 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 		if(w.isNewCreated()){
 			//TODO comprobar si deja mas joins, de momento cerrado
 			if(w.getPlayers().size()==0 && !w.getPlayerCreator().equals(msg.nickname)){
-				//El admin no esta todavía
+				//El admin no esta todavia
 				cnn.close("Admin not connected");
 			}else{
 				NetPlayer player=w.getNewPlayer();
@@ -62,6 +65,7 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 	}
 	
 	public void onCreateWorld(MsgCreateWorld msg, HostedConnection cnn)throws Exception{
+		System.out.println("oncreateWorld "+msg.world.getId());
 		if(getEntity().getWorlds().containsKey(msg.world.getId())){
 			cnn.send(new MsgOnWorldCreatedSelected(true, true));
 		}else{
@@ -73,6 +77,7 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 	}
 	
 	public void onSelectWorld(MsgSelectWorld msg, HostedConnection cnn)throws Exception{
+		System.out.println("onSelectWorld "+msg.world);
 		if(getEntity().getWorlds().containsKey(msg.world)){
 			cnn.send(new MsgOnWorldCreatedSelected(true, false));
 		}else{
@@ -82,7 +87,8 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 	}
 	
 	public void onStartGame(MsgStartGame msg, HostedConnection cnn)throws Exception{
-		
+		MsgOnStartGame start=new MsgOnStartGame(getEntity().getWorld().getId(), getEntity().getWorld().getTimestamp());
+		broadCast(cnn, start, false);
 	}
 	/*
 	public void onPlayerReady(MsgOnPlayerReady msg, HostedConnection cnn)throws Exception{

@@ -3,6 +3,8 @@ package com.entity.core;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
@@ -216,5 +218,26 @@ public abstract class EntityManager {
     
     public static boolean isAndroidGame(){
     	return game instanceof AndroidGame;
+    }
+    
+    public static boolean isAnnotationPresent(Class<? extends Annotation> a, Field f){
+    	return getAnnotation(a, f)!=null;
+    }
+    
+    public  static <T extends Annotation> T getAnnotation(Class<T> a, Field f){
+    	T res=f.getAnnotation(a);
+    	if(res!=null)
+    		return res;
+
+		try {
+			Field fSuper = f.getDeclaringClass().getSuperclass().getField(f.getName());
+			if(fSuper!=null){
+	    		return getAnnotation(a, fSuper);
+	    	}
+		} catch (NoSuchFieldException e) {
+			
+		}
+    	
+    	return null;
     }
 }	

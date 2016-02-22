@@ -4,12 +4,7 @@ import com.jme3.network.serializing.Serializable;
 
 @Serializable
 public class MsgStartGame extends BaseNetMessage {
-	public long timestamp;
 
-	public MsgStartGame(long timestamp) {
-		this.timestamp = timestamp;
-	}
-	
 	public MsgStartGame() {
 		
 	}

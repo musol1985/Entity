@@ -16,6 +16,7 @@ import com.jme3.network.HostedConnection;
 public class WorldsMessageListener extends NetworkMessageListener<WorldsScene>{
 	
 	public void onListWorlds(MsgListWorlds msg, HostedConnection cnn)throws Exception{
+		System.out.println("on list worlds");
 		//TODO show on GUI the worlds & create World(with options)
 		NetWorld world=null;
 		
@@ -27,7 +28,7 @@ public class WorldsMessageListener extends NetworkMessageListener<WorldsScene>{
 			new MsgCreateWorld(world).send();
 		}else{
 			//Seleccionamos el 0 por defecto
-			world=msg.worlds.get(0);
+			world=(NetWorld) msg.worlds.get(0);
 			new MsgSelectWorld(world.getId()).send();
 			
 		}

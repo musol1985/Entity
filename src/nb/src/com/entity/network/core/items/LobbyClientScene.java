@@ -34,11 +34,12 @@ public abstract class LobbyClientScene<T extends LobbyClientMessageListener, W e
 			System.out.println("Connecting to... "+getApp().getNet().getIp()+":"+port);
 			getApp().getNet().setNetwork(com.jme3.network.Network.connectToServer(opts.gameName(), opts.version(), EntityManager.getGame().getNet().getIp(), port));				
 		}
-		//El listener no se ha añadido en el worldScene
+		//El listener no se ha anyadido en el worldScene
 		getApp().getNet().getClient().addClientStateListener(this);
 	}
 
-	public void loadScene() throws Exception{
+	@Override
+	public void onLoadScene() throws Exception{
 		getApp().getNet().getClient().start();
 	}
 
@@ -62,7 +63,7 @@ public abstract class LobbyClientScene<T extends LobbyClientMessageListener, W e
 
 	
 	public void startGame(){
-		MsgStartGame msg=new MsgStartGame(System.currentTimeMillis());
+		MsgStartGame msg=new MsgStartGame();
 		msg.send();
 	}
 	

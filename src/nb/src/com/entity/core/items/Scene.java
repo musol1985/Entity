@@ -73,9 +73,9 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize(AppStateManager stateManager, Application app) {	
+                this.app=(T)app;
 		super.initialize(stateManager, app);
-		
-		this.app=(T)app;
+				
 		EntityManager.setCurrentScene(this);
 		getApp().getRootNode().attachChild(node);
 		
@@ -186,5 +186,8 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 		
 	}
 	
+	public void setApp(T app){
+		this.app=app;
+	}
     
 }
