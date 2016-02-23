@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.entity.anot.CamNode;
 import com.entity.anot.collections.ListEntity;
 import com.entity.anot.collections.MapEntity;
 import com.entity.anot.collections.MapEntryEntity;
@@ -18,7 +19,7 @@ public class MapInjector<T extends IEntity> extends ListBeanInjector<CollectionB
 
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
-		if(f.isAnnotationPresent(MapEntity.class)){
+		if(EntityManager.isAnnotationPresent(MapEntity.class,f)){
 			beans.add(new CollectionBean<MapEntity>(f, MapEntity.class));
 		}
 	}

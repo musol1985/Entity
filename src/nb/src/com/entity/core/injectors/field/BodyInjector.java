@@ -30,7 +30,7 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
-		if(f.isAnnotationPresent(PhysicsBodyComponent.class)){
+		if(EntityManager.isAnnotationPresent(PhysicsBodyComponent.class,f)){
 			beans.add(new RigidBodyBean(c, f));
 		}
 	}

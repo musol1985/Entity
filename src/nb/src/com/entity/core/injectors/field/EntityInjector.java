@@ -2,6 +2,7 @@ package com.entity.core.injectors.field;
 
 import java.lang.reflect.Field;
 
+import com.entity.anot.CamNode;
 import com.entity.anot.Entity;
 import com.entity.bean.AnnotationFieldBean;
 import com.entity.core.EntityManager;
@@ -14,7 +15,7 @@ public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<Annota
 
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
-		if(f.isAnnotationPresent(Entity.class)){
+		if(EntityManager.isAnnotationPresent(Entity.class,f)){
 			beans.add(new AnnotationFieldBean<Entity>(f, Entity.class));
 		}
 	}

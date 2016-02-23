@@ -8,6 +8,7 @@ import com.entity.anot.components.terrain.CustomHeightTerrain;
 import com.entity.anot.components.terrain.ImageHeightTerrain;
 import com.entity.anot.components.terrain.TerrainComponent;
 import com.entity.anot.modificators.ApplyToComponent;
+import com.entity.core.EntityManager;
 import com.entity.core.IEntity;
 import com.jme3.asset.AssetManager;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
@@ -28,22 +29,22 @@ public class TerrainBean extends AnnotationFieldBean<TerrainComponent>{
 		if("".equals(annot.getName()))
 			name=terrain.getName();
 		
-		if(terrain.isAnnotationPresent(ImageHeightTerrain.class)){
-			height=terrain.getAnnotation(ImageHeightTerrain.class).image();
+		if(EntityManager.isAnnotationPresent(ImageHeightTerrain.class, terrain)){
+			height=EntityManager.getAnnotation(ImageHeightTerrain.class,terrain).image();
 		}else{
 			for(Field f:clas.getFields()){
-				if(f.isAnnotationPresent(ApplyToComponent.class) && f.isAnnotationPresent(ImageHeightTerrain.class)){
-					if(f.getAnnotation(ApplyToComponent.class).component().equals(terrain.getName())){
+				if(EntityManager.isAnnotationPresent(ApplyToComponent.class,f) && EntityManager.isAnnotationPresent(ImageHeightTerrain.class,f)){
+					if(EntityManager.getAnnotation(ApplyToComponent.class,f).component().equals(terrain.getName())){
 						heightField=f;
-						height=f.getAnnotation(ImageHeightTerrain.class).image();
+						height=EntityManager.getAnnotation(ImageHeightTerrain.class,f).image();
 						break;
 					}
 				}
 			}
 			if(heightField==null){
 				for(Method m:clas.getDeclaredMethods()){
-					if(m.isAnnotationPresent(ApplyToComponent.class) && m.isAnnotationPresent(CustomHeightTerrain.class)){
-						if(m.getAnnotation(ApplyToComponent.class).component().equals(terrain.getName())){
+					if(EntityManager.isAnnotationPresent(ApplyToComponent.class,m) && EntityManager.isAnnotationPresent(CustomHeightTerrain.class,m)){
+						if(EntityManager.getAnnotation(ApplyToComponent.class,m).component().equals(terrain.getName())){
                             m.setAccessible(true);
 							heightMethod=m;
 							break;
@@ -72,7 +73,7 @@ public class TerrainBean extends AnnotationFieldBean<TerrainComponent>{
 	
 	public AbstractHeightMap getHeight(IEntity e, AssetManager asset)throws Exception{
 		if(isHeightField()){
-			if(heightField.isAnnotationPresent(ImageHeightTerrain.class)){
+			if(EntityManager.isAnnotationPresent(ImageHeightTerrain.class,heightField)){
 				return getImageHeight(heightField, e, asset);
 			}
 		}else if(isHeightMethod()){
@@ -87,7 +88,7 @@ public class TerrainBean extends AnnotationFieldBean<TerrainComponent>{
 	}
 	
 	private AbstractHeightMap getImageHeight(Field f, IEntity e, AssetManager asset)throws Exception{
-		ImageHeightTerrain anot=f.getAnnotation(ImageHeightTerrain.class);
+		ImageHeightTerrain anot=EntityManager.getAnnotation(ImageHeightTerrain.class,f);
 		
 		AbstractHeightMap heightmap = getImageHeight(anot.image(), asset);
 	    

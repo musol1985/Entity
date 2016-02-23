@@ -75,10 +75,10 @@ public class ModelBuilder extends Builder<Model>{
 	
 	@Override
 	public void loadField(Class<Model> cls, Field f) throws Exception {		
-		if(f.isAnnotationPresent(SubModelComponent.class)){
+		if(EntityManager.isAnnotationPresent(SubModelComponent.class,f)){
 			f.setAccessible(true);
 			subModels.add(f);
-		}else if(f.isAnnotationPresent(DAO.class)){
+		}else if(EntityManager.isAnnotationPresent(DAO.class,f)){
 			f.setAccessible(true);
 			daoFields.add(f);
 		}
@@ -88,15 +88,15 @@ public class ModelBuilder extends Builder<Model>{
 	@Override
 	public void loadMethod(Class<Model> c, Method m) throws Exception {
 		if(!mustEnhance){
-			if(m.isAnnotationPresent(RunGLThread.class)){
+			if(EntityManager.isAnnotationPresent(RunGLThread.class,m)){
 				mustEnhance=true;
-                        }else if(m.isAnnotationPresent(Instance.class)){
+                        }else if(EntityManager.isAnnotationPresent(Instance.class,m)){
                             mustEnhance=true;
-                        }else if(m.isAnnotationPresent(RayPick.class)){
+                        }else if(EntityManager.isAnnotationPresent(RayPick.class,m)){
                             mustEnhance=true;
                         }
 		}
-		if(m.isAnnotationPresent(OnCollision.class)){
+		if(EntityManager.isAnnotationPresent(OnCollision.class,m)){
 			collisions.put((Class<Model>) m.getParameterTypes()[0], m);
 		}	
 	}
@@ -125,7 +125,7 @@ public class ModelBuilder extends Builder<Model>{
 				n.setUserData(ENTITY_MODEL_REFERENCE, e);
 			
 			for(Field f:subModels){
-				SubModelComponent a=f.getAnnotation(SubModelComponent.class);
+				SubModelComponent a=EntityManager.getAnnotation(SubModelComponent.class,f);
 				Spatial s=n.getChild(a.name());
 				if(a.rayPickResponse() && s instanceof Geometry){
 					s.setUserData(ENTITY_GEOMETRY_REFERENCE, e);

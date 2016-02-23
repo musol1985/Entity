@@ -3,8 +3,10 @@ package com.entity.core.injectors.method;
 import java.lang.reflect.Method;
 
 import com.entity.adapters.ControlAdapter;
+import com.entity.anot.CamNode;
 import com.entity.anot.OnUpdate;
 import com.entity.bean.AnnotationMethodBean;
+import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
 import com.entity.core.injectors.ListBeanInjector;
@@ -13,7 +15,7 @@ public class UpdateInjector<T extends IEntity>  extends ListBeanInjector<Annotat
 
 	@Override
 	public void loadMethod(Class<T> c, Method m) throws Exception {
-		if(m.isAnnotationPresent(OnUpdate.class)){
+		if(EntityManager.isAnnotationPresent(OnUpdate.class,m)){
 			beans.add(new AnnotationMethodBean<OnUpdate>(m, OnUpdate.class));
 		}
 	}

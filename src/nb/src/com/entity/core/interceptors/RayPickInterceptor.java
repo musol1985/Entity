@@ -22,7 +22,7 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 public class RayPickInterceptor {
 
 	public static Object rayPick(Object obj, Method m, Object[] args, MethodProxy mp, BaseMethodInterceptor mi)throws Exception, Throwable{
-		RayPick anot=m.getAnnotation(RayPick.class);
+		RayPick anot=EntityManager.getAnnotation(RayPick.class,m);
 		
 		if(args.length>3)
 			throw new Exception("Only 3 args max allowed on RayPick method.");

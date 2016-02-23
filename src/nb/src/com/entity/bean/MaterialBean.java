@@ -32,9 +32,9 @@ public class MaterialBean {
 
 		if(isApply(material)){
 			if(isApplyToComponent(material)){				
-				component=clas.getField(material.getAnnotation(ApplyToComponent.class).component());
+				component=clas.getField(EntityManager.getAnnotation(ApplyToComponent.class,material).component());
 			}else{
-				geometry=material.getAnnotation(ApplyToGeometry.class).geometry();
+				geometry=EntityManager.getAnnotation(ApplyToGeometry.class,material).geometry();
 			}
 			apply=true;
 			if(anot.singleton()){
@@ -49,23 +49,23 @@ public class MaterialBean {
 			}
 		}else{
 			if(isGetFromComponent(material)){
-				component=clas.getField(material.getAnnotation(ApplyToComponent.class).component());
+				component=clas.getField(EntityManager.getAnnotation(ApplyToComponent.class,material).component());
 			}else{
-				geometry=material.getAnnotation(ApplyToGeometry.class).geometry();
+				geometry=EntityManager.getAnnotation(ApplyToGeometry.class,material).geometry();
 			}
 		}
 	}
 	
 	public static boolean isApplyToComponent(Field f){
-		return f.isAnnotationPresent(ApplyToGeometry.class);
+		return EntityManager.isAnnotationPresent(ApplyToGeometry.class,f);
 	}
 	
 	public static boolean isGetFromComponent(Field f){
-		return f.isAnnotationPresent(GetFromComponent.class);
+		return EntityManager.isAnnotationPresent(GetFromComponent.class,f);
 	}
 	
 	public static boolean isApply(Field f){
-		return f.isAnnotationPresent(ApplyToComponent.class) || f.isAnnotationPresent(ApplyToGeometry.class);
+		return EntityManager.isAnnotationPresent(ApplyToComponent.class,f) || EntityManager.isAnnotationPresent(ApplyToGeometry.class,f);
 	}
 	
 	public static boolean isComponent(Field f){

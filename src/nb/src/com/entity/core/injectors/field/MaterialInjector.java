@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 
 import com.entity.anot.components.model.MaterialComponent;
 import com.entity.bean.custom.MaterialBean;
+import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
 import com.entity.core.injectors.BaseInjector;
@@ -14,7 +15,7 @@ public class MaterialInjector<T extends IEntity>  extends ListBeanInjector<Mater
 	
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
-		if(f.isAnnotationPresent(MaterialComponent.class)){
+		if(EntityManager.isAnnotationPresent(MaterialComponent.class,f)){
 			beans.add(new MaterialBean(f, c, MaterialComponent.class));
 		}
 	}

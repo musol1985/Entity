@@ -70,11 +70,11 @@ public class SceneBuilder extends Builder<Scene>{
 	@Override
 	public void loadMethod(Class<Scene> c, Method m) throws Exception {
 		if(!mustEnhance){
-            if(m.isAnnotationPresent(RunGLThread.class)){
+            if(EntityManager.isAnnotationPresent(RunGLThread.class,m)){
                     mustEnhance=true;
-            }else if(m.isAnnotationPresent(Instance.class)){
+            }else if(EntityManager.isAnnotationPresent(Instance.class,m)){
                 mustEnhance=true;
-            }else if(m.isAnnotationPresent(RayPick.class)){
+            }else if(EntityManager.isAnnotationPresent(RayPick.class,m)){
                 mustEnhance=true;
             }
         }

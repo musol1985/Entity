@@ -2,6 +2,7 @@ package com.entity.core.injectors.field;
 
 import java.lang.reflect.Field;
 
+import com.entity.anot.CamNode;
 import com.entity.anot.components.terrain.TerrainComponent;
 import com.entity.bean.TerrainBean;
 import com.entity.core.EntityManager;
@@ -15,7 +16,7 @@ public class TerrainInjector<T extends IEntity>  extends ListBeanInjector<Terrai
 	
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
-		if(f.isAnnotationPresent(TerrainComponent.class)){
+		if(EntityManager.isAnnotationPresent(TerrainComponent.class,f)){
 			beans.add(new TerrainBean(f, c));
 		}
 	}

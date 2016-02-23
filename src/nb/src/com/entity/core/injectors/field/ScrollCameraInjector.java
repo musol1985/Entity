@@ -3,6 +3,7 @@ package com.entity.core.injectors.field;
 import java.lang.reflect.Field;
 
 import com.entity.adapters.ScrollCameraAdapter;
+import com.entity.anot.CamNode;
 import com.entity.anot.ScrollCameraNode;
 import com.entity.bean.AnnotationFieldBean;
 import com.entity.core.EntityManager;
@@ -14,7 +15,7 @@ public class ScrollCameraInjector<T extends IEntity>  extends ListBeanInjector<A
 	
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
-		if(f.isAnnotationPresent(ScrollCameraNode.class)){
+		if(EntityManager.isAnnotationPresent(ScrollCameraNode.class,f)){
 			beans.add(new AnnotationFieldBean<ScrollCameraNode>(f, ScrollCameraNode.class));
 		}
 	}

@@ -2,6 +2,7 @@ package com.entity.core.injectors.input;
 
 import java.lang.reflect.Method;
 
+import com.entity.anot.CamNode;
 import com.entity.anot.components.input.Input;
 import com.entity.bean.custom.InputBean;
 import com.entity.core.EntityManager;
@@ -16,7 +17,7 @@ public class InputInjector<T extends IEntity>  extends ListBeanInjector<InputBea
 
 	@Override
 	public void loadMethod(Class<T> c, Method m) throws Exception {
-		if(m.isAnnotationPresent(Input.class)){
+		if(EntityManager.isAnnotationPresent(Input.class,m)){
 			System.out.println("Input annotation detected : "+m.getParameterTypes().length+" "+m.getParameterTypes()[0]);
 			if(isDigitalMethod(m)){
 				beans.add(new InputBean(m, Input.class, true));

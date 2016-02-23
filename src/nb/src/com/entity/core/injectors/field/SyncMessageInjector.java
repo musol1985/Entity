@@ -2,6 +2,7 @@ package com.entity.core.injectors.field;
 
 import java.lang.reflect.Field;
 
+import com.entity.anot.CamNode;
 import com.entity.anot.network.NetSync;
 import com.entity.bean.AnnotationFieldBean;
 import com.entity.core.EntityGame;
@@ -18,7 +19,7 @@ public class SyncMessageInjector<T extends NetworkModel>  extends ListBeanInject
 	
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
-		if(f.isAnnotationPresent(NetSync.class)){
+		if(EntityManager.isAnnotationPresent(NetSync.class,f)){
 			beans.add(new AnnotationFieldBean<NetSync>(f, NetSync.class));
 		}
 	}

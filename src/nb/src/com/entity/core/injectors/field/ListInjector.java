@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.entity.anot.CamNode;
 import com.entity.anot.collections.ListEntity;
 import com.entity.anot.collections.ListItemEntity;
 import com.entity.bean.AnnotationFieldBean;
@@ -17,7 +18,7 @@ public class ListInjector<T extends IEntity> extends ListBeanInjector<Collection
 
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
-		if(f.isAnnotationPresent(ListEntity.class)){
+		if(EntityManager.isAnnotationPresent(ListEntity.class,f)){
 			beans.add(new CollectionBean<ListEntity>(f, ListEntity.class));
 		}
 	}

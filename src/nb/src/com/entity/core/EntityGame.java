@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.reflections.Reflections;
 
+import com.entity.anot.CamNode;
 import com.entity.anot.CustomInjectors;
 import com.entity.anot.Physics;
 import com.entity.anot.entities.SceneEntity;
@@ -70,8 +71,8 @@ public abstract class EntityGame extends SimpleApplication{
 			
 			Scene firstScene=null;
 			for(Field f:getClass().getDeclaredFields()){
-				if(f.isAnnotationPresent(SceneEntity.class)){
-					SceneEntity anot=f.getAnnotation(SceneEntity.class);
+				if(EntityManager.isAnnotationPresent(SceneEntity.class,f)){
+					SceneEntity anot=EntityManager.getAnnotation(SceneEntity.class,f);
 					
 					Scene scene=null;
 					if(anot.preLoad() || anot.first()){

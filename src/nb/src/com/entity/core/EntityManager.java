@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 
 import com.entity.anot.BuilderDefinition;
+import com.entity.anot.CamNode;
 import com.entity.anot.Instance;
 import com.entity.anot.RayPick;
 import com.entity.core.interceptors.BaseMethodInterceptor;
@@ -144,11 +145,11 @@ public abstract class EntityManager {
 
 		@Override
 		public Object interceptMethod(Object obj, Method method, MethodProxy mp, Object[] args) throws Throwable {
-			if(method.isAnnotationPresent(RayPick.class)){
+			if(EntityManager.isAnnotationPresent(RayPick.class,method)){
 				return RayPickInterceptor.rayPick(obj, method, args, mp, this);
-			}else if(method.isAnnotationPresent(Instance.class)){
+			}else if(EntityManager.isAnnotationPresent(Instance.class,method)){
                 IEntity instance=(IEntity)instanceGeneric(method.getParameterTypes()[0]);
-                Instance anot=method.getAnnotation(Instance.class);
+                Instance anot=EntityManager.getAnnotation(Instance.class,method);
                 if(Instance.THIS.equals(anot.attachTo())){
                     IEntity e=(IEntity)obj;
                     instance.attachToParent(e);
@@ -235,6 +236,27 @@ public abstract class EntityManager {
 	    		return getAnnotation(a, fSuper);
 	    	}
 		} catch (NoSuchFieldException e) {
+			
+		}
+    	
+    	return null;
+    }
+    
+    public static boolean isAnnotationPresent(Class<? extends Annotation> a, Method m){
+    	return getAnnotation(a, m)!=null;
+    }
+    
+    public  static <T extends Annotation> T getAnnotation(Class<T> a, Method m){
+    	T res=m.getAnnotation(a);
+    	if(res!=null)
+    		return res;
+
+		try {
+			Method fSuper = m.getDeclaringClass().getSuperclass().getMethod(m.getName(), m.getParameterTypes());
+			if(fSuper!=null){
+	    		return getAnnotation(a, fSuper);
+	    	}
+		} catch (NoSuchMethodException e) {
 			
 		}
     	

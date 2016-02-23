@@ -7,10 +7,9 @@ import java.util.List;
 
 import com.entity.anot.Inject;
 import com.entity.bean.SingletonBean;
-import com.entity.core.EntityGame;
+import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
-import com.entity.core.Injector;
 
 public class FieldInjector<T extends IEntity>  extends BaseInjector<T>{
 	private List<Field> fields=new ArrayList<Field>();
@@ -29,9 +28,9 @@ public class FieldInjector<T extends IEntity>  extends BaseInjector<T>{
 
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
-		if(f.isAnnotationPresent(Inject.class)){
+		if(EntityManager.isAnnotationPresent(Inject.class, f)){
 			f.setAccessible(true);
-			if(f.getAnnotation(Inject.class).singleton()){
+			if(EntityManager.getAnnotation(Inject.class,f).singleton()){
 				singletons.add(new SingletonBean(f.getType().newInstance(), f));
 			}else{
 				fields.add(f);

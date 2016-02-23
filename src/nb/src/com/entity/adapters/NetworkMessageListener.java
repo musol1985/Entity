@@ -3,6 +3,7 @@ package com.entity.adapters;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
+import com.entity.anot.CamNode;
 import com.entity.anot.network.Broadcast;
 import com.entity.core.EntityGame;
 import com.entity.core.EntityManager;
@@ -81,7 +82,7 @@ public class NetworkMessageListener<T extends IEntity> implements MessageListene
 
         	
         	Method m=methods.get(msg.getClass());
-        	Broadcast anot=m.getAnnotation(Broadcast.class);        	        	
+        	Broadcast anot=EntityManager.getAnnotation(Broadcast.class,m);        	        	
         	
         	Boolean res=false;
         	

@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 import com.entity.anot.effects.WaterEffect;
+import com.entity.core.EntityManager;
 import com.entity.core.IEntity;
 import com.jme3.post.Filter;
 import com.jme3.water.WaterFilter;
@@ -24,7 +25,7 @@ public class EffectBean {
 	}
 	
 	public static boolean isWaterEffect(Field f){
-		return f.isAnnotationPresent(WaterEffect.class);
+		return EntityManager.isAnnotationPresent(WaterEffect.class,f);
 	}
 	
 	public void instance(IEntity e)throws Exception{

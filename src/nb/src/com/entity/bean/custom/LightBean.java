@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import com.entity.anot.components.lights.AmbientLightComponent;
 import com.entity.anot.components.lights.DirectionalLightComponent;
 import com.entity.bean.AnnotationFieldBean;
+import com.entity.core.EntityManager;
 import com.entity.core.IEntity;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -24,11 +25,11 @@ public class LightBean extends AnnotationFieldBean{
 
 	
 	public static boolean isAmbientLight(Field f){
-		return f.isAnnotationPresent(AmbientLightComponent.class);
+		return EntityManager.isAnnotationPresent(AmbientLightComponent.class,f);
 	}
 	
 	public static boolean isDirectionalLight(Field f){
-		return f.isAnnotationPresent(DirectionalLightComponent.class);
+		return EntityManager.isAnnotationPresent(DirectionalLightComponent.class,f);
 	}
 	
 	public Light createLight(IEntity instance)throws Exception{
@@ -41,7 +42,7 @@ public class LightBean extends AnnotationFieldBean{
 	}
 	
 	private Light createAmbientLight(Field f, IEntity e)throws Exception{
-		AmbientLightComponent anot=f.getAnnotation(AmbientLightComponent.class);
+		AmbientLightComponent anot=EntityManager.getAnnotation(AmbientLightComponent.class,f);
 		Light l=new AmbientLight();
 		l.setColor(new ColorRGBA(anot.color()[0],anot.color()[1],anot.color()[2],anot.color()[3]));
 		l.getColor().mult(anot.mult());
@@ -52,7 +53,7 @@ public class LightBean extends AnnotationFieldBean{
 	}
 	
 	private Light createDirectionalLight(Field f, IEntity e)throws Exception{
-		DirectionalLightComponent anot=f.getAnnotation(DirectionalLightComponent.class);
+		DirectionalLightComponent anot=EntityManager.getAnnotation(DirectionalLightComponent.class,f);
 		Light l=new DirectionalLight();
 		l.setColor(new ColorRGBA(anot.color()[0],anot.color()[1],anot.color()[2],anot.color()[3]));
 		l.getColor().mult(anot.mult());

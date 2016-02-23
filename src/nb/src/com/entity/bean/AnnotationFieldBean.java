@@ -3,6 +3,8 @@ package com.entity.bean;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
+import com.entity.core.EntityManager;
+
 public class AnnotationFieldBean<T extends Annotation> {
 	protected Field f;
 	protected T annot;
@@ -10,7 +12,7 @@ public class AnnotationFieldBean<T extends Annotation> {
 	public AnnotationFieldBean(Field f, Class<T> annotationClass)throws Exception{
 		f.setAccessible(true);
 		this.f=f;
-		this.annot=f.getAnnotation(annotationClass);
+		this.annot=EntityManager.getAnnotation(annotationClass,f);
 	}
 
 	public Field getField() {

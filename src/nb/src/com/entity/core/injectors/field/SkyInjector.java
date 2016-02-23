@@ -2,6 +2,7 @@ package com.entity.core.injectors.field;
 
 import java.lang.reflect.Field;
 
+import com.entity.anot.CamNode;
 import com.entity.anot.Sky;
 import com.entity.bean.AnnotationFieldBean;
 import com.entity.core.EntityGame;
@@ -17,7 +18,7 @@ public class SkyInjector<T  extends IEntity> extends ListBeanInjector<Annotation
 	
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
-		if(f.isAnnotationPresent(Sky.class)){
+		if(EntityManager.isAnnotationPresent(Sky.class,f)){
 			beans.add(new AnnotationFieldBean<Sky>(f, Sky.class));
 		}
 	}

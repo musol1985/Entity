@@ -2,6 +2,7 @@ package com.entity.core.injectors.field;
 
 import java.lang.reflect.Field;
 
+import com.entity.anot.CamNode;
 import com.entity.anot.Persistable;
 import com.entity.bean.AnnotationFieldBean;
 import com.entity.core.EntityManager;
@@ -13,7 +14,7 @@ public class PersistableInjector<T  extends IEntity>  extends ListBeanInjector<A
 
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
-		if(f.isAnnotationPresent(Persistable.class)){
+		if(EntityManager.isAnnotationPresent(Persistable.class,f)){
 			beans.add(new AnnotationFieldBean<Persistable>(f, Persistable.class));
 		}
 	}

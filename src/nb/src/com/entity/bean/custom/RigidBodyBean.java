@@ -9,6 +9,7 @@ import com.entity.anot.components.model.collision.CompSphereCollisionShape;
 import com.entity.anot.components.model.collision.CustomCollisionShape;
 import com.entity.anot.modificators.ApplyToComponent;
 import com.entity.bean.AnnotationFieldBean;
+import com.entity.core.EntityManager;
 import com.entity.core.IEntity;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -22,24 +23,24 @@ public class RigidBodyBean extends AnnotationFieldBean<PhysicsBodyComponent>{
 	public RigidBodyBean(Class c, Field f)throws Exception{
 		super(f, PhysicsBodyComponent.class);
 
-		if(f.isAnnotationPresent(ApplyToComponent.class)){
-			componentField=c.getDeclaredField(f.getAnnotation(ApplyToComponent.class).component());
+		if(EntityManager.isAnnotationPresent(ApplyToComponent.class,f)){
+			componentField=c.getDeclaredField(EntityManager.getAnnotation(ApplyToComponent.class, f).component());
 			if(componentField==null)
-				throw new Exception("Can't apply RigidBodyControl to field "+f.getAnnotation(ApplyToComponent.class).component()+" in "+c.getName());
+				throw new Exception("Can't apply RigidBodyControl to field "+EntityManager.getAnnotation(ApplyToComponent.class,f).component()+" in "+c.getName());
 			componentField.setAccessible(true);
 		}
-		if(f.isAnnotationPresent(CustomCollisionShape.class)){
-			customShape=c.getDeclaredMethod(f.getAnnotation(CustomCollisionShape.class).methodName(), null);
+		if(EntityManager.isAnnotationPresent(CustomCollisionShape.class,f)){
+			customShape=c.getDeclaredMethod(EntityManager.getAnnotation(CustomCollisionShape.class,f).methodName(), null);
 		}
 	}
 	
 	public CollisionShape getCollisionShape(IEntity entity)throws Exception{
 		CollisionShape shape=null;
 		
-		if(f.isAnnotationPresent(CompSphereCollisionShape.class)){
-			shape=new SphereCollisionShape(f.getAnnotation(CompSphereCollisionShape.class).radius());
-		}else if(f.isAnnotationPresent(CompBoxCollisionShape.class)){
-			CompBoxCollisionShape anot=f.getAnnotation(CompBoxCollisionShape.class);
+		if(EntityManager.isAnnotationPresent(CompSphereCollisionShape.class,f)){
+			shape=new SphereCollisionShape(EntityManager.getAnnotation(CompSphereCollisionShape.class,f).radius());
+		}else if(EntityManager.isAnnotationPresent(CompBoxCollisionShape.class,f)){
+			CompBoxCollisionShape anot=EntityManager.getAnnotation(CompBoxCollisionShape.class,f);
 			
 			shape=new BoxCollisionShape(new Vector3f(anot.x(), anot.y(), anot.z()));
 			

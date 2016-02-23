@@ -14,7 +14,7 @@ public class CameraInjector<T extends IEntity> extends ListBeanInjector<Annotati
 
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
-		if(f.isAnnotationPresent(CamNode.class)){
+		if(EntityManager.isAnnotationPresent(CamNode.class,f)){
 			beans.add(new AnnotationFieldBean<CamNode>(f, CamNode.class));
 		}
 	}

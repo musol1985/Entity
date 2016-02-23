@@ -71,7 +71,7 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
 	
 	@Override
 	public void loadField(Class<T> cls, Field f) throws Exception {		
-		if(f.isAnnotationPresent(DAO.class)){
+		if(EntityManager.isAnnotationPresent(DAO.class,f)){
 			f.setAccessible(true);
 			daoFields.add(f);
 		}		
@@ -80,15 +80,15 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
 	@Override
 	public void loadMethod(Class<T> c, Method m) throws Exception {
 		if(!mustEnhance){
-			if(m.isAnnotationPresent(RunGLThread.class)){
+			if(EntityManager.isAnnotationPresent(RunGLThread.class,m)){
 				mustEnhance=true;
-                        }else if(m.isAnnotationPresent(Instance.class)){
+                        }else if(EntityManager.isAnnotationPresent(Instance.class,m)){
                             mustEnhance=true;
-                        }else if(m.isAnnotationPresent(RayPick.class)){
+                        }else if(EntityManager.isAnnotationPresent(RayPick.class,m)){
                             mustEnhance=true;
                         }
 		}
-		if(m.isAnnotationPresent(OnCollision.class)){
+		if(EntityManager.isAnnotationPresent(OnCollision.class,m)){
 			collisions.put((Class<Model>) m.getParameterTypes()[0], m);
 		}	
 	}
