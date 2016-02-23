@@ -6,12 +6,12 @@ import com.entity.network.core.bean.NetPlayer;
 import com.entity.network.core.bean.NetWorld;
 import com.entity.network.core.items.LobbyClientScene;
 import com.entity.network.core.msg.MsgOnNewPlayer;
-import com.jme3.network.HostedConnection;
+import com.jme3.network.MessageConnection;
 
 public class LobbyClientMessageListener extends NetworkMessageListener<LobbyClientScene>{
 	
 	
-	public void onNewPlayer(MsgOnNewPlayer msg, HostedConnection cnn)throws Exception{
+	public void onNewPlayer(MsgOnNewPlayer msg, MessageConnection cnn)throws Exception{
 		NetWorld w=EntityManager.getGame().getNet().getWorld();
 		NetPlayer player=w.getNetPlayerById(msg.nickname);
 		

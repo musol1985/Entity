@@ -4,12 +4,14 @@ import java.io.Serializable;
 
 import com.entity.network.core.msg.MsgOnNewPlayer;
 import com.jme3.network.HostedConnection;
+import com.jme3.network.MessageConnection;
 
+@com.jme3.network.serializing.Serializable
 public class NetPlayer<M extends MsgOnNewPlayer> implements Serializable{
 	private String id;
 	private boolean admin;
 	private transient boolean ready;
-	private transient HostedConnection cnn;
+	private transient MessageConnection cnn;
 	
 	public NetPlayer() {
 		
@@ -25,10 +27,10 @@ public class NetPlayer<M extends MsgOnNewPlayer> implements Serializable{
 	public void setId(String id) {
 		this.id = id;
 	}
-	public HostedConnection getCnn() {
+	public MessageConnection getCnn() {
 		return cnn;
 	}
-	public void setCnn(HostedConnection cnn) {
+	public void setCnn(MessageConnection cnn) {
 		this.cnn = cnn;
 	}
 	

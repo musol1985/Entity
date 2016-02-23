@@ -2,20 +2,17 @@ package com.entity.network.core.listeners;
 
 import com.entity.adapters.NetworkMessageListener;
 import com.entity.core.EntityManager;
-import com.entity.network.core.bean.NetPlayer;
 import com.entity.network.core.bean.NetWorld;
-import com.entity.network.core.items.LobbyClientScene;
 import com.entity.network.core.items.WorldsScene;
 import com.entity.network.core.msg.MsgCreateWorld;
 import com.entity.network.core.msg.MsgListWorlds;
-import com.entity.network.core.msg.MsgOnNewPlayer;
 import com.entity.network.core.msg.MsgOnWorldCreatedSelected;
 import com.entity.network.core.msg.MsgSelectWorld;
-import com.jme3.network.HostedConnection;
+import com.jme3.network.MessageConnection;
 
 public class WorldsMessageListener extends NetworkMessageListener<WorldsScene>{
 	
-	public void onListWorlds(MsgListWorlds msg, HostedConnection cnn)throws Exception{
+	public void onListWorlds(MsgListWorlds msg, MessageConnection cnn)throws Exception{
 		System.out.println("on list worlds");
 		//TODO show on GUI the worlds & create World(with options)
 		NetWorld world=null;
@@ -35,7 +32,7 @@ public class WorldsMessageListener extends NetworkMessageListener<WorldsScene>{
 		EntityManager.getGame().getNet().setWorld(world);
 	}
 	
-	public void onWorldCreatedOrSelected(MsgOnWorldCreatedSelected msg, HostedConnection cnn) throws Exception{
+	public void onWorldCreatedOrSelected(MsgOnWorldCreatedSelected msg, MessageConnection cnn) throws Exception{
 		if(msg.error){
 			EntityManager.getGame().getNet().setWorld(null);
 			if(msg.isCreated()){

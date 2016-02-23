@@ -22,7 +22,7 @@ public class NetworkMessageListener<T extends IEntity> implements MessageListene
 	private boolean ignoreSync;
 	
 	public NetworkMessageListener() {
-		 for(Method m:getClass().getDeclaredMethods()){
+		 for(Method m:getClass().getMethods()){
 			 Class<? extends Message> parMsg=getMessageParamMethod(m);
 			 if(parMsg!=null){
 				methods.put(parMsg, m);
@@ -58,7 +58,7 @@ public class NetworkMessageListener<T extends IEntity> implements MessageListene
 
 	private Class<? extends Message> getMessageParamMethod(Method m){
 		for(Class param:m.getParameterTypes()){
-			if(param.isAssignableFrom(Message.class))
+			if(Message.class.isAssignableFrom(param))
 				return param;
 		}
 		
@@ -82,6 +82,10 @@ public class NetworkMessageListener<T extends IEntity> implements MessageListene
 
         	
         	Method m=methods.get(msg.getClass());
+                if(m==null){
+                    System.out.println("WARN: No method implemented por message class "+msg+" in "+getClass().getName());
+                    return;
+                }
         	Broadcast anot=EntityManager.getAnnotation(Broadcast.class,m);        	        	
         	
         	Boolean res=false;
@@ -90,13 +94,13 @@ public class NetworkMessageListener<T extends IEntity> implements MessageListene
 	        	if(m.getParameterTypes().length==0){
 	        		res=(Boolean) m.invoke(this, new Object[0]);
 	        	}else if(m.getParameterTypes().length==1){
-	        		if(m.getParameterTypes()[0].isAssignableFrom(Message.class)){
+	        		if(Message.class.isAssignableFrom(m.getParameterTypes()[0])){
 	        			res=(Boolean) m.invoke(this, msg);
 	        		}else{
 	        			res=(Boolean) m.invoke(this, cnn);
 	        		}
 	        	}else if(m.getParameterTypes().length==2){
-	        		if(m.getParameterTypes()[0].isAssignableFrom(Message.class)){
+	        		if(Message.class.isAssignableFrom(m.getParameterTypes()[0])){
 	        			res=(Boolean) m.invoke(this, msg, cnn);
 	        		}else{
 	        			res=(Boolean) m.invoke(this, cnn, msg);

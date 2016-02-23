@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+@com.jme3.network.serializing.Serializable
 public class NetWorld<T extends NetPlayer> implements Serializable{
 	private HashMap<String, T> players;
 	private String id;
