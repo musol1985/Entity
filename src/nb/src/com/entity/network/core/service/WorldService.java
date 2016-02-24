@@ -76,8 +76,12 @@ public abstract class WorldService<T extends NetWorld<P, ? extends WorldService,
 		return true;
 	}
 	
+	/**
+	 * By default, the new cell can only be created by the server
+	 * @return
+	 */
 	public boolean canCreateCell(){
-		return true;
+		return EntityManager.getGame().getNet().isNetServerGame();
 	}
 	
 	/**
