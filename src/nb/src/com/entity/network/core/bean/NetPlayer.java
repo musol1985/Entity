@@ -2,12 +2,11 @@ package com.entity.network.core.bean;
 
 import java.io.Serializable;
 
-import com.entity.network.core.msg.MsgOnNewPlayer;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.MessageConnection;
 
 @com.jme3.network.serializing.Serializable
-public class NetPlayer<M extends MsgOnNewPlayer> implements Serializable{
+public class NetPlayer implements Serializable{
 	private String id;
 	private boolean admin;
 	private transient boolean ready;

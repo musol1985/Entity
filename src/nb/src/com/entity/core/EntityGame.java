@@ -3,6 +3,7 @@ package com.entity.core;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -62,7 +63,12 @@ public abstract class EntityGame extends SimpleApplication{
 			
 			Network network=getClass().getAnnotation(Network.class);
 			if(network!=null){
-				for(String pack:network.messagesPackage()){
+				List<String> packages=Arrays.asList(network.messagesPackage());
+				
+				packages.add("com.entity.network.core.msg");
+				packages.add("com.entity.network.core.bean");
+				
+				for(String pack:packages){
 					 Reflections reflections = new Reflections(pack);
 		
 					 Set<Class<?>> messages=reflections.getTypesAnnotatedWith(Serializable.class);
@@ -140,7 +146,7 @@ public abstract class EntityGame extends SimpleApplication{
 	
 
 	
-	protected void setScene(Scene scene){
+	private void setScene(Scene scene){
 		try {
 			Scene current=getStateManager().getState(Scene.class);
 			if(current!=null)
@@ -173,7 +179,7 @@ public abstract class EntityGame extends SimpleApplication{
 	}
 
 	
-	public <T extends Scene> T showScene(T scene)throws Exception{
+	public <T extends Scene> T showScene(T scene, Object...params)throws Exception{
 		if(!scene.isPreLoaded()){
 			FieldSceneBean bean=scene.getProxy();
 			scene=(T) EntityManager.instanceGeneric(bean.getF().getType());
@@ -182,6 +188,10 @@ public abstract class EntityGame extends SimpleApplication{
 			
 			if(bean.getAnot().singleton())
 				scene.setProxy(bean);
+		}
+		if(params!=null && params.length>0){
+			log.fine("Scene set params: "+params.length);
+			scene.setParams(params);
 		}
 		
 		setScene(scene);

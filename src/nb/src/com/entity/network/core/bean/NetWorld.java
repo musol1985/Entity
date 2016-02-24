@@ -2,10 +2,21 @@ package com.entity.network.core.bean;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Map.Entry;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import com.entity.network.core.service.WorldService;
+import com.entity.utils.Vector2;
 
 @com.jme3.network.serializing.Serializable
-public class NetWorld<T extends NetPlayer> implements Serializable{
+public abstract class NetWorld<T extends NetPlayer, S extends WorldService, C extends NetWorldCell> implements Serializable{
+	protected static final Logger log = Logger.getLogger(NetWorld.class.getName());
+	
+	public static final int CELLS_SIZE = 10;
+	private static float HASH_TABLE_LOAD_FACTOR=0.75f;
+	private static int HASH_TABLE_CAPACITY = (int) Math.ceil(CELLS_SIZE / HASH_TABLE_LOAD_FACTOR) + 1;
+	
 	private HashMap<String, T> players;
 	private String id;
 	private long timestamp;
@@ -13,6 +24,31 @@ public class NetWorld<T extends NetPlayer> implements Serializable{
 	private transient boolean created;
 	private String playerCreator;
 	
+	private transient S service;
+	private LinkedHashMap<Vector2, C> cells;
+	
+	public NetWorld(HashMap<String, T> players, String id, long timestamp) {
+		this();
+		this.players = players;
+		this.id = id;
+		this.timestamp=timestamp;
+	}
+	
+	public NetWorld() {
+		cells=new LinkedHashMap<Vector2, C>(HASH_TABLE_CAPACITY, HASH_TABLE_LOAD_FACTOR, true) {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<Vector2, C> eldest) {
+                boolean pop=this.size() > CELLS_SIZE;
+                if(pop){
+                	service.onCellPopCache(eldest.getValue());                    
+                }
+                return pop;
+            }
+        };
+		service=initWorldService();		
+	}
+	
+
 	public HashMap<String, T> getPlayers() {
 		return players;
 	}
@@ -33,27 +69,18 @@ public class NetWorld<T extends NetPlayer> implements Serializable{
 	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
-	public NetWorld(HashMap<String, T> players, String id, long timestamp) {
-		this.players = players;
-		this.id = id;
-		this.timestamp=timestamp;
-	}
-	public NetWorld() {
-
+	
+	public abstract S initWorldService();
+	
+	public S getService(){
+		return service;
 	}
 	
 	public T getNetPlayerById(String id){
 		return players.get(id);
 	}
 	
-	public boolean isAllPlayersReady(){
-		for(Entry<String,T> p:players.entrySet()){
-			if(!p.getValue().isReady())
-				return false;
-		}
-			
-		return true;
-	}
+	
 	public int getMaxPlayers() {
 		return maxPlayers;
 	}
@@ -67,14 +94,18 @@ public class NetWorld<T extends NetPlayer> implements Serializable{
 		this.created = created;
 	}
 	
-	public NetPlayer getNewPlayer(){
-		return new NetPlayer();
-	}
+	
 	public String getPlayerCreator() {
 		return playerCreator;
 	}
 	public void setPlayerCreator(String playerCreator) {
 		this.playerCreator = playerCreator;
+	}
+	public LinkedHashMap<Vector2, C> getCells() {
+		return cells;
+	}
+	public String getCachePath(){
+		return "cache/"+id+"/";
 	}
 	
 }

@@ -16,7 +16,7 @@ import com.jme3.network.HostedConnection;
 public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServerScene>{
 
 	public void onNewPlayer(MsgOnNewPlayer msg, HostedConnection cnn)throws Exception{
-		log.fine("On new player "+msg.nickname+"("+cnn.getId()+"/"+cnn.getAddress()+")");
+		log.fine("On new player "+msg.player.getId()+"("+cnn.getId()+"/"+cnn.getAddress()+")");
 		
 		if(!getEntity().canPlayersJoin()){
 			log.warning("No world selected");
@@ -30,44 +30,42 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 		if(w.isNewCreated()){
 			log.fine("The world is new");
 			//TODO comprobar si deja mas joins, de momento cerrado
-			if(w.getPlayers().size()==0 && !w.getPlayerCreator().equals(msg.nickname)){
+			if(w.getPlayers().size()==0 && !w.getPlayerCreator().equals(msg.player.getId())){
 				log.warning("Admin is not connected. Sending the match is not ready");
 				//El admin no esta todavia
 				cnn.close("The match is not ready");
 			}else{
-				NetPlayer player=w.getNewPlayer();
+				NetPlayer player=w.getService().createNewPlayer(msg.player.getId());
 				player.setCnn(cnn);
-				player.setId(msg.nickname);	
-				if(w.getPlayerCreator().equals(msg.nickname)){
+
+				if(w.getPlayerCreator().equals(player.getId())){
 					player.setAdmin(true);
-					msg.admin=true;
-					log.fine("Player "+msg.nickname+" is owner of the world");
+					log.fine("Player "+msg.player.getId()+" is owner of the world");
 				}
 				
-				w.getPlayers().put(msg.nickname, player);
+				w.getPlayers().put(player.getId(), player);
 				
 				broadCast(cnn, msg, false);
 				getEntity().onPlayerJoined(player);
 			}
 		}else{
 			log.fine("The world is loaded");
-			NetPlayer player=w.getNetPlayerById(msg.nickname);
+			NetPlayer player=w.getNetPlayerById(msg.player.getId());
 			if(player!=null){
 				if(player.isConnected()){
-					cnn.close("Player with nickname "+msg.nickname+" already joined to game.");
-					log.warning("Player with nickname "+msg.nickname+" already joined to game.");
+					cnn.close("Player with nickname "+player.getId()+" already joined to game.");
+					log.warning("Player with nickname "+player.getId()+" already joined to game.");
 				}else{
 					player.setCnn(cnn);
-					if(w.getPlayerCreator().equals(msg.nickname)){
+					if(w.getPlayerCreator().equals(player.getId())){
 						player.setAdmin(true);
-						msg.admin=true;
 					}
 					broadCast(cnn, msg, false);
 					getEntity().onPlayerJoined(player);
 				}
 			}else{
-				cnn.close("Player with nickname "+msg.nickname+" not in the original game.");
-				log.warning("Player with nickname "+msg.nickname+" not in the original game.");
+				cnn.close("Player with nickname "+msg.player.getId()+" not in the original game.");
+				log.warning("Player with nickname "+msg.player.getId()+" not in the original game.");
 			}
 		}
 	}

@@ -42,6 +42,10 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 		
 	}
 	
+	public void setParams(Object...params){
+		
+	}
+	
 	public void setProxy(FieldSceneBean proxy){
 		this.proxy=proxy;
 	}

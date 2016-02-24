@@ -39,11 +39,7 @@ public abstract class WorldsScene<T extends WorldsMessageListener, W extends Net
 	}
 	
 	
-	public W createWorld(){
-		W world=(W) new NetWorld<NetPlayer>(new HashMap(), "test", System.currentTimeMillis());
-		log.warning("The method createWorld has not been overriden. Creating test world.");
-		return world;
-	}
+	public abstract W createWorld();
 	
 	public void showWorldsList(MsgListWorlds<W> msg){
 		//TODO show on GUI the worlds & create World(with options)		

@@ -51,7 +51,9 @@ public abstract class LobbyClientScene<T extends LobbyClientMessageListener, W e
 
 	@Override
 	public void clientConnected(Client client) {
-		client.send(new MsgOnNewPlayer(playerName, getApp().getNet().isWorldSelected()));
+		NetPlayer playerTmp=new NetPlayer();
+		playerTmp.setId(playerName);
+		client.send(new MsgOnNewPlayer(playerTmp));
 	}
 
 	@Override

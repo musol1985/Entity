@@ -12,21 +12,18 @@ public class LobbyClientMessageListener extends NetworkMessageListener<LobbyClie
 	
 	
 	public void onNewPlayer(MsgOnNewPlayer msg, MessageConnection cnn)throws Exception{
-		log.fine("OnNewPlayer "+msg.nickname);
+		log.fine("OnNewPlayer "+msg.player.getId());
 		NetWorld w=EntityManager.getGame().getNet().getWorld();
-		NetPlayer player=w.getNetPlayerById(msg.nickname);
+		NetPlayer player=msg.player;
 		
-		if(player!=null){
-			if(!player.isConnected()){
-				player.setCnn(cnn);
-			}
-		}else{
-			player=w.getNewPlayer();
+		if(!player.isConnected()){
 			player.setCnn(cnn);
-			player.setId(msg.nickname);
-			player.setAdmin(msg.admin);
-			w.getPlayers().put(msg.nickname, player);
 		}
+		
+		if(w.getNetPlayerById(player.getId())==null){
+			w.getPlayers().put(msg.player.getId(), player);
+		}
+
 		
 		if(getEntity().getPlayerName().equals(player.getId()))
 			EntityManager.getGame().getNet().setPlayer(player);
