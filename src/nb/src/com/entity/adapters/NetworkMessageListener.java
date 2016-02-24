@@ -88,6 +88,7 @@ public class NetworkMessageListener<T extends IEntity> implements MessageListene
                     log.warning("No method implemented por message class "+msg+" in "+getClass().getName());
                     return;
                 }
+                log.warning(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>On Net Message "+msg.getClass().getName());
         	Broadcast anot=EntityManager.getAnnotation(Broadcast.class,m);        	        	
         	
         	Boolean res=false;

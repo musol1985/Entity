@@ -35,18 +35,23 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 				//El admin no esta todavia
 				cnn.close("The match is not ready");
 			}else{
-				NetPlayer player=w.getService().createNewPlayer(msg.player.getId());
-				player.setCnn(cnn);
+				if(w.getNetPlayerById(msg.player.getId())==null){
+					NetPlayer player=w.getService().createNewPlayer(msg.player.getId());
+					player.setCnn(cnn);
 
-				if(w.getPlayerCreator().equals(player.getId())){
-					player.setAdmin(true);
-					log.info("Player "+msg.player.getId()+" is owner of the world");
-				}
-				
-				w.getPlayers().put(player.getId(), player);
-				
-				broadCast(cnn, msg, false);
-				getEntity().onPlayerJoined(player);
+					if(w.getPlayerCreator().equals(player.getId())){
+						player.setAdmin(true);
+						log.info("Player "+msg.player.getId()+" is owner of the world");
+					}
+					
+					w.getPlayers().put(player.getId(), player);
+					
+					broadCast(cnn, msg, false);
+					getEntity().onPlayerJoined(player);
+				}else{
+					cnn.close("Player with nickname "+msg.player.getId()+" already joined to game.");
+					log.warning("Player with nickname "+msg.player.getId()+" already joined to game.");
+				}			
 			}
 		}else{
 			log.info("The world is loaded");
@@ -82,7 +87,7 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 			getEntity().setWorld(msg.world);
 			cnn.send(new MsgOnWorldCreatedSelected(false, true));
 			
-			EntityManager.savePersistableFieldName(getEntity(), "worlds");
+			//EntityManager.savePersistableFieldName(getEntity(), "worlds");
 		}
 	}
 	
@@ -91,8 +96,10 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 		if(!getEntity().getWorlds().containsKey(msg.world)){
 			log.warning("World "+msg.world+" doesn't exists");
 			cnn.send(new MsgOnWorldCreatedSelected(true, false));
-		}else{			
-			getEntity().setWorld((NetWorld) getEntity().getWorlds().get(msg.world));
+		}else{						
+			NetWorld w=(NetWorld) getEntity().getWorlds().get(msg.world);
+			w.init();
+			getEntity().setWorld(w);
 			cnn.send(new MsgOnWorldCreatedSelected(false, false));
 			log.info("World "+msg.world+" selected");
 		}

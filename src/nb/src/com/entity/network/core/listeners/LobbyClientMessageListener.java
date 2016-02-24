@@ -20,7 +20,7 @@ public class LobbyClientMessageListener extends NetworkMessageListener<LobbyClie
 			player.setCnn(cnn);
 		}
 		
-		if(w.getNetPlayerById(player.getId())==null){
+		if(w!=null && w.getNetPlayerById(player.getId())==null){
 			w.getPlayers().put(msg.player.getId(), player);
 		}
 

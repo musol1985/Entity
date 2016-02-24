@@ -7,6 +7,7 @@ import com.entity.network.core.bean.NetPlayer;
 import com.entity.network.core.bean.NetWorld;
 import com.jme3.network.Client;
 import com.jme3.network.Server;
+import com.jme3.network.service.serializer.ServerSerializerRegistrationsService;
 
 public class NetGame{
 	private Client netClient;
@@ -55,6 +56,7 @@ public class NetGame{
 		if(isNetworkGame()){
 			if(net instanceof Server){
 				netServer=(Server)net;
+				netServer.getServices().removeService(netServer.getServices().getService(ServerSerializerRegistrationsService.class));
 			}else{
 				netClient=(Client)net;
 			}

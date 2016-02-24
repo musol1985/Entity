@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 import org.reflections.Reflections;
 
-import com.entity.anot.CamNode;
 import com.entity.anot.CustomInjectors;
 import com.entity.anot.Physics;
 import com.entity.anot.entities.SceneEntity;
@@ -69,6 +68,7 @@ public abstract class EntityGame extends SimpleApplication{
 				packages.add("com.entity.network.core.bean");
 				
 				log.info("++Finding @Serializable in "+packages.size()+" packages");
+				List<Class> classes=new ArrayList<Class>();
 				
 				for(String pack:packages){
 					 Reflections reflections = new Reflections(pack);
@@ -76,11 +76,23 @@ public abstract class EntityGame extends SimpleApplication{
 					 Set<Class<?>> messages=reflections.getTypesAnnotatedWith(Serializable.class);
 					 log.info("++Found "+messages.size()+" @Serializable in package "+pack);
 					 
-					 for(Class<?> message:messages){
-						 log.info("++++++Registering network class "+message.getName());
-						 Serializer.registerClass(message);
-					 }
+					 classes.addAll(messages);
+					 					 
 				}
+				Collections.sort(classes, new Comparator<Class>(){
+					@Override
+					public int compare(Class arg0, Class arg1) {
+						return arg0.getName().compareTo(arg1.getName());
+					}
+					
+				});
+				
+				log.info("++++++Registering "+classes.size()+" classes");
+				for(Class<?> message:classes){
+					 log.info("++++++Registering network class "+message.getName());
+					 Serializer.registerClass(message);
+				 }
+				
 				net=new NetGame(network);
 			}
 			

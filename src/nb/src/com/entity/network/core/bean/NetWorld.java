@@ -36,6 +36,10 @@ public abstract class NetWorld<T extends NetPlayer, S extends WorldService, C ex
 	}
 	
 	public NetWorld() {
+		init();	
+	}
+	
+	public void init(){
 		cells=new LinkedHashMap<Vector2, C>(HASH_TABLE_CAPACITY, HASH_TABLE_LOAD_FACTOR, true) {
             @Override
             protected boolean removeEldestEntry(Map.Entry<Vector2, C> eldest) {
@@ -46,7 +50,7 @@ public abstract class NetWorld<T extends NetPlayer, S extends WorldService, C ex
                 return pop;
             }
 		};
-		service=initWorldService();		
+		service=initWorldService();	
 	}
 	
 
