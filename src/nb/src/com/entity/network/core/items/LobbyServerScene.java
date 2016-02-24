@@ -29,27 +29,32 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, W e
 
 	@Override
 	public void connectionAdded(Server server, HostedConnection cnn) {
-		System.out.println("Connection added!");
+		log.info("Client "+cnn.getId()+" connected with IP "+cnn.getAddress());		
 		if(server.getConnections().size()>getMaxPlayers()){
+			log.info("Client "+cnn.getId()+" cannot be joined. MaxPlayers");		
 			cnn.close("Max players");
 		}else if(server.getConnections().size()>1 && !isWorldSelected()){
-			cnn.close("El admin no ha seleccionado mundo todavia");
+			log.info("Owner hasn't selected a world.");	
+			cnn.close("Owner hasn't selected a world.");
 		}else if(server.getConnections().size()==1){
-			//Is admin, send worlds list
+			log.info("Client "+cnn.getId()+" is owner. Sending the world list: "+worlds.size());	
 			cnn.send(new MsgListWorlds(worlds));
 		}
 	}
 
 	@Override
-	public void connectionRemoved(Server arg0, HostedConnection arg1) {
-		
+	public void connectionRemoved(Server server, HostedConnection arg1) {
+		if(server.getConnections().size()==0){
+			log.info("Owner has exited, setting world to null");	
+			setWorld(null);
+		}
 	}
 
 	@Override
 	public void onPreInject(IBuilder builder) throws Exception {
 		Network opts=EntityManager.getGame().getNet().getNetworkOptions();
 		int port=EntityManager.getGame().getNet().getPort();
-		System.out.println("Listening on... "+port);
+		log.info("Listening on... "+port);
 		EntityManager.getGame().getNet().setNetwork(com.jme3.network.Network.createServer(opts.gameName(), opts.version(), port, port));
 		EntityManager.getGame().getNet().getServer().addConnectionListener(this);
 		
@@ -57,8 +62,12 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, W e
 
 	@Override
 	public void onLoadScene() throws Exception{
-		System.out.println("Starting server... ");
-		EntityManager.getGame().getNet().getServer().start();
+		if(!EntityManager.getGame().getNet().getServer().isRunning()){
+			log.info("Starting server... ");
+			EntityManager.getGame().getNet().getServer().start();
+		}else{
+			log.info("Server already running... ");	
+		}
 	}
 	
 	private int getMaxPlayers(){

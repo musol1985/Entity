@@ -2,7 +2,6 @@ package com.entity.network.core.msg;
 
 import com.entity.core.EntityManager;
 import com.jme3.network.AbstractMessage;
-import com.jme3.network.serializing.Serializable;
 
 
 public abstract class BaseNetMessage extends AbstractMessage {

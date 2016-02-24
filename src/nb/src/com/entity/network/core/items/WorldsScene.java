@@ -14,21 +14,22 @@ import com.entity.core.items.Scene;
 import com.entity.network.core.bean.NetPlayer;
 import com.entity.network.core.bean.NetWorld;
 import com.entity.network.core.listeners.WorldsMessageListener;
-import com.jme3.network.Client;
-import com.jme3.network.ClientStateListener;
+import com.entity.network.core.msg.MsgCreateWorld;
+import com.entity.network.core.msg.MsgListWorlds;
+import com.entity.network.core.msg.MsgSelectWorld;
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
 public abstract class WorldsScene<T extends WorldsMessageListener, W extends NetWorld, P extends NetPlayer, G extends EntityGame> extends Scene<G> {
 	@MessageListener
 	public T listener;
-	@Persistable(fileName="player")
+	@Persistable(fileName="player", newOnNull=true, onNewCallback="initPlayerName", onNewSave=true)
 	public String playerName;
 
 	@Override
 	public void onPreInject(IBuilder builder) throws Exception {
 		Network opts=EntityManager.getGame().getNet().getNetworkOptions();
 		int port=EntityManager.getGame().getNet().getPort();
-		System.out.println("Connecting to... "+EntityManager.getGame().getNet().getIp()+":"+port);		
+		log.fine("Connecting to... "+EntityManager.getGame().getNet().getIp()+":"+port);		
 		EntityManager.getGame().getNet().setNetwork(com.jme3.network.Network.connectToServer(opts.gameName(), opts.version(), EntityManager.getGame().getNet().getIp(), port));		
 	}
 
@@ -38,15 +39,44 @@ public abstract class WorldsScene<T extends WorldsMessageListener, W extends Net
 	}
 	
 	
-	public NetWorld createWorld(){
-		NetWorld world=new NetWorld<NetPlayer>(new HashMap(), "pruebas", System.currentTimeMillis());
+	public W createWorld(){
+		W world=(W) new NetWorld<NetPlayer>(new HashMap(), "test", System.currentTimeMillis());
+		log.warning("The method createWorld has not been overriden. Creating test world.");
 		return world;
+	}
+	
+	public void showWorldsList(MsgListWorlds<W> msg){
+		//TODO show on GUI the worlds & create World(with options)		
+		log.warning("You must override WorldsScene.showWorldsList!!");
+		log.warning("Creating or selecting world 0 automatically");
+		W world=null;
+		
+		if(msg.worlds.size()==0){
+			log.fine("No worlds created");
+			//Creamos a world
+			world=createWorld();
+			world.setCreated(true);
+			world.setPlayerCreator(getPlayerName());
+			new MsgCreateWorld(world).send();
+		}else{
+			//Select the first world
+			log.fine("Selecting first world "+msg.worlds.get(0).getId()+" created by "+msg.worlds.get(0).getPlayerCreator());
+			world=msg.worlds.get(0);
+			new MsgSelectWorld(world.getId()).send();			
+		}		
+		EntityManager.getGame().getNet().setWorld(world);
+		//Select the first world
+		log.fine("World "+world.getId()+" selected");
 	}
 	
 	public abstract void showLobby();
 		
 	public String getPlayerName(){
 		return playerName;
+	}
+	
+	public String initPlayerName(){
+		return "Player1";
 	}
 	
 }

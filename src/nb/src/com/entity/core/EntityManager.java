@@ -2,15 +2,22 @@ package com.entity.core;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodProxy;
 
 import com.entity.anot.BuilderDefinition;
-import com.entity.anot.CamNode;
 import com.entity.anot.Instance;
 import com.entity.anot.RayPick;
 import com.entity.core.interceptors.BaseMethodInterceptor;
@@ -22,10 +29,8 @@ import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodProxy;
-
 public abstract class EntityManager {
+	protected static final Logger log = Logger.getLogger(EntityManager.class.getName());
 	
 	private static HashMap<Class, IBuilder> builders=new HashMap<Class, IBuilder>(); 
 	private static Scene<? extends EntityGame> currentScene;
@@ -65,9 +70,9 @@ public abstract class EntityManager {
 	
 	private static IBuilder build(Class<IBuilder> builderClass, Class entityClass)throws Exception{
 		IBuilder builder=builderClass.newInstance();
-		System.out.println("Builder "+builder.getClass().getName()+" pre created for entity "+entityClass.getName());
+		log.fine("Builder "+builder.getClass().getName()+" pre created for entity "+entityClass.getName());
 		builder.onCreate(entityClass);
-		System.out.println("Builder "+builder.getClass().getName()+" created for entity "+entityClass.getName());
+		log.fine("Builder "+builder.getClass().getName()+" created for entity "+entityClass.getName());
 		return builder;
 	}
 
@@ -113,11 +118,11 @@ public abstract class EntityManager {
             return (T) getBuilder(cls).getInjector(injectorClass);
 	}
         
-        public static Class getClass(Class cls)throws Exception{
-            /*if(cls.getName().contains("CGLIB"))
-                return Class.forName((cls).getGenericSuperclass().getTypeName());*/
-            return cls;
-        }
+    public static Class getClass(Class cls)throws Exception{
+        /*if(cls.getName().contains("CGLIB"))
+            return Class.forName((cls).getGenericSuperclass().getTypeName());*/
+        return cls;
+    }
 	
 	@SuppressWarnings("unchecked")
 	public static Object instanceGeneric(Class c){
@@ -133,7 +138,7 @@ public abstract class EntityManager {
 			}else{
 				res=(IEntity) c.newInstance();
 			}
-			System.out.println("onInstance "+res.getClass().getName()+" using builder "+template.getClass().getName());
+			log.fine("onInstance "+res.getClass().getName()+" using builder "+template.getClass().getName());
 			template.onInstance(res, template);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -177,27 +182,6 @@ public abstract class EntityManager {
 		return modelCustomInjectors;
 	}
 
-    /*public void save(Object obj){
-        if(changed){
-            changed=false;
-            try{
-                FileOutputStream fileOut = new FileOutputStream(getFileName());
-                GZIPOutputStream gz = new GZIPOutputStream(fileOut);
-                ObjectOutputStream out = new ObjectOutputStream(gz);
-                out.writeObject(this);
-                out.close();
-                gz.close();
-                fileOut.close();
-                System.out.println("Serialized data "+getFileName());
-                if(this instanceof CeldaDAO){
-                    System.out.println("Estaticos de la celda: "+id+" "+((CeldaDAO)this).estaticos.size());
-                }
-             }catch(IOException i){
-                 i.printStackTrace();
-             }
-        }
-    }*/
-    
     
     public static <T> T loadPersistable(String file){
         T obj=null;
@@ -210,11 +194,31 @@ public abstract class EntityManager {
                obj = (T) in.readObject();
                in.close();
                fileIn.close();
+               log.fine("Load persistable file :"+file);
             }catch(Exception i){
-               i.printStackTrace();
+            	log.warning("Exception on loading persistable file "+file+" :"+ i.getMessage());
+            	i.printStackTrace();
             }
         }
         return obj;
+    }
+    
+    public static boolean savePersistable(String file, Object obj){
+    	try{
+            FileOutputStream fileOut = new FileOutputStream(file);
+            GZIPOutputStream gz = new GZIPOutputStream(fileOut);
+            ObjectOutputStream out = new ObjectOutputStream(gz);
+            out.writeObject(obj);
+            out.close();
+            gz.close();
+            fileOut.close();
+            log.fine("Serialized data "+file);
+            return true;
+         }catch(IOException i){
+        	 log.warning("Exception on saving persistable file "+file+" :"+ i.getMessage());
+             i.printStackTrace();
+         }
+    	return false;
     }
     
     public static boolean isAndroidGame(){

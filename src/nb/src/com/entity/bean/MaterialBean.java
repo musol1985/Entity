@@ -1,7 +1,9 @@
 package com.entity.bean;
 
 import java.lang.reflect.Field;
+import java.util.logging.Logger;
 
+import com.entity.adapters.NetworkMessageListener;
 import com.entity.anot.components.model.MaterialComponent;
 import com.entity.anot.modificators.ApplyToComponent;
 import com.entity.anot.modificators.ApplyToGeometry;
@@ -14,6 +16,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 
 public class MaterialBean {
+	private static final Logger log = Logger.getLogger(MaterialBean.class.getName());
+	
 	private boolean apply;
 	
 	private Field material;
@@ -41,7 +45,8 @@ public class MaterialBean {
 				mSingleton=EntityManager.getAssetManager().loadMaterial(anot.asset());
 			}
 		}else if(isComponent(material)){
-			System.out.println("Material component!!!"+material.getName());
+			
+			log.fine("Material component!!!"+material.getName());
 			component=material;
 			apply=true;
 			if(anot.singleton()){
@@ -69,7 +74,7 @@ public class MaterialBean {
 	}
 	
 	public static boolean isComponent(Field f){
-		System.out.println(f.getDeclaringClass()+" "+f.getType());
+		log.fine(f.getDeclaringClass()+" "+f.getType());
 		return f.getType()==Geometry.class || f.getType()==TerrainQuad.class;
 	}
 	
@@ -81,11 +86,11 @@ public class MaterialBean {
 			}
 			if(material.getType()==Material.class)
 				material.set(e, m);
-			System.out.println("load mat "+component);
+			log.fine("load mat "+component);
 			if(component!=null){
 				//It's a field based apply
 				Object field=component.get(e);
-				System.out.println("load mat field"+field);
+				log.fine("load mat field"+field);
 				if(field instanceof TerrainQuad){
 					((TerrainQuad) field).setMaterial(m);
 				}else if(field instanceof Spatial){

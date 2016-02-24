@@ -2,8 +2,8 @@ package com.entity.adapters;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
-import com.entity.anot.CamNode;
 import com.entity.anot.network.Broadcast;
 import com.entity.core.EntityGame;
 import com.entity.core.EntityManager;
@@ -16,6 +16,8 @@ import com.jme3.network.MessageConnection;
 import com.jme3.network.MessageListener;
 
 public class NetworkMessageListener<T extends IEntity> implements MessageListener<MessageConnection>{
+	protected static final Logger log = Logger.getLogger(NetworkMessageListener.class.getName());
+	
 	private HashMap<Class<? extends Message>, Method> methods=new HashMap<Class<? extends Message>, Method>();
 	
 	private T entity;
@@ -83,7 +85,7 @@ public class NetworkMessageListener<T extends IEntity> implements MessageListene
         	
         	Method m=methods.get(msg.getClass());
                 if(m==null){
-                    System.out.println("WARN: No method implemented por message class "+msg+" in "+getClass().getName());
+                    log.warning("No method implemented por message class "+msg+" in "+getClass().getName());
                     return;
                 }
         	Broadcast anot=EntityManager.getAnnotation(Broadcast.class,m);        	        	

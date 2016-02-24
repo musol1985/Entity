@@ -1,5 +1,7 @@
 package com.entity.core.items;
 
+import java.util.logging.Logger;
+
 import com.entity.adapters.NetSyncAdapter;
 import com.entity.anot.BuilderDefinition;
 import com.entity.bean.FieldSceneBean;
@@ -19,6 +21,8 @@ import com.jme3.scene.Spatial;
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
 public class Scene<T extends EntityGame> extends AbstractAppState implements IEntity{
+	protected static final Logger log = Logger.getLogger(Scene.class.getName());
+	
 	protected T app;
 	
 	private PhysicsSpace physics;
@@ -146,7 +150,7 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 
 	@Override
 	public void attachToParent(IEntity parent) throws Exception {
-		System.out.println("Attaching "+this+" scene");
+		log.info("Attaching "+this+" scene");
 		EntityManager.getGame().getStateManager().attach(this);
 		//El onattach se llama en el initialize
 	}
@@ -156,10 +160,10 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 	public void dettach() throws Exception {
 		AbstractAppState scene=EntityManager.getGame().getStateManager().getState(getClass());
 		if(scene!=null){
-			System.out.println("Dettaching scene"+this);
+			log.info("Dettaching scene"+this);
 			EntityManager.getGame().getStateManager().detach(scene);
 		}else{
-			System.out.println("The scene "+this+" is not attached.");
+			log.info("The scene "+this+" is not attached.");
 		}
 		//El onDettach se llama en el cleanup
 	}

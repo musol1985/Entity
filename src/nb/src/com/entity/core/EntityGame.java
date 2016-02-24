@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.reflections.Reflections;
 
@@ -31,6 +32,8 @@ import com.jme3.post.Filter;
 import com.jme3.post.FilterPostProcessor;
 
 public abstract class EntityGame extends SimpleApplication{
+	protected static final Logger log = Logger.getLogger(EntityGame.class.getName());
+	
 	private FilterPostProcessor postProcessor;
 	private List<Filter> filters;
 	private ClickInterceptor clickInterceptor;
@@ -46,7 +49,9 @@ public abstract class EntityGame extends SimpleApplication{
 	public void simpleInitApp() {
                 if(EntityManager.getGame()==null)
                     EntityManager.setGame(this);
-		try{						 			
+		try{				
+			path=getPersistPath();
+			
 			Physics physics=getClass().getAnnotation(Physics.class);
 			if(physics!=null){
 				bullet = new BulletAppState();
@@ -100,7 +105,7 @@ public abstract class EntityGame extends SimpleApplication{
 			if(firstScene!=null){
 				setScene(firstScene);
 			}else{
-				System.out.println("No first scene defined");
+				log.warning("No first scene defined. You must call setScene(@SceneObject) manually");
 			}
 				//setScene((Scene) firstScene.invoke(this, null));
 		}catch(Exception e){
@@ -200,5 +205,8 @@ public abstract class EntityGame extends SimpleApplication{
 		return net;
 	}
 	
+	public String getPersistPath(){
+		return "/EntityPersist";
+	}
 	
 }

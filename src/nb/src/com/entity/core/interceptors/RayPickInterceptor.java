@@ -2,12 +2,14 @@ package com.entity.core.interceptors;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 import net.sf.cglib.proxy.MethodProxy;
 
 import com.entity.anot.RayPick;
 import com.entity.core.EntityManager;
 import com.entity.core.builders.ModelBuilder;
+import com.entity.core.injectors.BaseInjector;
 import com.entity.core.items.Model;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -20,6 +22,8 @@ import com.jme3.terrain.geomipmap.TerrainPatch;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 
 public class RayPickInterceptor {
+	
+	protected static final Logger log = Logger.getLogger(RayPickInterceptor.class.getName());
 
 	public static Object rayPick(Object obj, Method m, Object[] args, MethodProxy mp, BaseMethodInterceptor mi)throws Exception, Throwable{
 		RayPick anot=EntityManager.getAnnotation(RayPick.class,m);
@@ -86,7 +90,7 @@ public class RayPickInterceptor {
 		
 		for(CollisionResult colision:results){
 			if(argsEntity>-1){
-                            System.out.println(colision.getGeometry().getName());
+				log.fine("Collision with "+colision.getGeometry().getName());                            
 				Model entity=getEntityByGeometry(colision.getGeometry());
                                 if(entity!=null){
                                     Class entityClass=EntityManager.getClass(entity.getClass());

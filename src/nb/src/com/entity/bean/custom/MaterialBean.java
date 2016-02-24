@@ -66,7 +66,6 @@ public class MaterialBean extends AnnotationFieldBean<MaterialComponent>{
 	}
 	
 	public static boolean isComponent(Field f){
-		System.out.println(f.getDeclaringClass()+" "+f.getType());
 		return f.getType()==Geometry.class || f.getType()==TerrainQuad.class;
 	}
 	

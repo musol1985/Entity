@@ -1,8 +1,8 @@
 package com.entity.core.injectors.field;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-import com.entity.anot.CamNode;
 import com.entity.anot.Persistable;
 import com.entity.bean.AnnotationFieldBean;
 import com.entity.core.EntityManager;
@@ -26,7 +26,19 @@ public class PersistableInjector<T  extends IEntity>  extends ListBeanInjector<A
 		for(AnnotationFieldBean<Persistable> bean:beans){
 			Object obj=EntityManager.loadPersistable(bean.getAnnot().fileName());
 			if(obj==null && bean.getAnnot().newOnNull()){
-				obj=bean.getField().getType().newInstance();
+				if(!bean.getAnnot().onNewCallback().isEmpty()){
+					Method m=e.getClass().getMethod(bean.getAnnot().onNewCallback());
+					if(m!=null){
+						obj=m.invoke(e, new Object[]{});
+					}else{
+						throw new Exception("Method "+bean.getAnnot().onNewCallback()+"doesn't exist in "+e.getClass().getName()+" for the @Persistable.callbackOnNew annotation");
+					}
+				}else{
+					obj=bean.getField().getType().newInstance();
+				}
+				if(bean.getAnnot().onNewSave()){
+					EntityManager.savePersistable(bean.getAnnot().fileName(), obj);
+				}
 			}
 			bean.getField().set(e, obj);
 		}

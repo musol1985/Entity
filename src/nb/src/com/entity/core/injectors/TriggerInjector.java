@@ -1,12 +1,12 @@
 package com.entity.core.injectors;
 
-import com.entity.anot.components.input.ComposedMouseButtonInput;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import com.entity.anot.components.input.ComposedMouseButtonInput;
 import com.entity.anot.components.input.ComposedMouseMoveInputMapping;
 import com.entity.anot.components.input.KeyInputMapping;
 import com.entity.anot.components.input.MouseButtonInputMapping;
@@ -14,14 +14,14 @@ import com.entity.anot.components.input.MouseMoveInputMapping;
 import com.entity.core.EntityGame;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
-import com.entity.core.Injector;
 import com.entity.core.InjectorAttachable;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.input.controls.Trigger;
 
-public class TriggerInjector<T extends IEntity>  extends BaseInjector<T> implements InjectorAttachable<T>{
+public class TriggerInjector<T extends IEntity>  extends BaseInjector<T> implements InjectorAttachable<T>{		
+	
 	private HashMap<String, Trigger[]> triggers=new HashMap<String, Trigger[]>();
 
 
@@ -48,7 +48,7 @@ public class TriggerInjector<T extends IEntity>  extends BaseInjector<T> impleme
 	@Override
 	public <G extends EntityGame> void onAttach(G app, T instance) {
 		for(Entry<String, Trigger[]> e:triggers.entrySet()){
-			System.out.println("Registering Mapping "+e.getKey()+" "+e.getValue());
+			log.fine("Registering Mapping "+e.getKey()+" "+e.getValue());
 			app.getInputManager().addMapping(e.getKey(), e.getValue());
 		}
 	}
@@ -85,6 +85,7 @@ public class TriggerInjector<T extends IEntity>  extends BaseInjector<T> impleme
 
                     MouseButtonTrigger[] triggers=new MouseButtonTrigger[key.buttons().length];
                     for(int i=0;i<key.buttons().length;i++){
+                    	log.fine("Adding MouseButtonMapping: "+key.buttons()[i]);
                             triggers[i]=new MouseButtonTrigger(key.buttons()[i]);
                     }			
                     addTrigger(key.action(), triggers);
@@ -93,7 +94,8 @@ public class TriggerInjector<T extends IEntity>  extends BaseInjector<T> impleme
 
                     MouseAxisTrigger[] triggers=new MouseAxisTrigger[key.axis().length];
                     for(int i=0;i<key.axis().length;i++){
-                            triggers[i]=new MouseAxisTrigger(key.axis()[i], key.negate());
+                    	log.fine("Adding MouseAxisMapping: "+key.axis()[i]);
+                        triggers[i]=new MouseAxisTrigger(key.axis()[i], key.negate());
                     }
                     addTrigger(key.action(), triggers);			
             }else if(a instanceof KeyInputMapping){			
@@ -101,7 +103,7 @@ public class TriggerInjector<T extends IEntity>  extends BaseInjector<T> impleme
 
                     KeyTrigger[] triggers=new KeyTrigger[key.keys().length];
                     for(int i=0;i<key.keys().length;i++){
-                            System.out.println("Adding keyInputMapping: "+key.keys()[i]);
+                            log.fine("Adding keyInputMapping: "+key.keys()[i]);
                             triggers[i]=new KeyTrigger(key.keys()[i]);
                     }
                     addTrigger(key.action(), triggers);

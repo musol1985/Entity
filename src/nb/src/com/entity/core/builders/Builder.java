@@ -7,7 +7,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
+import com.entity.bean.MaterialBean;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
@@ -18,6 +20,8 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.scene.Node;
 
 public abstract class Builder<T extends IEntity> implements IBuilder<T>{
+	private static final Logger log = Logger.getLogger(Builder.class.getName());
+	
 	private HashMap<Class<BaseInjector>, BaseInjector> injectors=new HashMap<Class<BaseInjector>, BaseInjector>();
 	private List<BaseInjector> usedInjectors=new ArrayList<BaseInjector>();
 	private List<InjectorAttachable> attachableInjectors=new ArrayList<InjectorAttachable>();
@@ -35,7 +39,7 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 			}
 		}
 
-		System.out.println("------------>"+c.getName());
+		log.fine("------------>"+c.getName());
         processMethod(c, c);
 		processField(c, c);
                 
@@ -63,7 +67,7 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 			processField(c, current.getSuperclass());
 		
 		for(Field f:current.getFields()){
-            System.out.println("---------------------------------->"+f.getName());
+			log.fine("---------------------------------->"+f.getName());
 			for(Entry<Class<BaseInjector>, BaseInjector> e: injectors.entrySet()){
 				e.getValue().loadField(c, f);
 				if(e.getValue().hasInjections() && !usedInjectors.contains(e.getValue())){
@@ -80,7 +84,7 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 		injectInstance(item);
                 
 		for(Injector i: usedInjectors){
-                    System.out.println("onInstance Injector: "+i);
+			log.fine("onInstance Injector: "+i);
 			i.onInstance(item, builder);
 		}
                 

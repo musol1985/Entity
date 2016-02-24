@@ -1,6 +1,7 @@
 package com.entity.core.injectors.input;
 
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 import com.entity.anot.CamNode;
 import com.entity.anot.components.input.Input;
@@ -8,6 +9,7 @@ import com.entity.bean.custom.InputBean;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
+import com.entity.core.builders.Builder;
 import com.entity.core.injectors.ListBeanInjector;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
@@ -18,7 +20,7 @@ public class InputInjector<T extends IEntity>  extends ListBeanInjector<InputBea
 	@Override
 	public void loadMethod(Class<T> c, Method m) throws Exception {
 		if(EntityManager.isAnnotationPresent(Input.class,m)){
-			System.out.println("Input annotation detected : "+m.getParameterTypes().length+" "+m.getParameterTypes()[0]);
+			log.fine("Input annotation detected : "+m.getParameterTypes().length+" "+m.getParameterTypes()[0]);
 			if(isDigitalMethod(m)){
 				beans.add(new InputBean(m, Input.class, true));
 			}else{
@@ -55,7 +57,7 @@ public class InputInjector<T extends IEntity>  extends ListBeanInjector<InputBea
 						}
 					}
 				};
-				System.out.println("Registering digitalInput listener for "+ bean.getAnnot().action());
+				log.fine("Registering digitalInput listener for "+ bean.getAnnot().action());
 				EntityManager.getInputManager().addListener(listener, bean.getAnnot().action());	
 			}else{
 				InputListener listener=new AnalogListener() {
@@ -67,7 +69,7 @@ public class InputInjector<T extends IEntity>  extends ListBeanInjector<InputBea
 						}
 					}	
 				};
-				System.out.println("Registering analogInput listener for "+bean.getAnnot().action());
+				log.fine("Registering analogInput listener for "+bean.getAnnot().action());
 				EntityManager.getInputManager().addListener(listener, bean.getAnnot().action());	
 			}
 		}
