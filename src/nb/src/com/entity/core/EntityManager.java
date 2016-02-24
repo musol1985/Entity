@@ -71,9 +71,9 @@ public abstract class EntityManager {
 	
 	private static IBuilder build(Class<IBuilder> builderClass, Class entityClass)throws Exception{
 		IBuilder builder=builderClass.newInstance();
-		log.fine("Builder "+builder.getClass().getName()+" pre created for entity "+entityClass.getName());
+		log.info("Builder "+builder.getClass().getName()+" pre created for entity "+entityClass.getName());
 		builder.onCreate(entityClass);
-		log.fine("Builder "+builder.getClass().getName()+" created for entity "+entityClass.getName());
+		log.info("Builder "+builder.getClass().getName()+" created for entity "+entityClass.getName());
 		return builder;
 	}
 
@@ -139,7 +139,7 @@ public abstract class EntityManager {
 			}else{
 				res=(IEntity) c.newInstance();
 			}
-			log.fine("onInstance "+res.getClass().getName()+" using builder "+template.getClass().getName());
+			log.info("onInstance "+res.getClass().getName()+" using builder "+template.getClass().getName());
 			template.onInstance(res, template);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -195,7 +195,7 @@ public abstract class EntityManager {
                obj = (T) in.readObject();
                in.close();
                fileIn.close();
-               log.fine("Load persistable file :"+file);
+               log.info("Load persistable file :"+file);
             }catch(Exception i){
             	log.warning("Exception on loading persistable file "+file+" :"+ i.getMessage());
             	i.printStackTrace();
@@ -206,14 +206,17 @@ public abstract class EntityManager {
     
     public static boolean savePersistable(String file, Object obj){
     	try{
-            FileOutputStream fileOut = new FileOutputStream(file);
+            File f=new File(getGame().getPath()+"/"+file);
+            if(!f.getParentFile().exists())
+                f.getParentFile().mkdirs();
+            FileOutputStream fileOut = new FileOutputStream(getGame().getPath()+"/"+file);
             GZIPOutputStream gz = new GZIPOutputStream(fileOut);
             ObjectOutputStream out = new ObjectOutputStream(gz);
             out.writeObject(obj);
             out.close();
             gz.close();
             fileOut.close();
-            log.fine("Serialized data "+file);
+            log.info("Serialized data "+file);
             return true;
          }catch(IOException i){
         	 log.warning("Exception on saving persistable file "+file+" :"+ i.getMessage());
@@ -225,9 +228,10 @@ public abstract class EntityManager {
     public static boolean savePersistableFieldName(Object obj, String field){
     	try{
     		Field f=obj.getClass().getField(field);
+                f.setAccessible(true);
     		Persistable anot=getAnnotation(Persistable.class, f);
     		if(anot!=null){
-    			return savePersistable(anot.fileName(), obj);
+    			return savePersistable(anot.fileName(), f.get(obj));
     		}else{
     			throw new Exception("No @Persistable annotation found");
     		}

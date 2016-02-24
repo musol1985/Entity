@@ -90,7 +90,7 @@ public class RayPickInterceptor {
 		
 		for(CollisionResult colision:results){
 			if(argsEntity>-1){
-				log.fine("Collision with "+colision.getGeometry().getName());                            
+				log.info("Collision with "+colision.getGeometry().getName());                            
 				Model entity=getEntityByGeometry(colision.getGeometry());
                                 if(entity!=null){
                                     Class entityClass=EntityManager.getClass(entity.getClass());

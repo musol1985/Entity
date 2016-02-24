@@ -24,7 +24,7 @@ public abstract class LobbyClientScene<T extends LobbyClientMessageListener, W e
 	@MessageListener
 	private T listener;
 
-	@Persistable(fileName="player", newOnNull=true, onNewCallback="initPlayerName", onNewSave=true)
+	@Persistable(fileName="player.conf", newOnNull=true, onNewCallback="initPlayerName", onNewSave=true)
 	public String playerName;
 
 
@@ -34,7 +34,7 @@ public abstract class LobbyClientScene<T extends LobbyClientMessageListener, W e
 			//Si no hay world selected, es otro player(no root) por lo que hay que conectarse
 			Network opts=getApp().getNet().getNetworkOptions();
 			int port=getApp().getNet().getPort();
-			log.fine("Connecting to... "+getApp().getNet().getIp()+":"+port);
+			log.info("Connecting to... "+getApp().getNet().getIp()+":"+port);
 			getApp().getNet().setNetwork(com.jme3.network.Network.connectToServer(opts.gameName(), opts.version(), EntityManager.getGame().getNet().getIp(), port));				
 		}
 		//El listener no se ha anyadido en el worldScene
@@ -45,7 +45,9 @@ public abstract class LobbyClientScene<T extends LobbyClientMessageListener, W e
 	public void onLoadScene() throws Exception{
 		if(!getApp().getNet().getClient().isConnected()){			
 			getApp().getNet().getClient().start();
-			log.fine("Starting client...");
+			log.info("Starting client...");
+		}else{
+			clientConnected(getApp().getNet().getClient());
 		}
 	}
 
@@ -54,11 +56,12 @@ public abstract class LobbyClientScene<T extends LobbyClientMessageListener, W e
 		NetPlayer playerTmp=new NetPlayer();
 		playerTmp.setId(playerName);
 		client.send(new MsgOnNewPlayer(playerTmp));
+                log.info("OnClienConnect. Sending playerTmp");
 	}
 
 	@Override
 	public void clientDisconnected(Client paramClient, DisconnectInfo paramDisconnectInfo) {
-		log.fine("Desconectado!!!! "+paramDisconnectInfo.reason);
+		log.info("Desconectado!!!! "+paramDisconnectInfo.reason);
 	}
 
 	public String getPlayerName() {

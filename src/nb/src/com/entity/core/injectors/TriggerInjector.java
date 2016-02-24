@@ -48,7 +48,7 @@ public class TriggerInjector<T extends IEntity>  extends BaseInjector<T> impleme
 	@Override
 	public <G extends EntityGame> void onAttach(G app, T instance) {
 		for(Entry<String, Trigger[]> e:triggers.entrySet()){
-			log.fine("Registering Mapping "+e.getKey()+" "+e.getValue());
+			log.info("Registering Mapping "+e.getKey()+" "+e.getValue());
 			app.getInputManager().addMapping(e.getKey(), e.getValue());
 		}
 	}
@@ -85,7 +85,7 @@ public class TriggerInjector<T extends IEntity>  extends BaseInjector<T> impleme
 
                     MouseButtonTrigger[] triggers=new MouseButtonTrigger[key.buttons().length];
                     for(int i=0;i<key.buttons().length;i++){
-                    	log.fine("Adding MouseButtonMapping: "+key.buttons()[i]);
+                    	log.info("Adding MouseButtonMapping: "+key.buttons()[i]);
                             triggers[i]=new MouseButtonTrigger(key.buttons()[i]);
                     }			
                     addTrigger(key.action(), triggers);
@@ -94,7 +94,7 @@ public class TriggerInjector<T extends IEntity>  extends BaseInjector<T> impleme
 
                     MouseAxisTrigger[] triggers=new MouseAxisTrigger[key.axis().length];
                     for(int i=0;i<key.axis().length;i++){
-                    	log.fine("Adding MouseAxisMapping: "+key.axis()[i]);
+                    	log.info("Adding MouseAxisMapping: "+key.axis()[i]);
                         triggers[i]=new MouseAxisTrigger(key.axis()[i], key.negate());
                     }
                     addTrigger(key.action(), triggers);			
@@ -103,7 +103,7 @@ public class TriggerInjector<T extends IEntity>  extends BaseInjector<T> impleme
 
                     KeyTrigger[] triggers=new KeyTrigger[key.keys().length];
                     for(int i=0;i<key.keys().length;i++){
-                            log.fine("Adding keyInputMapping: "+key.keys()[i]);
+                            log.info("Adding keyInputMapping: "+key.keys()[i]);
                             triggers[i]=new KeyTrigger(key.keys()[i]);
                     }
                     addTrigger(key.action(), triggers);

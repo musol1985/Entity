@@ -16,7 +16,7 @@ import com.jme3.network.HostedConnection;
 public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServerScene>{
 
 	public void onNewPlayer(MsgOnNewPlayer msg, HostedConnection cnn)throws Exception{
-		log.fine("On new player "+msg.player.getId()+"("+cnn.getId()+"/"+cnn.getAddress()+")");
+		log.info("On new player "+msg.player.getId()+"("+cnn.getId()+"/"+cnn.getAddress()+")");
 		
 		if(!getEntity().canPlayersJoin()){
 			log.warning("No world selected");
@@ -27,8 +27,8 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 		NetWorld w=getEntity().getWorld();
 		
 		
-		if(w.isNewCreated()){
-			log.fine("The world is new");
+		if(w.isCreated()){
+			log.info("The world is new");
 			//TODO comprobar si deja mas joins, de momento cerrado
 			if(w.getPlayers().size()==0 && !w.getPlayerCreator().equals(msg.player.getId())){
 				log.warning("Admin is not connected. Sending the match is not ready");
@@ -40,7 +40,7 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 
 				if(w.getPlayerCreator().equals(player.getId())){
 					player.setAdmin(true);
-					log.fine("Player "+msg.player.getId()+" is owner of the world");
+					log.info("Player "+msg.player.getId()+" is owner of the world");
 				}
 				
 				w.getPlayers().put(player.getId(), player);
@@ -49,7 +49,7 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 				getEntity().onPlayerJoined(player);
 			}
 		}else{
-			log.fine("The world is loaded");
+			log.info("The world is loaded");
 			NetPlayer player=w.getNetPlayerById(msg.player.getId());
 			if(player!=null){
 				if(player.isConnected()){
@@ -71,12 +71,12 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 	}
 	
 	public void onCreateWorld(MsgCreateWorld msg, HostedConnection cnn)throws Exception{
-		log.fine("onCreateWorld "+msg.world.getId());
+		log.info("onCreateWorld "+msg.world.getId());
 		if(getEntity().getWorlds().containsKey(msg.world.getId())){
 			cnn.send(new MsgOnWorldCreatedSelected(true, true));
 			log.warning("World "+msg.world.getId()+" already exists");
 		}else{
-			log.fine("World "+msg.world.getId()+" created!");
+			log.info("World "+msg.world.getId()+" created!");
 			getEntity().getWorlds().put(msg.world.getId(), msg.world);
 
 			getEntity().setWorld(msg.world);
@@ -87,26 +87,26 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 	}
 	
 	public void onSelectWorld(MsgSelectWorld msg, HostedConnection cnn)throws Exception{
-		log.fine("onSelectWorld "+msg.world);
+		log.info("onSelectWorld "+msg.world);
 		if(!getEntity().getWorlds().containsKey(msg.world)){
 			log.warning("World "+msg.world+" doesn't exists");
 			cnn.send(new MsgOnWorldCreatedSelected(true, false));
 		}else{			
 			getEntity().setWorld((NetWorld) getEntity().getWorlds().get(msg.world));
 			cnn.send(new MsgOnWorldCreatedSelected(false, false));
-			log.fine("World "+msg.world+" selected");
+			log.info("World "+msg.world+" selected");
 		}
 	}
 	
 	public void onStartWorld(MsgStartGame msg, HostedConnection cnn)throws Exception{
-		log.fine("onStartWorld");
+		log.info("onStartWorld");
 		if(!getEntity().isWorldSelected()){
 			log.warning("No world selected. Sending error");
 			cnn.send(new MsgOnWorldCreatedSelected(true, false));
 		}else{
 			MsgOnStartGame start=new MsgOnStartGame(getEntity().getWorld().getId(), getEntity().getWorld().getTimestamp());
 			broadCast(cnn, start, false);
-			log.fine("Starting world");
+			log.info("Starting world");
 		}		
 	}
 }

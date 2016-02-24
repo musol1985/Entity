@@ -63,17 +63,21 @@ public abstract class EntityGame extends SimpleApplication{
 			
 			Network network=getClass().getAnnotation(Network.class);
 			if(network!=null){
-				List<String> packages=Arrays.asList(network.messagesPackage());
+				List<String> packages=new ArrayList<String>(Arrays.asList(network.messagesPackage()));
 				
 				packages.add("com.entity.network.core.msg");
 				packages.add("com.entity.network.core.bean");
+				
+				log.info("++Finding @Serializable in "+packages.size()+" packages");
 				
 				for(String pack:packages){
 					 Reflections reflections = new Reflections(pack);
 		
 					 Set<Class<?>> messages=reflections.getTypesAnnotatedWith(Serializable.class);
+					 log.info("++Found "+messages.size()+" @Serializable in package "+pack);
 					 
 					 for(Class<?> message:messages){
+						 log.info("++++++Registering network class "+message.getName());
 						 Serializer.registerClass(message);
 					 }
 				}
@@ -190,7 +194,7 @@ public abstract class EntityGame extends SimpleApplication{
 				scene.setProxy(bean);
 		}
 		if(params!=null && params.length>0){
-			log.fine("Scene set params: "+params.length);
+			log.info("Scene set params: "+params.length);
 			scene.setParams(params);
 		}
 		

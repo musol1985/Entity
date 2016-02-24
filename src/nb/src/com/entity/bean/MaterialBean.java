@@ -46,7 +46,7 @@ public class MaterialBean {
 			}
 		}else if(isComponent(material)){
 			
-			log.fine("Material component!!!"+material.getName());
+			log.info("Material component!!!"+material.getName());
 			component=material;
 			apply=true;
 			if(anot.singleton()){
@@ -74,7 +74,7 @@ public class MaterialBean {
 	}
 	
 	public static boolean isComponent(Field f){
-		log.fine(f.getDeclaringClass()+" "+f.getType());
+		log.info(f.getDeclaringClass()+" "+f.getType());
 		return f.getType()==Geometry.class || f.getType()==TerrainQuad.class;
 	}
 	
@@ -86,11 +86,11 @@ public class MaterialBean {
 			}
 			if(material.getType()==Material.class)
 				material.set(e, m);
-			log.fine("load mat "+component);
+			log.info("load mat "+component);
 			if(component!=null){
 				//It's a field based apply
 				Object field=component.get(e);
-				log.fine("load mat field"+field);
+				log.info("load mat field"+field);
 				if(field instanceof TerrainQuad){
 					((TerrainQuad) field).setMaterial(m);
 				}else if(field instanceof Spatial){

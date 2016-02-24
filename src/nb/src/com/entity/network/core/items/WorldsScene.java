@@ -22,14 +22,14 @@ import com.entity.network.core.msg.MsgSelectWorld;
 public abstract class WorldsScene<T extends WorldsMessageListener, W extends NetWorld, P extends NetPlayer, G extends EntityGame> extends Scene<G> {
 	@MessageListener
 	public T listener;
-	@Persistable(fileName="player", newOnNull=true, onNewCallback="initPlayerName", onNewSave=true)
+	@Persistable(fileName="player.conf", newOnNull=true, onNewCallback="initPlayerName", onNewSave=true)
 	public String playerName;
 
 	@Override
 	public void onPreInject(IBuilder builder) throws Exception {
 		Network opts=EntityManager.getGame().getNet().getNetworkOptions();
 		int port=EntityManager.getGame().getNet().getPort();
-		log.fine("Connecting to... "+EntityManager.getGame().getNet().getIp()+":"+port);		
+		log.info("Connecting to... "+EntityManager.getGame().getNet().getIp()+":"+port);		
 		EntityManager.getGame().getNet().setNetwork(com.jme3.network.Network.connectToServer(opts.gameName(), opts.version(), EntityManager.getGame().getNet().getIp(), port));		
 	}
 
@@ -48,21 +48,21 @@ public abstract class WorldsScene<T extends WorldsMessageListener, W extends Net
 		W world=null;
 		
 		if(msg.worlds.size()==0){
-			log.fine("No worlds created");
+			log.info("No worlds created");
 			//Creamos a world
 			world=createWorld();
 			world.setCreated(true);
 			world.setPlayerCreator(getPlayerName());
-			new MsgCreateWorld(world).send();
+			new MsgCreateWorld<W>(world).send();
 		}else{
 			//Select the first world
-			log.fine("Selecting first world "+msg.worlds.get(0).getId()+" created by "+msg.worlds.get(0).getPlayerCreator());
-			world=msg.worlds.get(0);
+			world=msg.worlds.values().iterator().next();
+			log.info("Selecting first world "+world.getId()+" created by "+world.getPlayerCreator());
 			new MsgSelectWorld(world.getId()).send();			
 		}		
 		EntityManager.getGame().getNet().setWorld(world);
 		//Select the first world
-		log.fine("World "+world.getId()+" selected");
+		log.info("World "+world.getId()+" selected");
 	}
 	
 	public abstract void showLobby();

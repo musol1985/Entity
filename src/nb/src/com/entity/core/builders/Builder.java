@@ -39,7 +39,7 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 			}
 		}
 
-		log.fine("------------>"+c.getName());
+		log.info("------------>"+c.getName());
         processMethod(c, c);
 		processField(c, c);
                 
@@ -66,8 +66,8 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 		if(current!=Node.class && current!=AbstractAppState.class && current!=java.lang.Object.class && current!=null)
 			processField(c, current.getSuperclass());
 		
-		for(Field f:current.getFields()){
-			log.fine("---------------------------------->"+f.getName());
+		for(Field f:current.getDeclaredFields()){
+			log.info("---------------------------------->"+f.getName());
 			for(Entry<Class<BaseInjector>, BaseInjector> e: injectors.entrySet()){
 				e.getValue().loadField(c, f);
 				if(e.getValue().hasInjections() && !usedInjectors.contains(e.getValue())){
@@ -84,7 +84,7 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 		injectInstance(item);
                 
 		for(Injector i: usedInjectors){
-			log.fine("onInstance Injector: "+i);
+			log.info("onInstance Injector: "+i);
 			i.onInstance(item, builder);
 		}
                 

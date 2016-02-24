@@ -10,9 +10,9 @@ import com.jme3.network.MessageConnection;
 public class WorldsMessageListener extends NetworkMessageListener<WorldsScene>{
 	
 	public void onListWorlds(MsgListWorlds msg, MessageConnection cnn)throws Exception{
-		log.fine("On list worlds: ");
+		log.info("On list worlds: ");
 		for(Object key:msg.worlds.keySet()){
-			log.fine("---->"+key);
+			log.info("---->"+key);
 		}
 
 		getEntity().showWorldsList(msg);		
@@ -29,7 +29,7 @@ public class WorldsMessageListener extends NetworkMessageListener<WorldsScene>{
 				throw new RuntimeException("Error selecting world....");
 			}
 		}else{
-			log.fine("World selected. Showing Client lobby");
+			log.info("World selected. Showing Client lobby");
 			getEntity().showLobby();
 		}
 	}

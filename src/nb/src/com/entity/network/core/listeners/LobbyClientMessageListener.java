@@ -12,7 +12,7 @@ public class LobbyClientMessageListener extends NetworkMessageListener<LobbyClie
 	
 	
 	public void onNewPlayer(MsgOnNewPlayer msg, MessageConnection cnn)throws Exception{
-		log.fine("OnNewPlayer "+msg.player.getId());
+		log.info("OnNewPlayer "+msg.player.getId());
 		NetWorld w=EntityManager.getGame().getNet().getWorld();
 		NetPlayer player=msg.player;
 		

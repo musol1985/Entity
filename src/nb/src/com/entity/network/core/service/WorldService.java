@@ -39,15 +39,15 @@ public abstract class WorldService<T extends NetWorld<P, ? extends WorldService,
 	public C getCellById(Vector2 cellId){
 		C cell=null;
 		if(isCellInLimits(cellId)){
-			log.fine("getcellById from cache->"+cellId);
+			log.info("getcellById from cache->"+cellId);
 			cell=getCellFromCache(cellId);
 			
 			if(cell==null){
-				log.fine("getcellById from fs->"+cellId);
+				log.info("getcellById from fs->"+cellId);
 				cell=getCellFromFS(cellId);
 				
 				if(canCreateCell() && cell==null){
-					log.fine("The cell "+cellId+" isn't in cache and fs. It has to be created.");
+					log.info("The cell "+cellId+" isn't in cache and fs. It has to be created.");
 					cell=createNewCell(cellId);
 				}
 			}

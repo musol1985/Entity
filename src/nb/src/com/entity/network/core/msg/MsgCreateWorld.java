@@ -1,14 +1,12 @@
 package com.entity.network.core.msg;
 
-import java.util.List;
-
 import com.entity.network.core.bean.NetWorld;
 import com.jme3.network.serializing.Serializable;
 @Serializable
-public class MsgCreateWorld extends BaseNetMessage {
-	public NetWorld world;	
+public class MsgCreateWorld<T extends NetWorld> extends BaseNetMessage {
+	public T world;	
 
-	public MsgCreateWorld(NetWorld world) {
+	public MsgCreateWorld(T world) {
 		this.world=world;
 	}
 	

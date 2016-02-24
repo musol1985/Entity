@@ -20,7 +20,7 @@ public class InputInjector<T extends IEntity>  extends ListBeanInjector<InputBea
 	@Override
 	public void loadMethod(Class<T> c, Method m) throws Exception {
 		if(EntityManager.isAnnotationPresent(Input.class,m)){
-			log.fine("Input annotation detected : "+m.getParameterTypes().length+" "+m.getParameterTypes()[0]);
+			log.info("Input annotation detected : "+m.getParameterTypes().length+" "+m.getParameterTypes()[0]);
 			if(isDigitalMethod(m)){
 				beans.add(new InputBean(m, Input.class, true));
 			}else{
@@ -57,7 +57,7 @@ public class InputInjector<T extends IEntity>  extends ListBeanInjector<InputBea
 						}
 					}
 				};
-				log.fine("Registering digitalInput listener for "+ bean.getAnnot().action());
+				log.info("Registering digitalInput listener for "+ bean.getAnnot().action());
 				EntityManager.getInputManager().addListener(listener, bean.getAnnot().action());	
 			}else{
 				InputListener listener=new AnalogListener() {
@@ -69,7 +69,7 @@ public class InputInjector<T extends IEntity>  extends ListBeanInjector<InputBea
 						}
 					}	
 				};
-				log.fine("Registering analogInput listener for "+bean.getAnnot().action());
+				log.info("Registering analogInput listener for "+bean.getAnnot().action());
 				EntityManager.getInputManager().addListener(listener, bean.getAnnot().action());	
 			}
 		}

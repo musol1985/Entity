@@ -17,15 +17,16 @@ public abstract class NetWorld<T extends NetPlayer, S extends WorldService, C ex
 	private static float HASH_TABLE_LOAD_FACTOR=0.75f;
 	private static int HASH_TABLE_CAPACITY = (int) Math.ceil(CELLS_SIZE / HASH_TABLE_LOAD_FACTOR) + 1;
 	
-	private HashMap<String, T> players;
+	private HashMap<String, T> players=new HashMap<String, T>();
 	private String id;
 	private long timestamp;
 	private int maxPlayers=10;
-	private transient boolean created;
+	private boolean created;
 	private String playerCreator;
 	
+	
 	private transient S service;
-	private LinkedHashMap<Vector2, C> cells;
+	private transient LinkedHashMap<Vector2, C> cells;
 	
 	public NetWorld(HashMap<String, T> players, String id, long timestamp) {
 		this();
@@ -44,7 +45,7 @@ public abstract class NetWorld<T extends NetPlayer, S extends WorldService, C ex
                 }
                 return pop;
             }
-        };
+		};
 		service=initWorldService();		
 	}
 	
@@ -87,7 +88,7 @@ public abstract class NetWorld<T extends NetPlayer, S extends WorldService, C ex
 	public void setMaxPlayers(int maxPlayers) {
 		this.maxPlayers = maxPlayers;
 	}
-	public boolean isNewCreated() {
+	public boolean isCreated() {
 		return created;
 	}
 	public void setCreated(boolean created) {
@@ -103,6 +104,9 @@ public abstract class NetWorld<T extends NetPlayer, S extends WorldService, C ex
 	}
 	public LinkedHashMap<Vector2, C> getCells() {
 		return cells;
+	}
+	public void setCells(LinkedHashMap<Vector2, C> cells) {
+		this.cells = cells;
 	}
 	public String getCachePath(){
 		return "cache/"+id+"/";
