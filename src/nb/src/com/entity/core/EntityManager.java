@@ -19,6 +19,7 @@ import net.sf.cglib.proxy.MethodProxy;
 
 import com.entity.anot.BuilderDefinition;
 import com.entity.anot.Instance;
+import com.entity.anot.Persistable;
 import com.entity.anot.RayPick;
 import com.entity.core.interceptors.BaseMethodInterceptor;
 import com.entity.core.interceptors.RayPickInterceptor;
@@ -218,6 +219,22 @@ public abstract class EntityManager {
         	 log.warning("Exception on saving persistable file "+file+" :"+ i.getMessage());
              i.printStackTrace();
          }
+    	return false;
+    }
+    
+    public static boolean savePersistableFieldName(Object obj, String field){
+    	try{
+    		Field f=obj.getClass().getField(field);
+    		Persistable anot=getAnnotation(Persistable.class, f);
+    		if(anot!=null){
+    			return savePersistable(anot.fileName(), obj);
+    		}else{
+    			throw new Exception("No @Persistable annotation found");
+    		}
+    	}catch(Exception e){
+    		log.warning("Exception on savePersistableFieldName "+obj+":"+field+" "+e.getMessage());
+            e.printStackTrace();
+    	}
     	return false;
     }
     

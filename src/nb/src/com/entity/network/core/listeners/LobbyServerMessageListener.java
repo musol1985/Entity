@@ -1,6 +1,7 @@
 package com.entity.network.core.listeners;
 
 import com.entity.adapters.NetworkMessageListener;
+import com.entity.core.EntityManager;
 import com.entity.network.core.bean.NetPlayer;
 import com.entity.network.core.bean.NetWorld;
 import com.entity.network.core.items.LobbyServerScene;
@@ -79,9 +80,11 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 		}else{
 			log.fine("World "+msg.world.getId()+" created!");
 			getEntity().getWorlds().put(msg.world.getId(), msg.world);
-			//TODO guardar worlds en fs
+
 			getEntity().setWorld(msg.world);
 			cnn.send(new MsgOnWorldCreatedSelected(false, true));
+			
+			EntityManager.savePersistableFieldName(getEntity(), "worlds");
 		}
 	}
 	
