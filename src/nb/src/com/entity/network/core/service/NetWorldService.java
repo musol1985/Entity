@@ -18,6 +18,8 @@ public abstract class NetWorldService<W extends NetWorld<D, C>, P extends NetPla
 	protected W world;
 	protected P player;
 	
+	
+	
 	/**
 	 * @CalledOnServer
 	 * @return
@@ -74,7 +76,7 @@ public abstract class NetWorldService<W extends NetWorld<D, C>, P extends NetPla
 	}
 	
 	public abstract C createNewCell(Vector2 cellId);
-	public abstract P createNewPlayer(String name);
+	public abstract E createNewPlayerDAO(String name);
 
 	
 	public boolean isCellInLimits(Vector2 cellId){
@@ -135,6 +137,26 @@ public abstract class NetWorldService<W extends NetWorld<D, C>, P extends NetPla
 
 	public void setPlayerDAO(E playerDAO) {
 		this.player.setDao(playerDAO);
+	}
+
+
+	public W getWorld() {
+		return world;
+	}
+
+
+	public void setWorld(W world) {
+		this.world = world;
+	}
+
+
+	public P getPlayer() {
+		return player;
+	}
+
+
+	public void setPlayer(P player) {
+		this.player = player;
 	}
 	
 	

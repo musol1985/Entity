@@ -1,7 +1,6 @@
 package com.entity.network.core.items;
 
 import java.util.HashMap;
-import java.util.List;
 
 import com.entity.anot.BuilderDefinition;
 import com.entity.anot.Persistable;
@@ -31,7 +30,7 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, W e
 	public HashMap<String, W> worlds;
 	
 	@WorldService
-	public NetWorldService<NetWorld<D,C>, NetPlayer<E>, NetWorldCellDAO, NetWorldDAO<E>, NetPlayerDAO> service;
+	public NetWorldService service;
 	
 	@ServerConnectionsListener
 	public ConnectionListener cnnListener=new ConnectionListener() {
@@ -54,7 +53,7 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, W e
 		public void connectionRemoved(Server server, HostedConnection arg1) {
 			if(server.getConnections().size()==0){
 				log.info("Owner has exited, setting world to null");	
-				setWorld(null);
+				service.setWorldDAO(null);
 			}
 		}
 	};
@@ -88,7 +87,7 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, W e
 	
 
 	public boolean isWorldSelected(){
-		return getWorld()!=null;
+		return service.getWorldDAO()!=null;
 	}
 	
 	/**
@@ -99,14 +98,11 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, W e
 		return isWorldSelected();
 	}
 
-	public W getWorld() {
-		return (W) EntityManager.getGame().getNet().getWorld();
-	}
-
-	public void setWorld(W world) {
-		EntityManager.getGame().getNet().setWorld(world);
-	}
-
 	public abstract void onPlayerJoined(P player);
+
+	public NetWorldService getService() {
+		return service;
+	}
+	
 	
 }

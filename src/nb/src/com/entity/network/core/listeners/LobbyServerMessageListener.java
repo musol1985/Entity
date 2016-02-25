@@ -1,10 +1,10 @@
 package com.entity.network.core.listeners;
 
 import com.entity.adapters.NetworkMessageListener;
-import com.entity.core.EntityManager;
 import com.entity.network.core.dao.NetPlayerDAO;
 import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.network.core.items.LobbyServerScene;
+import com.entity.network.core.models.NetPlayer;
 import com.entity.network.core.msg.MsgCreateWorld;
 import com.entity.network.core.msg.MsgOnNewPlayer;
 import com.entity.network.core.msg.MsgOnStartGame;
@@ -24,7 +24,7 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 			return ;
 		}
 		
-		NetWorldDAO w=getEntity().getWorld();
+		NetWorldDAO w=getEntity().getService().getWorldDAO();
 		
 		
 		if(w.isCreated()){
@@ -36,7 +36,7 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 				cnn.close("The match is not ready");
 			}else{
 				if(w.getNetPlayerById(msg.player.getId())==null){
-					NetPlayerDAO player=w.getService().createNewPlayer(msg.player.getId());
+					NetPlayerDAO player=getEntity().getService().createNewPlayerDAO(msg.player.getId());
 					player.setCnn(cnn);
 
 					if(w.getPlayerCreator().equals(player.getId())){
@@ -84,7 +84,7 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 			log.info("World "+msg.world.getId()+" created!");
 			getEntity().getWorlds().put(msg.world.getId(), msg.world);
 
-			getEntity().setWorld(msg.world);
+			getEntity().getService().setWorldDAO(msg.world);
 			cnn.send(new MsgOnWorldCreatedSelected(false, true));
 			
 			//EntityManager.savePersistableFieldName(getEntity(), "worlds");
@@ -98,8 +98,7 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 			cnn.send(new MsgOnWorldCreatedSelected(true, false));
 		}else{						
 			NetWorldDAO w=(NetWorldDAO) getEntity().getWorlds().get(msg.world);
-			w.init();
-			getEntity().setWorld(w);
+			getEntity().getService().setWorldDAO(w);
 			cnn.send(new MsgOnWorldCreatedSelected(false, false));
 			log.info("World "+msg.world+" selected");
 		}
@@ -111,10 +110,10 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 			log.warning("No world selected. Sending error");
 			cnn.send(new MsgOnWorldCreatedSelected(true, false));
 		}else{
-			NetWorldDAO world=getEntity().getWorld();
+			NetWorldDAO world=getEntity().getService().getWorldDAO();
 			//If is new world, preload positions of the players
 			if(world.isCreated()){
-				world.getService().preload();
+				getEntity().getService().preload();
 			}
 			MsgOnStartGame start=new MsgOnStartGame(world);
 			broadCast(cnn, start, false);
