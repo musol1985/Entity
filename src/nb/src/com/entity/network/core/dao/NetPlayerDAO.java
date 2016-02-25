@@ -1,22 +1,24 @@
-package com.entity.network.core.bean;
+package com.entity.network.core.dao;
 
 import java.io.Serializable;
 
+import com.jme3.math.Vector3f;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.MessageConnection;
 
 @com.jme3.network.serializing.Serializable
-public class NetPlayer implements Serializable{
+public class NetPlayerDAO implements Serializable{
 	private String id;
 	private boolean admin;
 	private transient boolean ready;
 	private transient MessageConnection cnn;
+	private Vector3f position;
 	
-	public NetPlayer() {
+	public NetPlayerDAO() {
 		
 	}
 	
-	public NetPlayer(String id, HostedConnection cnn) {
+	public NetPlayerDAO(String id, HostedConnection cnn) {
 		this.id = id;
 		this.cnn = cnn;
 	}
@@ -49,6 +51,14 @@ public class NetPlayer implements Serializable{
 	}
 	public void setReady(boolean ready) {
 		this.ready = ready;
+	}
+
+	public Vector3f getPosition() {
+		return position;
+	}
+
+	public void setPosition(Vector3f position) {
+		this.position = position;
 	}
 	
 	

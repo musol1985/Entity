@@ -31,5 +31,11 @@ public class AnnotationFieldBean<T extends Annotation> {
 		this.annot = annot;
 	}
 	
+	public Object instance()throws Exception{
+		return f.getType().newInstance();
+	}
 	
+	public Object getValueField(Object instance)throws Exception{
+		return f.get(instance);
+	}
 }

@@ -2,8 +2,8 @@ package com.entity.network.core.listeners;
 
 import com.entity.adapters.NetworkMessageListener;
 import com.entity.core.EntityManager;
-import com.entity.network.core.bean.NetPlayer;
-import com.entity.network.core.bean.NetWorld;
+import com.entity.network.core.dao.NetPlayerDAO;
+import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.network.core.items.LobbyServerScene;
 import com.entity.network.core.msg.MsgCreateWorld;
 import com.entity.network.core.msg.MsgOnNewPlayer;
@@ -24,7 +24,7 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 			return ;
 		}
 		
-		NetWorld w=getEntity().getWorld();
+		NetWorldDAO w=getEntity().getWorld();
 		
 		
 		if(w.isCreated()){
@@ -36,7 +36,7 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 				cnn.close("The match is not ready");
 			}else{
 				if(w.getNetPlayerById(msg.player.getId())==null){
-					NetPlayer player=w.getService().createNewPlayer(msg.player.getId());
+					NetPlayerDAO player=w.getService().createNewPlayer(msg.player.getId());
 					player.setCnn(cnn);
 
 					if(w.getPlayerCreator().equals(player.getId())){
@@ -55,7 +55,7 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 			}
 		}else{
 			log.info("The world is loaded");
-			NetPlayer player=w.getNetPlayerById(msg.player.getId());
+			NetPlayerDAO player=w.getNetPlayerById(msg.player.getId());
 			if(player!=null){
 				if(player.isConnected()){
 					cnn.close("Player with nickname "+player.getId()+" already joined to game.");
@@ -97,7 +97,7 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 			log.warning("World "+msg.world+" doesn't exists");
 			cnn.send(new MsgOnWorldCreatedSelected(true, false));
 		}else{						
-			NetWorld w=(NetWorld) getEntity().getWorlds().get(msg.world);
+			NetWorldDAO w=(NetWorldDAO) getEntity().getWorlds().get(msg.world);
 			w.init();
 			getEntity().setWorld(w);
 			cnn.send(new MsgOnWorldCreatedSelected(false, false));
@@ -111,9 +111,14 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 			log.warning("No world selected. Sending error");
 			cnn.send(new MsgOnWorldCreatedSelected(true, false));
 		}else{
-			MsgOnStartGame start=new MsgOnStartGame(getEntity().getWorld().getId(), getEntity().getWorld().getTimestamp());
+			NetWorldDAO world=getEntity().getWorld();
+			//If is new world, preload positions of the players
+			if(world.isCreated()){
+				world.getService().preload();
+			}
+			MsgOnStartGame start=new MsgOnStartGame(world);
 			broadCast(cnn, start, false);
-			log.info("Starting world");
+			log.info("Starting world "+world.getId());
 		}		
 	}
 }

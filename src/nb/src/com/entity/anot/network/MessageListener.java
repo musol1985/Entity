@@ -7,7 +7,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface MessageListener {
-	boolean singleton() default false;
 	boolean attach() default true;
 	boolean ignoreSyncMessages() default true;
 }

@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.entity.network.core.bean.NetWorld;
+import com.entity.network.core.service.NetWorldService;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
@@ -14,5 +14,4 @@ public @interface Network {
 	int port() default 4260;
 	String gameName();
 	int version();
-	Class<? extends NetWorld>[] worldClass() default {};
 }

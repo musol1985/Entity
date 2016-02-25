@@ -3,9 +3,12 @@ package com.entity.network.core;
 import com.entity.adapters.NetworkMessageListener;
 import com.entity.anot.network.Network;
 import com.entity.core.EntityManager;
-import com.entity.network.core.bean.NetPlayer;
-import com.entity.network.core.bean.NetWorld;
+import com.entity.network.core.dao.NetPlayerDAO;
+import com.entity.network.core.dao.NetWorldDAO;
+import com.entity.network.core.service.NetWorldService;
 import com.jme3.network.Client;
+import com.jme3.network.ClientStateListener;
+import com.jme3.network.ConnectionListener;
 import com.jme3.network.Server;
 import com.jme3.network.service.serializer.ServerSerializerRegistrationsService;
 
@@ -16,12 +19,57 @@ public class NetGame{
 	private String matchName;		
 	private int port;
 	private Network anot;
-	private NetWorld world;
-	private NetPlayer player;
+	
+	private NetWorldService service;
 	
 	public NetGame(Network anot){
 		this.anot=anot;
 		port=anot.port();
+		try {
+			service=(NetWorldService) anot.getClass().newInstance();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void addConnectionListener(ClientStateListener listener){
+		if(isNetClientGame()){
+			netClient.addClientStateListener(listener);
+		}else if(isNetServerGame()){
+			throw new RuntimeException("Trying to add clientstatelistener to a server!! You must add it to a client");
+		}else{
+			throw new RuntimeException("No network started");
+		}
+	}
+	
+	public void addConnectionListener(ConnectionListener listener){
+		if(isNetServerGame()){
+			netServer.addConnectionListener(listener);
+		}else if(isNetClientGame()){
+			throw new RuntimeException("Trying to add ConnectionListener to a client!! You must add it to a server");
+		}else{
+			throw new RuntimeException("No network started");
+		}
+	}
+	
+	public void removeConnectionListener(ClientStateListener listener){
+		if(isNetClientGame()){
+			netClient.removeClientStateListener(listener);
+		}else if(isNetServerGame()){
+			throw new RuntimeException("Trying to remove clientstatelistener to a server!! You must add it to a client");
+		}else{
+			throw new RuntimeException("No network started");
+		}
+	}
+	
+	public void removeConnectionListener(ConnectionListener listener){
+		if(isNetServerGame()){
+			netServer.removeConnectionListener(listener);
+		}else if(isNetClientGame()){
+			throw new RuntimeException("Trying to remove ConnectionListener to a client!! You must add it to a server");
+		}else{
+			throw new RuntimeException("No network started");
+		}
 	}
 	
 	public void addMsgListener(NetworkMessageListener listener){
@@ -107,24 +155,16 @@ public class NetGame{
 	public void setMatchName(String matchName) {
 		this.matchName = matchName;
 	}
-
-	public NetWorld getWorld() {
-		return world;
-	}
-
-	public void setWorld(NetWorld world) {
-		this.world = world;
-	}
-
-	public NetPlayer getPlayer() {
-		return player;
-	}
-
-	public void setPlayer(NetPlayer player) {
-		this.player = player;
-	}
 	
 	public boolean isWorldSelected(){
 		return EntityManager.getGame().getNet().getWorld()!=null;
+	}
+	
+	public NetWorldService getWorldService(){
+		return service;
+	}
+
+	public void setWorldService(NetWorldService service) {
+		this.service = service;
 	}
 }

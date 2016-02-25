@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 public @interface Entity {
 	boolean attach() default true;
 	String name() default "";
+	String callOnInject() default "";
 }

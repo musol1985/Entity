@@ -1,11 +1,11 @@
-package com.entity.network.core.bean;
+package com.entity.network.core.dao;
 
 import java.io.Serializable;
 
 import com.entity.utils.Vector2;
 
 @com.jme3.network.serializing.Serializable
-public class NetWorldCell implements Serializable{
+public class NetWorldCellDAO implements Serializable{
 	private Vector2 id;
 	private long timestamp;
 

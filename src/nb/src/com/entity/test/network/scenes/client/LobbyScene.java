@@ -1,14 +1,14 @@
 package com.entity.test.network.scenes.client;
 
-import com.entity.network.core.bean.NetPlayer;
-import com.entity.network.core.bean.NetWorld;
+import com.entity.network.core.dao.NetPlayerDAO;
+import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.network.core.items.LobbyClientScene;
 import com.entity.network.core.listeners.LobbyClientMessageListener;
 
-public class LobbyScene extends LobbyClientScene<LobbyClientMessageListener, NetWorld, NetPlayer> {
+public class LobbyScene extends LobbyClientScene<LobbyClientMessageListener, NetWorldDAO, NetPlayerDAO> {
 
 	@Override
-	public void onPlayerReady(NetPlayer player) {
+	public void onPlayerReady(NetPlayerDAO player) {
 		/*if(getWorld().isAllPlayersReady() && getWorld().getPlayers().size()>1){
 			startGame();
 		}*/

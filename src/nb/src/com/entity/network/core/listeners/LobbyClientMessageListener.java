@@ -2,10 +2,11 @@ package com.entity.network.core.listeners;
 
 import com.entity.adapters.NetworkMessageListener;
 import com.entity.core.EntityManager;
-import com.entity.network.core.bean.NetPlayer;
-import com.entity.network.core.bean.NetWorld;
+import com.entity.network.core.dao.NetPlayerDAO;
+import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.network.core.items.LobbyClientScene;
 import com.entity.network.core.msg.MsgOnNewPlayer;
+import com.entity.network.core.msg.MsgOnStartGame;
 import com.jme3.network.MessageConnection;
 
 public class LobbyClientMessageListener extends NetworkMessageListener<LobbyClientScene>{
@@ -13,8 +14,8 @@ public class LobbyClientMessageListener extends NetworkMessageListener<LobbyClie
 	
 	public void onNewPlayer(MsgOnNewPlayer msg, MessageConnection cnn)throws Exception{
 		log.info("OnNewPlayer "+msg.player.getId());
-		NetWorld w=EntityManager.getGame().getNet().getWorld();
-		NetPlayer player=msg.player;
+		NetWorldDAO w=EntityManager.getGame().getNet().getWorld();
+		NetPlayerDAO player=msg.player;
 		
 		if(!player.isConnected()){
 			player.setCnn(cnn);
@@ -25,8 +26,18 @@ public class LobbyClientMessageListener extends NetworkMessageListener<LobbyClie
 		}
 
 		
-		if(getEntity().getPlayerName().equals(player.getId()))
+		if(getEntity().getPlayerName().equals(player.getId())){
 			EntityManager.getGame().getNet().setPlayer(player);
+		}else{
+			getEntity().onPlayerReady(player);
+		}			
+	}
+	
+	public void onStartWorld(MsgOnStartGame msg, MessageConnection cnn)throws Exception{
+		msg.world.init();
+		getEntity().getApp().getNet().setWorld(msg.world);		
+		
+		getEntity().onStartGame();
 	}
 
 }

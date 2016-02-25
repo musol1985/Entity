@@ -11,15 +11,15 @@ import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.builders.SceneBuilder;
 import com.entity.core.items.Scene;
-import com.entity.network.core.bean.NetPlayer;
-import com.entity.network.core.bean.NetWorld;
+import com.entity.network.core.dao.NetPlayerDAO;
+import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.network.core.listeners.WorldsMessageListener;
 import com.entity.network.core.msg.MsgCreateWorld;
 import com.entity.network.core.msg.MsgListWorlds;
 import com.entity.network.core.msg.MsgSelectWorld;
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
-public abstract class WorldsScene<T extends WorldsMessageListener, W extends NetWorld, P extends NetPlayer, G extends EntityGame> extends Scene<G> {
+public abstract class WorldsScene<T extends WorldsMessageListener, W extends NetWorldDAO, P extends NetPlayerDAO, G extends EntityGame> extends Scene<G> {
 	@MessageListener
 	public T listener;
 	@Persistable(fileName="player.conf", newOnNull=true, onNewCallback="initPlayerName", onNewSave=true)

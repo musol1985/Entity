@@ -1,8 +1,8 @@
 package com.entity.core.injectors.field;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-import com.entity.anot.CamNode;
 import com.entity.anot.Entity;
 import com.entity.bean.AnnotationFieldBean;
 import com.entity.core.EntityManager;
@@ -24,9 +24,17 @@ public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<Annota
 	@Override
 	public void onInstance(final T e, IBuilder builder) throws Exception {
 		for(AnnotationFieldBean<Entity> bean:beans){
-			IEntity entity=(IEntity) EntityManager.instanceGeneric(bean.getField().getType());			
+			IEntity entity=(IEntity) EntityManager.instanceGeneric(bean.getField().getType());
+			if(!bean.getAnnot().callOnInject().isEmpty()){
+				Method m=entity.getClass().getMethod(bean.getAnnot().callOnInject());
+				if(m!=null){
+					m.invoke(e, new Object[]{});
+				}else{
+					log.warning("@Entity.callOnInject method: "+bean.getAnnot().callOnInject()+" doesn't exists in class "+e.getClass().getName());
+				}
+			}
             entity.onInstance(builder);
-			bean.getField().set(e, entity);   
+			bean.getField().set(e, entity);   						
 			
 			if(!bean.getAnnot().name().isEmpty())
 				entity.getNode().setName(bean.getAnnot().name());

@@ -2,7 +2,7 @@ package com.entity.network.core.msg;
 
 import java.util.List;
 
-import com.entity.network.core.bean.NetWorld;
+import com.entity.network.core.dao.NetWorldDAO;
 import com.jme3.network.serializing.Serializable;
 
 @Serializable
