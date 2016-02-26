@@ -35,12 +35,12 @@ public abstract class InGameServerScene<T extends InGameServerMessageListener, W
 		
 		@Override
 		public void connectionRemoved(Server server, HostedConnection cnn) {
-			NetPlayerDAO player= world.getDao().getService().getPlayerByConnection(cnn);
+			/*NetPlayerDAO player= world.getDao().getService().getPlayerByConnection(cnn);
 			if(player!=null){
 				log.severe("Player quit: "+player.getId());
 			}else{
 				log.severe("Player quit and not found in world!!");
-			}
+			}*/
 		}
 	};
 

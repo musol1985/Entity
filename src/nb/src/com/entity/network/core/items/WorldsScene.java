@@ -6,6 +6,7 @@ import com.entity.anot.BuilderDefinition;
 import com.entity.anot.Persistable;
 import com.entity.anot.network.MessageListener;
 import com.entity.anot.network.Network;
+import com.entity.anot.network.WorldService;
 import com.entity.core.EntityGame;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
@@ -17,13 +18,17 @@ import com.entity.network.core.listeners.WorldsMessageListener;
 import com.entity.network.core.msg.MsgCreateWorld;
 import com.entity.network.core.msg.MsgListWorlds;
 import com.entity.network.core.msg.MsgSelectWorld;
+import com.entity.network.core.service.NetWorldService;
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
-public abstract class WorldsScene<T extends WorldsMessageListener, W extends NetWorldDAO, P extends NetPlayerDAO, G extends EntityGame> extends Scene<G> {
+public abstract class WorldsScene<T extends WorldsMessageListener, S extends NetWorldService, W extends NetWorldDAO, G extends EntityGame> extends Scene<G> {
 	@MessageListener
 	public T listener;
 	@Persistable(fileName="player.conf", newOnNull=true, onNewCallback="initPlayerName", onNewSave=true)
 	public String playerName;
+	
+	@WorldService
+	public S service;
 
 	@Override
 	public void onPreInject(IBuilder builder) throws Exception {
@@ -60,7 +65,7 @@ public abstract class WorldsScene<T extends WorldsMessageListener, W extends Net
 			log.info("Selecting first world "+world.getId()+" created by "+world.getPlayerCreator());
 			new MsgSelectWorld(world.getId()).send();			
 		}		
-		EntityManager.getGame().getNet().setWorld(world);
+		service.setWorldDAO(world);		
 		//Select the first world
 		log.info("World "+world.getId()+" selected");
 	}

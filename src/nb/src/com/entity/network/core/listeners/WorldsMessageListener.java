@@ -20,7 +20,7 @@ public class WorldsMessageListener extends NetworkMessageListener<WorldsScene>{
 	
 	public void onWorldCreatedOrSelected(MsgOnWorldCreatedSelected msg, MessageConnection cnn) throws Exception{
 		if(msg.error){			
-			EntityManager.getGame().getNet().setWorld(null);
+			getEntity().service.setWorldDAO(null);
 			if(msg.isCreated()){
 				log.warning("Error creating world: The world already exists");
 				throw new RuntimeException("The world already exists....");

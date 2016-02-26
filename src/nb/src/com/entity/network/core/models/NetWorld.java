@@ -10,22 +10,23 @@ import com.entity.network.core.dao.NetWorldCellDAO;
 import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.utils.Vector2;
 
-public class NetWorld<T extends NetWorldDAO, C extends NetWorldCellDAO> extends Model{
-	public static final int CELLS_SIZE = 10;
+public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCellDAO> extends Model{
+	public static final int CELLS_CACHE_SIZE = 10;
+	
 	private static float HASH_TABLE_LOAD_FACTOR=0.75f;
-	private static int HASH_TABLE_CAPACITY = (int) Math.ceil(CELLS_SIZE / HASH_TABLE_LOAD_FACTOR) + 1;
+	private static int HASH_TABLE_CAPACITY = (int) Math.ceil(CELLS_CACHE_SIZE / HASH_TABLE_LOAD_FACTOR) + 1;
 	
 	public T dao;
 	public LinkedHashMap<Vector2, C> cells;
 
-
 	@Override
 	public void onInstance(IBuilder builder) {
 		dao=(T) EntityManager.getGame().getNet().getWorldService().getWorldDAO();
+		EntityManager.getGame().getNet().getWorldService().setWorld(this);
 		cells=new LinkedHashMap<Vector2, C>(HASH_TABLE_CAPACITY, HASH_TABLE_LOAD_FACTOR, true) {
             @Override
             protected boolean removeEldestEntry(Map.Entry<Vector2, C> eldest) {
-                boolean pop=this.size() > CELLS_SIZE;
+                boolean pop=this.size() > CELLS_CACHE_SIZE;
                 if(pop){
                 	EntityManager.getGame().getNet().getWorldService().onCellPopCache(eldest.getValue());                    
                 }
@@ -47,5 +48,15 @@ public class NetWorld<T extends NetWorldDAO, C extends NetWorldCellDAO> extends 
 		return cells;
 	}
 	
+	public int getVirtualCellSize(){
+		return getCellSize()/2;
+	}
 	
+	
+	
+	public boolean isTemporal() {
+		return false;
+	}
+
+	public abstract int getCellSize();
 }

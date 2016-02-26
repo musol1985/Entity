@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 
 @com.jme3.network.serializing.Serializable
 public abstract class NetWorldDAO<T extends NetPlayerDAO> implements Serializable{
+	public static final int INFINITE_SIZE=0;
+	
 	protected static final Logger log = Logger.getLogger(NetWorldDAO.class.getName());
 	
 	private HashMap<String, T> players=new HashMap<String, T>();

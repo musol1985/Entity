@@ -5,9 +5,9 @@ import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.network.core.items.LobbyClientScene;
 import com.entity.network.core.listeners.LobbyClientMessageListener;
 
-public class LobbyScene extends LobbyClientScene<LobbyClientMessageListener, NetWorldDAO, NetPlayerDAO> {
+public class LobbyScene  {
 
-	@Override
+
 	public void onPlayerReady(NetPlayerDAO player) {
 		/*if(getWorld().isAllPlayersReady() && getWorld().getPlayers().size()>1){
 			startGame();

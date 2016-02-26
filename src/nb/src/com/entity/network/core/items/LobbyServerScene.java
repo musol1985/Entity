@@ -22,7 +22,7 @@ import com.jme3.network.HostedConnection;
 import com.jme3.network.Server;
 
 @BuilderDefinition(builderClass=LobbyBuilder.class)
-public abstract class LobbyServerScene<T extends LobbyServerMessageListener, W extends NetWorldDAO, P extends NetPlayerDAO> extends Scene  {
+public abstract class LobbyServerScene<T extends LobbyServerMessageListener, S extends NetWorldService, W extends NetWorldDAO, P extends NetPlayerDAO> extends Scene  {
 	@MessageListener
 	public T listener;
 	
@@ -30,7 +30,7 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, W e
 	public HashMap<String, W> worlds;
 	
 	@WorldService
-	public NetWorldService service;
+	public S service;
 	
 	@ServerConnectionsListener
 	public ConnectionListener cnnListener=new ConnectionListener() {
@@ -96,13 +96,11 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, W e
 	 */
 	public boolean canPlayersJoin(){
 		return isWorldSelected();
+	}	
+	
+	public S getService() {
+		return service;
 	}
 
 	public abstract void onPlayerJoined(P player);
-
-	public NetWorldService getService() {
-		return service;
-	}
-	
-	
 }

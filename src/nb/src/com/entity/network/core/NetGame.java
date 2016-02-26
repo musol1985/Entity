@@ -156,10 +156,6 @@ public class NetGame{
 		this.matchName = matchName;
 	}
 	
-	public boolean isWorldSelected(){
-		return EntityManager.getGame().getNet().getWorld()!=null;
-	}
-	
 	public NetWorldService getWorldService(){
 		return service;
 	}

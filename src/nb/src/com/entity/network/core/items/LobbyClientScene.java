@@ -7,6 +7,7 @@ import com.entity.anot.Persistable;
 import com.entity.anot.network.ClientStateListener;
 import com.entity.anot.network.MessageListener;
 import com.entity.anot.network.Network;
+import com.entity.anot.network.WorldService;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.builders.SceneBuilder;
@@ -16,10 +17,11 @@ import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.network.core.listeners.LobbyClientMessageListener;
 import com.entity.network.core.msg.MsgOnNewPlayer;
 import com.entity.network.core.msg.MsgStartGame;
+import com.entity.network.core.service.NetWorldService;
 import com.jme3.network.Client;
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
-public abstract class LobbyClientScene<T extends LobbyClientMessageListener, W extends NetWorldDAO, P extends NetPlayerDAO> extends Scene  {
+public abstract class LobbyClientScene<T extends LobbyClientMessageListener, S extends NetWorldService, P extends NetPlayerDAO> extends Scene  {
 	
 	@MessageListener
 	private T listener;
@@ -27,6 +29,9 @@ public abstract class LobbyClientScene<T extends LobbyClientMessageListener, W e
 	
 	@Persistable(fileName="player.conf", newOnNull=true, onNewCallback="initPlayerName", onNewSave=true)
 	public String playerName;
+	
+	@WorldService
+	public S service;
 
 	@ClientStateListener
 	public com.jme3.network.ClientStateListener stateListener=new com.jme3.network.ClientStateListener(){
@@ -43,7 +48,7 @@ public abstract class LobbyClientScene<T extends LobbyClientMessageListener, W e
 
 	@Override
 	public void onPreInject(IBuilder builder) throws Exception {
-		if(!getApp().getNet().isWorldSelected()){
+		if(!service.isWorldSelected()){
 			//Si no hay world selected, es otro player(no root) por lo que hay que conectarse
 			Network opts=getApp().getNet().getNetworkOptions();
 			int port=getApp().getNet().getPort();

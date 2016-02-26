@@ -5,14 +5,7 @@ import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.network.core.items.LobbyServerScene;
 import com.entity.network.core.listeners.LobbyServerMessageListener;
 
-public class LobbyScene extends LobbyServerScene<LobbyServerMessageListener, NetWorldDAO, NetPlayerDAO> {
+public class LobbyScene  {
 
-	@Override
-	public void onPlayerJoined(NetPlayerDAO player) {
-		System.out.println("Player joined! "+player.getId());
-		/*if(getWorld().getPlayers().size()>1){
-			startGame();
-		}*/
-	}
 
 }

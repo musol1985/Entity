@@ -1,11 +1,10 @@
 package com.entity.core.builders;
 
-import com.entity.anot.Instance;
-import com.entity.anot.RayPick;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.entity.anot.Instance;
+import com.entity.anot.RayPick;
 import com.entity.anot.RunGLThread;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
@@ -18,7 +17,7 @@ import com.entity.core.injectors.field.EntityInjector;
 import com.entity.core.injectors.field.LightInjector;
 import com.entity.core.injectors.field.ListInjector;
 import com.entity.core.injectors.field.MapInjector;
-import com.entity.core.injectors.field.MessageListenerInjector;
+import com.entity.core.injectors.field.NetworkListenerInjector;
 import com.entity.core.injectors.field.PersistableInjector;
 import com.entity.core.injectors.field.ScrollCameraInjector;
 import com.entity.core.injectors.field.SkyInjector;
@@ -38,7 +37,7 @@ public class SceneBuilder extends Builder<Scene>{
 		addInjector(new LightInjector<Scene>());
 		addInjector(new EntityInjector<Scene>());
 		addInjector(new FieldInjector<Scene>());
-		addInjector(new MessageListenerInjector<Scene>());
+		addInjector(new NetworkListenerInjector<Scene>());
 		addInjector(new TriggerInjector<Scene>());
 		addInjector(new SkyInjector<Scene>());
         addInjector(new CameraInjector<Scene>());

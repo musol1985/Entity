@@ -14,7 +14,7 @@ public class LobbyClientMessageListener extends NetworkMessageListener<LobbyClie
 	
 	public void onNewPlayer(MsgOnNewPlayer msg, MessageConnection cnn)throws Exception{
 		log.info("OnNewPlayer "+msg.player.getId());
-		NetWorldDAO w=EntityManager.getGame().getNet().getWorld();
+		NetWorldDAO w=getEntity().service.getWorldDAO();
 		NetPlayerDAO player=msg.player;
 		
 		if(!player.isConnected()){
@@ -27,15 +27,14 @@ public class LobbyClientMessageListener extends NetworkMessageListener<LobbyClie
 
 		
 		if(getEntity().getPlayerName().equals(player.getId())){
-			EntityManager.getGame().getNet().setPlayer(player);
+			getEntity().service.setPlayerDAO(player);
 		}else{
 			getEntity().onPlayerReady(player);
 		}			
 	}
 	
 	public void onStartWorld(MsgOnStartGame msg, MessageConnection cnn)throws Exception{
-		msg.world.init();
-		getEntity().getApp().getNet().setWorld(msg.world);		
+		getEntity().service.setWorldDAO(msg.world);		
 		
 		getEntity().onStartGame();
 	}

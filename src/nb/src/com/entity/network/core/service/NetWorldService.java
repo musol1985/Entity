@@ -1,18 +1,19 @@
 package com.entity.network.core.service;
 
-import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import com.entity.core.EntityManager;
+import com.entity.network.core.beans.ViewerCell;
 import com.entity.network.core.dao.NetPlayerDAO;
 import com.entity.network.core.dao.NetWorldCellDAO;
 import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.network.core.models.NetPlayer;
 import com.entity.network.core.models.NetWorld;
 import com.entity.utils.Vector2;
+import com.jme3.math.Vector3f;
 import com.jme3.network.HostedConnection;
 
-public abstract class NetWorldService<W extends NetWorld<D, C>, P extends NetPlayer<E>, C extends NetWorldCellDAO, D extends NetWorldDAO<E>, E extends NetPlayerDAO> {
+public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C extends NetWorldCellDAO, D extends NetWorldDAO<E>, E extends NetPlayerDAO> {
 	protected static final Logger log = Logger.getLogger(NetWorldService.class.getName());
 
 	protected W world;
@@ -25,8 +26,8 @@ public abstract class NetWorldService<W extends NetWorld<D, C>, P extends NetPla
 	 * @return
 	 */
 	public boolean isAllPlayersReady(){
-		for(Entry<String,? extends NetPlayerDAO> p:world.getDao().getPlayers().entrySet()){
-			if(!p.getValue().isReady())
+		for(Object p:world.getDao().getPlayers().values()){
+			if(!((E)p).isReady())
 				return false;
 		}
 			
@@ -68,7 +69,7 @@ public abstract class NetWorldService<W extends NetWorld<D, C>, P extends NetPla
 	}
 	
 	private C getCellFromCache(Vector2 cellId){
-		return world.getCells().get(cellId);
+		return (C) world.getCells().get(cellId);
 	}
 	
 	private void saveCellFS(C cell){
@@ -77,10 +78,11 @@ public abstract class NetWorldService<W extends NetWorld<D, C>, P extends NetPla
 	
 	public abstract C createNewCell(Vector2 cellId);
 	public abstract E createNewPlayerDAO(String name);
-
 	
-	public boolean isCellInLimits(Vector2 cellId){
-		return cellId.x<world.getDao().getMaxRealSize() && cellId.z<world.getDao().getMaxRealSize();
+	public boolean isCellInLimits(Vector2 v){
+		if(world.getDao().getMaxRealSize()==NetWorldDAO.INFINITE_SIZE)return true;
+		
+		return v.x>=0 && v.x<world.getDao().getMaxRealSize() && v.z>=0 && v.z<world.getDao().getMaxRealSize();
 	}
 	
 	/**
@@ -114,28 +116,47 @@ public abstract class NetWorldService<W extends NetWorld<D, C>, P extends NetPla
 	 * @return
 	 */
 	public E getPlayerByConnection(HostedConnection cnn){
-		for(E player:world.getDao().getPlayers().values()){
-			if(player.getCnn()==cnn)
-				return player;
+		for(Object player:world.getDao().getPlayers().values()){
+			if(((E)player).getCnn()==cnn)
+				return (E)player;
 		}
 		return null;
 	}
 
 	public D getWorldDAO() {
-		return world.getDao();
+		return (D)world.getDao();
 	}
 
 	public void setWorldDAO(D world) {
+		if(world==null){			
+			log.warning("WorldService: world model is null, create temp world model to set the worldDao");		
+			this.world=(W) new NetWorld(){
+				@Override
+				public int getCellSize() {
+					return 0;
+				}
+
+				@Override
+				public boolean isTemporal() {
+					return true;
+				}				
+			};
+				
+		}
 		this.world.setDao(world);
 	}
 
 
 	public E getPlayerDAO() {
-		return player.getDao();
+		return (E)player.getDao();
 	}
 
 
 	public void setPlayerDAO(E playerDAO) {
+		if(player==null){
+			log.warning("WorldService: player model is null, create temp player model to set the plauyerDao");		
+			this.player=(P) new NetPlayer(){};
+		}
 		this.player.setDao(playerDAO);
 	}
 
@@ -159,5 +180,35 @@ public abstract class NetWorldService<W extends NetWorld<D, C>, P extends NetPla
 		this.player = player;
 	}
 	
+	public boolean isWorldSelected(){
+		return world!=null;
+	}
+
+	public Vector2 getCellPosByReal(Vector3f pos){
+		Vector2 res= new Vector2((int)pos.x/world.getCellSize(),(int)pos.z/world.getCellSize());
+		if(isCellInLimits(res))
+			return res;
+		
+		return null;
+	}
 	
+	public Vector2 getVirtualPosByReal(Vector3f pos){
+		return new Vector2((int)Math.floor((pos.x-world.getVirtualCellSize())/world.getCellSize()),(int)Math.floor((pos.z-world.getVirtualCellSize())/world.getCellSize()));
+	}
+	
+	public ViewerCell getByVirtualCell(Vector2 virtual){
+		Vector3f real=getRealFromVirtual(virtual);
+		ViewerCell v=new ViewerCell();
+		v.cell0=getCellPosByReal(real.add(0, 0, 0));
+		v.cell1=getCellPosByReal(real.add(world.getCellSize(), 0, 0));
+		v.cell2=getCellPosByReal(real.add(world.getCellSize(), 0, world.getCellSize()));
+		v.cell3=getCellPosByReal(real.add(0, 0, world.getCellSize()));
+		
+		return v;
+	}
+	
+	public Vector3f getRealFromVirtual(Vector2 virtual){
+		return new Vector3f(virtual.x*world.getCellSize(),0,virtual.z*world.getCellSize());
+	}
+
 }
