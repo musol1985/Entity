@@ -65,7 +65,7 @@ public abstract class EntityGame extends SimpleApplication{
 				List<String> packages=new ArrayList<String>(Arrays.asList(network.messagesPackage()));
 				
 				packages.add("com.entity.network.core.msg");
-				packages.add("com.entity.network.core.bean");
+				packages.add("com.entity.network.core.dao");
 				
 				log.info("++Finding @Serializable in "+packages.size()+" packages");
 				List<Class> classes=new ArrayList<Class>();
@@ -93,7 +93,7 @@ public abstract class EntityGame extends SimpleApplication{
 					 Serializer.registerClass(message);
 				 }
 				
-				net=new NetGame(network);
+				net=new NetGame(network);                                
 			}
 			
 			Scene firstScene=null;
@@ -195,7 +195,8 @@ public abstract class EntityGame extends SimpleApplication{
 	}
 
 	
-	public <T extends Scene> T showScene(T scene, Object...params)throws Exception{
+	public <T extends Scene> T showScene(T scene, Object...params){
+            try{
 		if(!scene.isPreLoaded()){
 			FieldSceneBean bean=scene.getProxy();
 			scene=(T) EntityManager.instanceGeneric(bean.getF().getType());
@@ -211,7 +212,10 @@ public abstract class EntityGame extends SimpleApplication{
 		}
 		
 		setScene(scene);
-
+            }catch(Exception e){
+                log.severe("Can't load scene "+scene);
+                e.printStackTrace();                
+            }
 		return scene;
 	}
 	

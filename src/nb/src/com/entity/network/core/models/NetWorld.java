@@ -18,6 +18,7 @@ public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCellDAO>
 	
 	public T dao;
 	public LinkedHashMap<Vector2, C> cells;
+        public boolean temporal=false;
 
 	@Override
 	public void onInstance(IBuilder builder) {
@@ -55,8 +56,12 @@ public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCellDAO>
 	
 	
 	public boolean isTemporal() {
-		return false;
+		return temporal;
 	}
+        
+        public void setTemporal(boolean temporal){
+            this.temporal=temporal;
+        }
 
 	public abstract int getCellSize();
 }

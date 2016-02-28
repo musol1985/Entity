@@ -5,5 +5,5 @@ import com.entity.network.core.items.InGameServerScene;
 
 public class InGameServerMessageListener extends NetworkMessageListener<InGameServerScene>{
 	
-
+ 
 }

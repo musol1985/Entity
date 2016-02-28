@@ -109,7 +109,12 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 	 */
 	public abstract void preload();
 	
-	
+	/**
+	 * @CalledOnServer
+	 * Preload the world when starting the game the first time
+	 * Example: position player, initial values, seeds, etc.
+	 */
+	public abstract W createTempNetWorld();
 	/**
 	 * @CalledOnServer
 	 * @param cnn
@@ -124,24 +129,16 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 	}
 
 	public D getWorldDAO() {
+            if(world!=null)
 		return (D)world.getDao();
+            return null;
 	}
 
 	public void setWorldDAO(D world) {
-		if(world==null){			
+		if(this.world==null){			
 			log.warning("WorldService: world model is null, create temp world model to set the worldDao");		
-			this.world=(W) new NetWorld(){
-				@Override
-				public int getCellSize() {
-					return 0;
-				}
-
-				@Override
-				public boolean isTemporal() {
-					return true;
-				}				
-			};
-				
+			this.world=createTempNetWorld();
+                        this.world.setTemporal(true);
 		}
 		this.world.setDao(world);
 	}

@@ -29,7 +29,7 @@ public class LobbyClientMessageListener extends NetworkMessageListener<LobbyClie
 		if(getEntity().getPlayerName().equals(player.getId())){
 			getEntity().service.setPlayerDAO(player);
 		}else{
-			getEntity().onPlayerReady(player);
+			getEntity().onNewPlayer(player);
 		}			
 	}
 	

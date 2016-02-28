@@ -48,7 +48,7 @@ public abstract class LobbyClientScene<T extends LobbyClientMessageListener, S e
 
 	@Override
 	public void onPreInject(IBuilder builder) throws Exception {
-		if(!service.isWorldSelected()){
+		if(!getApp().getNet().getWorldService().isWorldSelected()){
 			//Si no hay world selected, es otro player(no root) por lo que hay que conectarse
 			Network opts=getApp().getNet().getNetworkOptions();
 			int port=getApp().getNet().getPort();
@@ -68,9 +68,7 @@ public abstract class LobbyClientScene<T extends LobbyClientMessageListener, S e
 	}
 	
 	public void onConnected(Client client){
-		NetPlayerDAO playerTmp=new NetPlayerDAO();
-		playerTmp.setId(playerName);
-		client.send(new MsgOnNewPlayer(playerTmp));
+		client.send(new MsgOnNewPlayer(service.createNewPlayerDAO(playerName)));
         log.info("OnClienConnect. Sending playerTmp");
 	}
 
@@ -87,9 +85,10 @@ public abstract class LobbyClientScene<T extends LobbyClientMessageListener, S e
 	public void startGame(){
 		MsgStartGame msg=new MsgStartGame();
 		msg.send();
+                log.info("Starting game "+service.getWorldDAO().getId());
 	}
 	
-	public abstract void onPlayerReady(P player);
+	public abstract void onNewPlayer(P player);
 	/**
 	 * When admin starts game, show Scene <? extends InGameClientScene>
 	 * States->

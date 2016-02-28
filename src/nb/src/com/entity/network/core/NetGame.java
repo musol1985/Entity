@@ -22,14 +22,10 @@ public class NetGame{
 	
 	private NetWorldService service;
 	
-	public NetGame(Network anot){
+	public NetGame(Network anot)throws Exception{
 		this.anot=anot;
 		port=anot.port();
-		try {
-			service=(NetWorldService) anot.getClass().newInstance();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+                service=(NetWorldService) anot.worldService().newInstance();
 	}
 	
 	public void addConnectionListener(ClientStateListener listener){

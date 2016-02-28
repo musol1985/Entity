@@ -16,7 +16,7 @@ import com.entity.network.core.service.NetWorldService;
 public class FieldInjector<T extends IEntity>  extends BaseInjector<T>{
 	private List<Field> fields=new ArrayList<Field>();
 	private List<SingletonBean> singletons=new ArrayList<SingletonBean>();
-	private SingletonBean netWorldServiceBean;
+	private Field netWorldServiceField;
 
 
 	@Override
@@ -28,8 +28,8 @@ public class FieldInjector<T extends IEntity>  extends BaseInjector<T>{
 			singleton.getF().set(e, singleton.getInstance());
 		}
 		
-		if(netWorldServiceBean!=null){
-			netWorldServiceBean.getF().set(e, EntityManager.getGame().getNet().getWorldService());
+		if(netWorldServiceField!=null){
+			netWorldServiceField.set(e, EntityManager.getGame().getNet().getWorldService());
 		}
 	}
 
@@ -44,6 +44,7 @@ public class FieldInjector<T extends IEntity>  extends BaseInjector<T>{
 			}
 		}else if(EntityManager.isAnnotationPresent(WorldService.class, f)){
 			f.setAccessible(true);
+                        netWorldServiceField=f;
 			NetWorldService service=EntityManager.getGame().getNet().getWorldService();
 			if(service==null){
 				service=(NetWorldService) f.getType().newInstance();
@@ -61,7 +62,7 @@ public class FieldInjector<T extends IEntity>  extends BaseInjector<T>{
 
 	@Override
 	public boolean hasInjections() {
-		return singletons.size()>0 || fields.size()>0;
+		return singletons.size()>0 || fields.size()>0 || netWorldServiceField!=null;
 	}
 
 	@Override

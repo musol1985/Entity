@@ -4,10 +4,11 @@ import com.entity.anot.entities.SceneEntity;
 import com.entity.anot.network.Network;
 import com.entity.core.EntityGame;
 import com.entity.core.EntityManager;
+import com.entity.network.core.service.NetWorldService;
 import com.entity.test.network.scenes.server.LobbyScene;
 import com.entity.test.network.scenes.server.SelectWorldScene;
 
-@Network(messagesPackage={"com.entity.test.msg"}, gameName="Test", version=1)
+@Network(messagesPackage={"com.entity.test.msg"}, gameName="Test", version=1, worldService = NetWorldService.class)
 public class TestNetGameServer extends EntityGame{
 	
 	public static void main(String[] args)throws Exception{

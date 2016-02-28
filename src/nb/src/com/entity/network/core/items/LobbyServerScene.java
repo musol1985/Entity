@@ -8,6 +8,7 @@ import com.entity.anot.network.MessageListener;
 import com.entity.anot.network.Network;
 import com.entity.anot.network.ServerConnectionsListener;
 import com.entity.anot.network.WorldService;
+import com.entity.core.EntityGame;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.items.Scene;
@@ -22,7 +23,7 @@ import com.jme3.network.HostedConnection;
 import com.jme3.network.Server;
 
 @BuilderDefinition(builderClass=LobbyBuilder.class)
-public abstract class LobbyServerScene<T extends LobbyServerMessageListener, S extends NetWorldService, W extends NetWorldDAO, P extends NetPlayerDAO> extends Scene  {
+public abstract class LobbyServerScene<T extends LobbyServerMessageListener, S extends NetWorldService, W extends NetWorldDAO, P extends NetPlayerDAO, G extends EntityGame> extends Scene<G>  {
 	@MessageListener
 	public T listener;
 	
@@ -103,4 +104,5 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, S e
 	}
 
 	public abstract void onPlayerJoined(P player);
+        public abstract void onStarGame();
 }

@@ -114,9 +114,10 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 			//If is new world, preload positions of the players
 			if(world.isCreated()){
 				getEntity().getService().preload();
-			}
+			}                        
 			MsgOnStartGame start=new MsgOnStartGame(world);
 			broadCast(cnn, start, false);
+                        getEntity().onStarGame();
 			log.info("Starting world "+world.getId());
 		}		
 	}
