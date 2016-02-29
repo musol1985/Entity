@@ -10,7 +10,7 @@ public interface IEntity{
 	public void dettach()throws Exception;
 	public void onDettach(IEntity parent)throws Exception;
     public void onInstance(IBuilder builder, Object[] params);
-    public void onPreInject(IBuilder builder)throws Exception;
+    public void onPreInject(IBuilder builder, Object[] params)throws Exception;
     public void setBuilder(IBuilder builder);
     public void attachChilFromInjector(Spatial s);
 }

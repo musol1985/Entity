@@ -135,7 +135,7 @@ public abstract class Model extends Node implements IEntity{
 
 
 	@Override
-	public void onPreInject(IBuilder builder) throws Exception {
+	public void onPreInject(IBuilder builder, Object[] params) throws Exception {
 		// TODO Auto-generated method stub
 		
 	}

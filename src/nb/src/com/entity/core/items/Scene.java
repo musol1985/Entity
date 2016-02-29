@@ -189,7 +189,7 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
     }
 
 	@Override
-	public void onPreInject(IBuilder builder) throws Exception {
+	public void onPreInject(IBuilder builder, Object[] params) throws Exception {
 		// TODO Auto-generated method stub
 		
 	}

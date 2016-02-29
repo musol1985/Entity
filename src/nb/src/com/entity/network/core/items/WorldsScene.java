@@ -31,7 +31,7 @@ public abstract class WorldsScene<T extends WorldsMessageListener, S extends Net
 	public S service;
 
 	@Override
-	public void onPreInject(IBuilder builder) throws Exception {
+	public void onPreInject(IBuilder builder, Object[] params) throws Exception {
 		Network opts=EntityManager.getGame().getNet().getNetworkOptions();
 		int port=EntityManager.getGame().getNet().getPort();
 		log.info("Connecting to... "+EntityManager.getGame().getNet().getIp()+":"+port);		

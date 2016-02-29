@@ -24,19 +24,7 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 	protected P player;
 	
 	
-	
-	/**
-	 * @CalledOnServer
-	 * @return
-	 */
-	public boolean isAllPlayersReady(){
-		for(Object p:world.getDao().getPlayers().values()){
-			if(!((E)p).isReady())
-				return false;
-		}
-			
-		return true;
-	}
+
 	
 	
 	/**
@@ -47,38 +35,24 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 	 * @param id
 	 * @return cell from(cache->Fs->Create) or null if id is not in limits
 	 */
-	public C getCellById(Vector2 cellId){
-		C cell=null;
-		if(isCellInLimits(cellId)){
-			log.info("getcellById from cache->"+cellId);
-			cell=getCellFromCache(cellId);
-			
-			if(cell==null){
-				log.info("getcellById from fs->"+cellId);
-				cell=getCellFromFS(cellId);
-				
-				//Only if is server
-				if(canCreateCell() && cell==null){
-					log.info("The cell "+cellId+" isn't in cache and fs. It has to be created.");
-					cell=createNewCell(cellId);
-				}
-			}
-		}
-		
-		return cell;
-		
-	}
+	public abstract C getCellById(Vector2 cellId);
 	
-	private C getCellFromFS(Vector2 cellId){
+	
+	public C getCellFromFS(Vector2 cellId){
 		NetWorldCellDAO cell=(NetWorldCellDAO)EntityManager.loadPersistable(world.getDao().getCachePath()+cellId+".cache");
 		if(cell!=null){
 			Class c=getCellClass();
-			EntityManager.instanceGeneric(c, cell);
+			return (C)EntityManager.instanceGeneric(c, cell);
 		}
+		return null;
 	}
 	
-	private C getCellFromCache(Vector2 cellId){
+	protected C getCellFromCache(Vector2 cellId){
 		return (C) world.getCells().get(cellId);
+	}
+	
+	protected NetWorldCellDAO getCellIdFromIndexes(Vector2 cellId){
+		return (NetWorldCellDAO) world.cellsIndex.get(cellId);
 	}
 	
 	private void saveCellFS(C cell){
@@ -94,14 +68,7 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 		return v.x>=0 && v.x<world.getDao().getMaxRealSize() && v.z>=0 && v.z<world.getDao().getMaxRealSize();
 	}
 	
-	/**
-	 * @CalledOnServer
-	 * By default, the new cell can only be created by the server
-	 * @return
-	 */
-	public boolean canCreateCell(){
-		return EntityManager.getGame().getNet().isNetServerGame();
-	}
+	
 	
 	/**
 	 * If overrides, it must call super
@@ -111,19 +78,7 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 		saveCellFS(cell);
 	}
 	
-	/**
-	 * @CalledOnServer
-	 * Preload the world when starting the game the first time
-	 * Example: position player, initial values, seeds, etc.
-	 */
-	public abstract void preload();
 	
-	/**
-	 * @CalledOnServer
-	 * Preload the world when starting the game the first time
-	 * Example: position player, initial values, seeds, etc.
-	 */
-	public abstract W createTempNetWorld();
 	
 	/**
 	 * Returns the class of the NetworldCell
@@ -131,24 +86,19 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 	 */
 	public abstract Class getCellClass();
 	
-	/**
-	 * @CalledOnServer
-	 * @param cnn
-	 * @return
-	 */
-	public E getPlayerByConnection(HostedConnection cnn){
-		for(Object player:world.getDao().getPlayers().values()){
-			if(((E)player).getCnn()==cnn)
-				return (E)player;
-		}
-		return null;
-	}
+	
 
 	public D getWorldDAO() {
             if(world!=null)
 		return (D)world.getDao();
             return null;
 	}
+	
+	/**
+	 * Preload the world when starting the game the first time
+	 * Example: position player, initial values, seeds, etc.
+	 */
+	public abstract W createTempNetWorld();
 
 	public void setWorldDAO(D world) {
 		if(this.world==null){			
@@ -298,6 +248,7 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 			List<CellId> cellsToUnLoad=oldView.getCellsNotIn(newView);
 			for(CellId c:cellsToUnLoad){
 				log.info("Unloading cell..."+c);
+				//TODO unload cells
 			}
 		}
 	}

@@ -48,7 +48,7 @@ public abstract class LobbyClientScene<T extends LobbyClientMessageListener, S e
 	}; 
 
 	@Override
-	public void onPreInject(IBuilder builder) throws Exception {
+	public void onPreInject(IBuilder builder, Object[] params) throws Exception {
 		if(!getApp().getNet().getWorldService().isWorldSelected()){
 			//Si no hay world selected, es otro player(no root) por lo que hay que conectarse
 			Network opts=getApp().getNet().getNetworkOptions();
