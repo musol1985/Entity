@@ -21,7 +21,7 @@ public class UpdateInjector<T extends IEntity>  extends ListBeanInjector<Annotat
 	}
 
 	@Override
-	public void onInstance(final T item, IBuilder builder) throws Exception {
+	public void onInstance(final T item, IBuilder builder, Object[] params) throws Exception {
 		for(AnnotationMethodBean<OnUpdate> bean:beans){
 			final Method update=bean.getMethod();
 			item.getNode().addControl(new ControlAdapter() {

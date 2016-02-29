@@ -20,7 +20,7 @@ public class CameraInjector<T extends IEntity> extends ListBeanInjector<Annotati
 	}
 	
 	@Override
-	public void onInstance(final T e, IBuilder builder) throws Exception {
+	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for(AnnotationFieldBean<CamNode> bean:beans){
 			bean.getField().set(e, new CameraNode(bean.getAnnot().name(), EntityManager.getCamera()));
 		}

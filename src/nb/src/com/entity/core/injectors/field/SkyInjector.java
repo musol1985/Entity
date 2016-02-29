@@ -24,7 +24,7 @@ public class SkyInjector<T  extends IEntity> extends ListBeanInjector<Annotation
 	}
 
 	@Override
-	public void onInstance(final T e, IBuilder builder) throws Exception {
+	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for(AnnotationFieldBean<Sky> bean:beans){
 			bean.getField().set(e, SkyFactory.createSky(EntityManager.getAssetManager(), bean.getAnnot().texture(), bean.getAnnot().sphereMapping()));			
 		}	

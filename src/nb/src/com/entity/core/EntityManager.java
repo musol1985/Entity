@@ -124,9 +124,13 @@ public abstract class EntityManager {
             return Class.forName((cls).getGenericSuperclass().getTypeName());*/
         return cls;
     }
+    
+    public static Object instanceGeneric(Class c){
+    	return instanceGeneric(c, null);
+    }
 	
 	@SuppressWarnings("unchecked")
-	public static Object instanceGeneric(Class c){
+	public static Object instanceGeneric(Class c, Object...params){
 		IEntity res=null;
 		try{
 			IBuilder template=EntityManager.getBuilder(c);
@@ -140,7 +144,7 @@ public abstract class EntityManager {
 				res=(IEntity) c.newInstance();
 			}
 			log.info("onInstance "+res.getClass().getName()+" using builder "+template.getClass().getName());
-			template.onInstance(res, template);
+			template.onInstance(res, template, params);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

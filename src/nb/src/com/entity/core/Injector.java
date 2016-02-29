@@ -8,7 +8,7 @@ public interface Injector<T extends IEntity> {
 	public void loadMethod(Class<T> c, Method m)throws Exception;
 	public void onCreate(Class<T> c)throws Exception;
 	public boolean hasInjections();
-	public void onInstance(T item, IBuilder builder)throws Exception;
+	public void onInstance(T item, IBuilder builder, Object[] params)throws Exception;
 	
 
 }

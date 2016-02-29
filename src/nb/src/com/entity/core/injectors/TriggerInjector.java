@@ -26,7 +26,7 @@ public class TriggerInjector<T extends IEntity>  extends BaseInjector<T> impleme
 
 
 	@Override
-	public void onInstance(final T e, IBuilder builder) throws Exception {
+	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 	
 	}
 

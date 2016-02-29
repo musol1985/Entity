@@ -41,7 +41,7 @@ public abstract class BatchModel extends ModelBase{
 	}
 
     @Override
-    public void onInstance(IBuilder builder){
+    public void onInstance(IBuilder builder, Object[] params){
     	super.attachChild(batch);
     }
 

@@ -1,0 +1,31 @@
+package com.entity.network.core.models;
+
+import com.entity.core.IBuilder;
+import com.entity.core.items.Model;
+import com.entity.network.core.dao.NetWorldCellDAO;
+
+public abstract class NetWorldCell<T extends NetWorldCellDAO> extends Model{
+
+	public T dao;
+
+	public T getDao() {
+		return dao;
+	}
+
+	public void setDao(T dao) {
+		this.dao = dao;
+	}
+
+	@Override
+	public void onInstance(IBuilder builder, Object[] params) {
+		if(params==null || params.length==0){
+			log.severe("Creating the networldCellModel: No CellDAO in params!!!!");
+			throw new RuntimeException("Creating the networldCellModel: No CellDAO in params!!!!");
+		}else{
+			dao=(T)params[0];
+		}
+	}
+
+
+	
+}

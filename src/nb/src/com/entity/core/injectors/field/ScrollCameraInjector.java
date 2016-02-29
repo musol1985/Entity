@@ -21,10 +21,10 @@ public class ScrollCameraInjector<T extends IEntity>  extends ListBeanInjector<A
 	}
 
 	@Override
-	public void onInstance(final T e, IBuilder builder) throws Exception {
+	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for(AnnotationFieldBean<ScrollCameraNode> bean:beans){
 			ScrollCameraAdapter entity=(ScrollCameraAdapter) EntityManager.instanceGeneric(bean.getField().getType());
-			entity.onInstance(builder);  
+			entity.onInstance(builder, null);  
 			bean.getField().set(e, entity);
 			
 			entity.setValues(bean.getAnnot());

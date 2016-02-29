@@ -11,10 +11,10 @@ public class NetPlayer<T extends NetPlayerDAO> extends Model{
 
 
 	@Override
-	public void onInstance(IBuilder builder) {
+	public void onInstance(IBuilder builder, Object[] params) {
 		dao=(T) EntityManager.getGame().getNet().getWorldService().getPlayerDAO();
 		EntityManager.getGame().getNet().getWorldService().setPlayer(this);
-		super.onInstance(builder);
+		super.onInstance(builder, params);
 	}
 
 	public T getDao() {

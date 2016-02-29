@@ -102,9 +102,9 @@ public class ModelBuilder extends Builder<Model>{
 	}
 
     @Override
-    public void onInstance(Model e, IBuilder builder) throws Exception {
+    public void onInstance(Model e, IBuilder builder, Object[] params) throws Exception {
         injectModel(e);
-        super.onInstance(e, builder);        		
+        super.onInstance(e, builder, params);        		
     }
         
         

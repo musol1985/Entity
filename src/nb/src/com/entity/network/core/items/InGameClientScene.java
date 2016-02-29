@@ -2,18 +2,21 @@ package com.entity.network.core.items;
 
 import com.entity.anot.BuilderDefinition;
 import com.entity.anot.Entity;
-import com.entity.anot.network.ClientStateListener;
+import com.entity.anot.network.ClientConnectionListener;
 import com.entity.anot.network.MessageListener;
+import com.entity.anot.network.WorldService;
 import com.entity.core.builders.SceneBuilder;
 import com.entity.core.items.Scene;
 import com.entity.network.core.listeners.InGameClientMessageListener;
 import com.entity.network.core.models.NetPlayer;
 import com.entity.network.core.models.NetWorld;
+import com.entity.network.core.service.NetWorldService;
 import com.jme3.network.Client;
+import com.jme3.network.ClientStateListener;
 
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
-public abstract class InGameClientScene<T extends InGameClientMessageListener, W extends NetWorld, P extends NetPlayer> extends Scene implements ClientStateListener   {
+public abstract class InGameClientScene<T extends InGameClientMessageListener, W extends NetWorld, P extends NetPlayer, S extends NetWorldService> extends Scene {
 	
 	@MessageListener
 	private T listener;
@@ -22,9 +25,13 @@ public abstract class InGameClientScene<T extends InGameClientMessageListener, W
 	public W world;
 	@Entity
 	public P player;
+    @WorldService
+    public S service;
+    
+    private boolean loaded;
 	
-	@ClientStateListener
-	public com.jme3.network.ClientStateListener stateListener=new com.jme3.network.ClientStateListener(){
+	@ClientConnectionListener
+	public ClientStateListener stateListener=new ClientStateListener(){
 		@Override
 		public void clientConnected(Client client) {
 			
@@ -39,7 +46,7 @@ public abstract class InGameClientScene<T extends InGameClientMessageListener, W
 
 	@Override
 	public void onLoadScene() throws Exception{
-
+		
 	}
 
 

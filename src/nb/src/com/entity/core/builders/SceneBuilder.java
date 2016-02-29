@@ -93,9 +93,9 @@ public class SceneBuilder extends Builder<Scene>{
 	}
 
 	@Override
-	public void onInstance(Scene item, IBuilder builder) throws Exception {
+	public void onInstance(Scene item, IBuilder builder, Object[] params) throws Exception {
 		item.setApp(EntityManager.getGame());
-		super.onInstance(item, builder);
+		super.onInstance(item, builder, params);
 	}
 
 

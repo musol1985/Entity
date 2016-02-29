@@ -2,28 +2,19 @@ package com.entity.network.core.dao;
 
 import java.io.Serializable;
 
-import com.entity.utils.Vector2;
+import com.entity.network.core.beans.CellId;
 
 @com.jme3.network.serializing.Serializable
 public class NetWorldCellDAO implements Serializable{
-	private Vector2 id;
-	private long timestamp;
+	private CellId id;
 
-	public Vector2 getId() {
+	public CellId getId() {
 		return id;
 	}
 
-	public void setId(Vector2 id) {
+	public void setId(CellId id) {
 		this.id = id;
 	}
 
-	public long getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
-	}
-	
 	
 }

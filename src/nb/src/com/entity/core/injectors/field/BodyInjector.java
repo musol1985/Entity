@@ -36,7 +36,7 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 	}
 
 	@Override
-	public void onInstance(T item, IBuilder builder) throws Exception {
+	public void onInstance(T item, IBuilder builder, Object[] params) throws Exception {
 		for(RigidBodyBean bean:beans){
 			
 			PhysicsControl  body=null;

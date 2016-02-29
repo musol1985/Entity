@@ -22,7 +22,7 @@ public class LightInjector<T  extends IEntity>  extends ListBeanInjector<LightBe
 
 
 	@Override
-	public void onInstance(final T e, IBuilder builder) throws Exception {
+	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for(LightBean bean:beans){
 			bean.createLight(e);
 		}

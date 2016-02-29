@@ -20,6 +20,7 @@ public abstract class NetWorldDAO<T extends NetPlayerDAO> implements Serializabl
 	private GAME_MODE mode;
 	private long seed;
 
+	private transient boolean loaded;
 	
 	public enum GAME_MODE{NO_MODE, DEATHMATCH, COOPERATIVE}
 	
@@ -120,6 +121,14 @@ public abstract class NetWorldDAO<T extends NetPlayerDAO> implements Serializabl
 
 	public void setSeed(long seed) {
 		this.seed = seed;
+	}
+
+	public boolean isLoaded() {
+		return loaded;
+	}
+
+	public void setLoaded(boolean loaded) {
+		this.loaded = loaded;
 	}
 	
 	

@@ -17,9 +17,9 @@ public class BatchModelBuilder extends BaseModelBuilder<BatchModel>{
 
 
 	@Override
-    public void onInstance(BatchModel e, IBuilder builder) throws Exception {
+    public void onInstance(BatchModel e, IBuilder builder, Object[] params) throws Exception {
         e.setName(anot.name());
         e.setAutoBatch(anot.autoBatch());
-        super.onInstance(e, builder);        		
+        super.onInstance(e, builder, params);        		
     }        	
 }

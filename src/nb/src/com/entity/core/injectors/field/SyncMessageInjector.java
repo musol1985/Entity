@@ -25,7 +25,7 @@ public class SyncMessageInjector<T extends NetworkModel>  extends ListBeanInject
 	}
 
 	@Override
-	public void onInstance(final T e, IBuilder builder) throws Exception {
+	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		
 	}
 	

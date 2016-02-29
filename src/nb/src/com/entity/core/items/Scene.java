@@ -69,7 +69,7 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 	}
 
 	@Override
-	public void onInstance(IBuilder builder) {
+	public void onInstance(IBuilder builder, Object[] params) {
 
 	}
 	

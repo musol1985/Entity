@@ -51,7 +51,7 @@ public abstract class ModelBase<T extends BaseModelBuilder> extends Node impleme
 	}
 
     @Override
-    public void onInstance(IBuilder builder){
+    public void onInstance(IBuilder builder, Object[] params){
     }
     
     @Override

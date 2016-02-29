@@ -35,7 +35,7 @@ public class InputInjector<T extends IEntity>  extends ListBeanInjector<InputBea
 	
 
 	@Override
-	public void onInstance(final T e, IBuilder builder) throws Exception {
+	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for(final InputBean bean: beans){
 			if(bean.isDigital()){								
 				InputListener listener=new ActionListener() {

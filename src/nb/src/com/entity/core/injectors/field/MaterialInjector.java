@@ -21,7 +21,7 @@ public class MaterialInjector<T extends IEntity>  extends ListBeanInjector<Mater
 	}
 
 	@Override
-	public void onInstance(final T e, IBuilder builder) throws Exception {
+	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for(MaterialBean m:beans){                    
 			m.onLoad((Model)e);
 		}

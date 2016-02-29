@@ -25,7 +25,7 @@ public class MapInjector<T extends IEntity> extends ListBeanInjector<CollectionB
 	}
 	
 	@Override
-	public void onInstance(final T e, IBuilder builder) throws Exception {
+	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for(CollectionBean<MapEntity> bean:beans){
 			Map<String, IEntity> map=new HashMap<String, IEntity>();
 			for(MapEntryEntity entry:bean.getAnnot().entries()){
@@ -48,7 +48,7 @@ public class MapInjector<T extends IEntity> extends ListBeanInjector<CollectionB
 	
 	private IEntity addItem(boolean attach, CollectionBean<MapEntity> bean, Class classEntity, final T e, IBuilder builder) throws Exception{
 		IEntity entity=(IEntity) EntityManager.instanceGeneric(classEntity);			
-        entity.onInstance(builder);                     
+        entity.onInstance(builder, null);                     
 		
 		if(bean.getAnnot().attachAllItems()){
 			entity.attachToParent((IEntity) e);

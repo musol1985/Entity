@@ -79,16 +79,16 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 	}
 
 	@Override
-	public void onInstance(T item, IBuilder builder) throws Exception {
+	public void onInstance(T item, IBuilder builder, Object[] params) throws Exception {
 		item.onPreInject(builder);
 		injectInstance(item);
                 
 		for(Injector i: usedInjectors){
 			log.info("onInstance Injector: "+i);
-			i.onInstance(item, builder);
+			i.onInstance(item, builder, params);
 		}
                 
-        item.onInstance(this);
+        item.onInstance(this, params);
 	}
 
 	public <T extends Injector> T getInjector(Class<T> injector){

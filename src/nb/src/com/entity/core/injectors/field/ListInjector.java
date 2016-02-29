@@ -24,7 +24,7 @@ public class ListInjector<T extends IEntity> extends ListBeanInjector<Collection
 	}
 	
 	@Override
-	public void onInstance(final T e, IBuilder builder) throws Exception {
+	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for( CollectionBean<ListEntity> bean:beans){
 			List<IEntity> lst=new ArrayList<IEntity>();
 			for(ListItemEntity entityAnot:bean.getAnnot().items()){
@@ -48,7 +48,7 @@ public class ListInjector<T extends IEntity> extends ListBeanInjector<Collection
 	
 	private IEntity addItem(boolean attach, CollectionBean<ListEntity> bean, Class classEntity, final T e, IBuilder builder) throws Exception{
 		IEntity entity=(IEntity) EntityManager.instanceGeneric(classEntity);			
-        entity.onInstance(builder);                     
+        entity.onInstance(builder, null);                     
 		
 		if(bean.getAnnot().attachAllItems()){
 			entity.attachToParent((IEntity) e);

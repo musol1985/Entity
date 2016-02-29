@@ -60,7 +60,7 @@ public class ScrollCameraAdapter extends Model{
     private Vector3f tmp=new Vector3f();
 
     @Override
-    public void onInstance(IBuilder builder) {
+    public void onInstance(IBuilder builder, Object[] params) {
         EntityManager.getGame().getFlyByCamera().setMoveSpeed(100);    
         EntityManager.getGame().getFlyByCamera().setEnabled(false);
         

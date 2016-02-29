@@ -2,6 +2,7 @@ package com.entity.core.items;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.logging.Logger;
 
 import com.entity.anot.BuilderDefinition;
 import com.entity.core.IBuilder;
@@ -17,6 +18,7 @@ import com.jme3.scene.Spatial;
 
 @BuilderDefinition(builderClass=ModelBuilder.class)
 public abstract class Model extends Node implements IEntity{
+	protected static final Logger log = Logger.getLogger(Model.class.getName());
 	protected ModelBuilder builder;
 	
 	protected boolean isCollidableWith(Model e){
@@ -51,7 +53,7 @@ public abstract class Model extends Node implements IEntity{
 	}
 
     @Override
-    public void onInstance(IBuilder builder){
+    public void onInstance(IBuilder builder, Object[] params){
     }
     
     @Override

@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 import com.entity.adapters.NetworkMessageListener;
-import com.entity.anot.network.ClientStateListener;
+import com.entity.anot.network.ClientConnectionListener;
 import com.entity.anot.network.MessageListener;
 import com.entity.anot.network.ServerConnectionsListener;
 import com.entity.bean.AnnotationFieldBean;
@@ -23,7 +23,7 @@ public class NetworkListenerBean extends AnnotationFieldBean{
 	}
 	
 	public static boolean isClientStateListener(Field f){
-		return EntityManager.isAnnotationPresent(ClientStateListener.class,f);
+		return EntityManager.isAnnotationPresent(ClientConnectionListener.class,f);
 	}
 	
 	public static boolean isServerConnectionsListener(Field f){

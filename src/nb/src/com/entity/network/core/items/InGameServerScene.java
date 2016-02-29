@@ -2,7 +2,7 @@ package com.entity.network.core.items;
 
 import com.entity.anot.BuilderDefinition;
 import com.entity.anot.Entity;
-import com.entity.anot.network.ClientStateListener;
+import com.entity.anot.network.ClientConnectionListener;
 import com.entity.anot.network.MessageListener;
 import com.entity.anot.network.ServerConnectionsListener;
 import com.entity.anot.network.WorldService;

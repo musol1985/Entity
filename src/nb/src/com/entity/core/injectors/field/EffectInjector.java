@@ -21,7 +21,7 @@ public class EffectInjector<T  extends IEntity> extends ListBeanInjector<EffectB
 	}
 
 	@Override
-	public void onInstance(final T e, IBuilder builder) throws Exception {
+	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for(EffectBean effect:beans){
 			effect.instance(e);
 		}

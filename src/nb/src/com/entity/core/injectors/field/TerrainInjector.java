@@ -22,7 +22,7 @@ public class TerrainInjector<T extends IEntity>  extends ListBeanInjector<Terrai
 	}
 
 	@Override
-	public void onInstance(final T e, IBuilder builder) throws Exception {
+	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for(TerrainBean bean:beans){
 			TerrainQuad terrain = new TerrainQuad(bean.getName(), bean.getAnnot().chunkSize()+1, bean.getAnnot().realSize()+1, bean.getHeight(e, EntityManager.getAssetManager()).getHeightMap());
 

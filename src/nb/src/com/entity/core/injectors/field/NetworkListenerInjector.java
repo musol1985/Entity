@@ -24,7 +24,7 @@ public class NetworkListenerInjector<T extends IEntity>  extends ListBeanInjecto
 		if(NetworkListenerBean.isMessageListener(f)){
 			beans.add(new NetworkListenerBean(f, MessageListener.class));
 		}else if(NetworkListenerBean.isClientStateListener(f)){
-			beans.add(new NetworkListenerBean(f, com.entity.anot.network.ClientStateListener.class));
+			beans.add(new NetworkListenerBean(f, com.entity.anot.network.ClientConnectionListener.class));
 		}else if(NetworkListenerBean.isServerConnectionsListener(f)){
 			beans.add(new NetworkListenerBean(f, ServerConnectionsListener.class));
 		}
@@ -70,7 +70,7 @@ public class NetworkListenerInjector<T extends IEntity>  extends ListBeanInjecto
 	}
 
 	@Override
-	public void onInstance(IEntity item, IBuilder builder) throws Exception {
+	public void onInstance(IEntity item, IBuilder builder, Object[] params) throws Exception {
 		
 		
 	}

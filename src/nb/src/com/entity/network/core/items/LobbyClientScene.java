@@ -4,10 +4,11 @@ import java.util.logging.Logger;
 
 import com.entity.anot.BuilderDefinition;
 import com.entity.anot.Persistable;
-import com.entity.anot.network.ClientStateListener;
+import com.entity.anot.network.ClientConnectionListener;
 import com.entity.anot.network.MessageListener;
 import com.entity.anot.network.Network;
 import com.entity.anot.network.WorldService;
+import com.entity.core.EntityGame;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.builders.SceneBuilder;
@@ -21,7 +22,7 @@ import com.entity.network.core.service.NetWorldService;
 import com.jme3.network.Client;
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
-public abstract class LobbyClientScene<T extends LobbyClientMessageListener, S extends NetWorldService, P extends NetPlayerDAO> extends Scene  {
+public abstract class LobbyClientScene<T extends LobbyClientMessageListener, S extends NetWorldService, P extends NetPlayerDAO, G extends EntityGame> extends Scene<G>  {
 	
 	@MessageListener
 	private T listener;
@@ -33,7 +34,7 @@ public abstract class LobbyClientScene<T extends LobbyClientMessageListener, S e
 	@WorldService
 	public S service;
 
-	@ClientStateListener
+	@ClientConnectionListener
 	public com.jme3.network.ClientStateListener stateListener=new com.jme3.network.ClientStateListener(){
 		@Override
 		public void clientConnected(Client client) {

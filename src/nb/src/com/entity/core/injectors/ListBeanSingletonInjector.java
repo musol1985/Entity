@@ -9,7 +9,7 @@ public abstract class ListBeanSingletonInjector<G extends SingletonBean, T  exte
 	
 
 	@Override
-	public void onInstance(final T e, IBuilder builder) throws Exception {
+	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for(G bean:beans){	
 			bean.getF().set(e, bean.getInstance());
 		}

@@ -22,7 +22,7 @@ public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<Annota
 
 
 	@Override
-	public void onInstance(final T e, IBuilder builder) throws Exception {
+	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for(AnnotationFieldBean<Entity> bean:beans){
 			IEntity entity=(IEntity) EntityManager.instanceGeneric(bean.getField().getType());
 			if(!bean.getAnnot().callOnInject().isEmpty()){
@@ -33,7 +33,7 @@ public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<Annota
 					log.warning("@Entity.callOnInject method: "+bean.getAnnot().callOnInject()+" doesn't exists in class "+e.getClass().getName());
 				}
 			}
-            entity.onInstance(builder);
+            entity.onInstance(builder, params);
 			bean.getField().set(e, entity);   						
 			
 			if(!bean.getAnnot().name().isEmpty())

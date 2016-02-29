@@ -194,6 +194,9 @@ public abstract class EntityGame extends SimpleApplication{
 		return bullet.getPhysicsSpace();
 	}
 
+	public <T extends Scene> T showScene(T scene){
+		return showScene(scene, null);
+	}
 	
 	public <T extends Scene> T showScene(T scene, Object...params){
             try{
