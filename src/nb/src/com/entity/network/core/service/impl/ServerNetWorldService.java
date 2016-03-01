@@ -68,7 +68,7 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 	}
 
 	/**
-	 * Get a cell by ID if not exist returns null
+	 * Get a cell by ID if not exist it creates the cell
 	 */
 	@Override
 	public C getCellById(Vector2 cellId) {
@@ -92,7 +92,14 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 				log.info("The cell "+cellId+" already exist. Put on first place in cache.");
 				world.cellsCache.remove(cellId);
 				world.cellsCache.put(cellId, cell);
+			}else{
+				log.info("getcellById creating the cell->"+cellId);
+				F cellDao=createCellDAO(cellId);
+				log.info("getcellById cell dao created->"+cellId);
+				cell=createNewCellFromDAO(cellDao);
+				log.info("getcellById cell created->"+cellId);
 			}
+						
 		}
 		return cell;
 	}
@@ -103,15 +110,15 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 	 * @param cellId
 	 * @return
 	 */
-	public boolean createCellDAO(Vector2 cellId){
+	public F createCellDAO(Vector2 cellId){
 		if(isCellInLimits(cellId)){
 			log.info("The cell "+cellId+" isn't in cache and fs. It has to be created.");				
 			F cellDao=createCellDAOBackground(cellId);
 			log.info("The cell dao "+cellId+" has been created.");
 			//C cell=createNewCellFromDAO(cellDao);
-			return true;
+			return cellDao;
 		}else{
-			return false;
+			return null;
 		}
 	}
 	

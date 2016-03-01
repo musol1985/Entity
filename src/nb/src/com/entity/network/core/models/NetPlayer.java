@@ -1,10 +1,12 @@
 package com.entity.network.core.models;
 
+import com.entity.anot.entities.ModelEntity;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.items.Model;
 import com.entity.network.core.dao.NetPlayerDAO;
 
+@ModelEntity
 public class NetPlayer<T extends NetPlayerDAO> extends Model{
 
 	public T dao;

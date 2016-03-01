@@ -25,6 +25,7 @@ import com.entity.core.injectors.field.LightInjector;
 import com.entity.core.injectors.field.ListInjector;
 import com.entity.core.injectors.field.MapInjector;
 import com.entity.core.injectors.field.MaterialInjector;
+import com.entity.core.injectors.field.PersistableInjector;
 import com.entity.core.injectors.field.TerrainInjector;
 import com.entity.core.injectors.input.InputInjector;
 import com.entity.core.injectors.method.UpdateInjector;
@@ -61,6 +62,7 @@ public class ModelBuilder extends Builder<Model>{
         addInjector(new BodyInjector<Model>());
         addInjector(new ListInjector<Model>());
         addInjector(new MapInjector<Model>());
+        addInjector(new PersistableInjector<Model>());
 		
 		model=c.getAnnotation(ModelEntity.class);
                 

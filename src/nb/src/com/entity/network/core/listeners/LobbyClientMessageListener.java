@@ -34,8 +34,9 @@ public class LobbyClientMessageListener extends NetworkMessageListener<LobbyClie
 	}
 	
 	public void onStartWorld(MsgOnStartGame msg, MessageConnection cnn)throws Exception{
-		getEntity().service.setWorldDAO(msg.world);		
-		
+		getEntity().service.setWorldDAO(msg.world);	
+		getEntity().service.setPlayerDAO(msg.world.getNetPlayerById(getEntity().getPlayerName()));
+		log.info("On start game "+msg.world.getId());
 		getEntity().onStartGame();
 	}
 

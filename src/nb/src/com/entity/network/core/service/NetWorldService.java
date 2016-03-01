@@ -3,6 +3,7 @@ package com.entity.network.core.service;
 import java.util.logging.Logger;
 
 import com.entity.core.EntityManager;
+import com.entity.core.IEntity;
 import com.entity.network.core.beans.CellId;
 import com.entity.network.core.beans.CellViewQuad;
 import com.entity.network.core.dao.NetPlayerDAO;

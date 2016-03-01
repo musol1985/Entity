@@ -17,17 +17,6 @@ import com.jme3.network.ClientStateListener;
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
 public abstract class InGameClientScene<T extends InGameClientMessageListener, W extends NetWorld, P extends NetPlayer, S extends ClientNetWorldService> extends Scene {
-	
-	@MessageListener
-	private T listener;
-	
-	@Entity
-	public W world;
-	@Entity
-	public P player;
-    @WorldService
-    public S service;
-    
     private boolean loaded;
 	
 	@ClientConnectionListener
@@ -46,15 +35,13 @@ public abstract class InGameClientScene<T extends InGameClientMessageListener, W
 
 	@Override
 	public void onLoadScene() throws Exception{
-		
+		getService().updatePlayerLocation(getPlayer().getDao().getPosition());
 	}
 
 
-	public S getService() {
-		return service;
-	}
-
-
-	
+	public abstract W getWorld();
+	public abstract P getPlayer();
+	public abstract S getService();
+	public abstract T getListener();
 
 }

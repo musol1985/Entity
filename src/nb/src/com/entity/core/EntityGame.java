@@ -66,6 +66,8 @@ public abstract class EntityGame extends SimpleApplication{
 				
 				packages.add("com.entity.network.core.msg");
 				packages.add("com.entity.network.core.dao");
+                                packages.add("com.entity.network.core.beans");
+                                packages.add("com.entity.utils");
 				
 				log.info("++Finding @Serializable in "+packages.size()+" packages");
 				List<Class> classes=new ArrayList<Class>();

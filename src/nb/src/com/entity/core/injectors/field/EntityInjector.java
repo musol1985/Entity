@@ -9,6 +9,9 @@ import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
 import com.entity.core.injectors.ListBeanInjector;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 
 public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<AnnotationFieldBean<Entity>, T>{
 	
@@ -23,7 +26,7 @@ public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<Annota
 
 	@Override
 	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
-		for(AnnotationFieldBean<Entity> bean:beans){
+		for(AnnotationFieldBean<Entity> bean:beans){ 
 			IEntity entity=(IEntity) EntityManager.instanceGeneric(bean.getField().getType());
 			if(!bean.getAnnot().callOnInject().isEmpty()){
 				Method m=entity.getClass().getMethod(bean.getAnnot().callOnInject());

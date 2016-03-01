@@ -37,4 +37,7 @@ public class CellId implements Serializable{
 		return false;
 	}
 		
+        public String toString(){
+            return "CellId: "+id.toString()+" - "+timestamp;
+        }
 }

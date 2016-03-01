@@ -24,14 +24,9 @@ import com.jme3.network.Server;
 
 @BuilderDefinition(builderClass=LobbyBuilder.class)
 public abstract class LobbyServerScene<T extends LobbyServerMessageListener, S extends ServerNetWorldService, W extends NetWorldDAO, P extends NetPlayerDAO, G extends EntityGame> extends Scene<G>  {
-	@MessageListener
-	public T listener;
-	
 	@Persistable(fileName="worlds",newOnNull=true)
 	public HashMap<String, W> worlds;
-	
-	@WorldService
-	public S service;
+
 	
 	@ServerConnectionsListener
 	public ConnectionListener cnnListener=new ConnectionListener() {
@@ -54,7 +49,7 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, S e
 		public void connectionRemoved(Server server, HostedConnection arg1) {
 			if(server.getConnections().size()==0){
 				log.info("Owner has exited, setting world to null");	
-				service.setWorldDAO(null);
+				getService().setWorldDAO(null);
 			}
 		}
 	};
@@ -88,7 +83,7 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, S e
 	
 
 	public boolean isWorldSelected(){
-		return service.getWorldDAO()!=null;
+		return getService().getWorldDAO()!=null;
 	}
 	
 	/**
@@ -99,10 +94,8 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, S e
 		return isWorldSelected();
 	}	
 	
-	public S getService() {
-		return service;
-	}
-
+	public abstract S getService();
+	public abstract T getListener();
 	public abstract void onPlayerJoined(P player);
-        public abstract void onStarGame();
+    public abstract void onStarGame();
 }

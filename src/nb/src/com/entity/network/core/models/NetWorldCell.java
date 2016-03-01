@@ -1,9 +1,11 @@
 package com.entity.network.core.models;
 
+import com.entity.anot.entities.ModelEntity;
 import com.entity.core.IBuilder;
 import com.entity.core.items.Model;
 import com.entity.network.core.dao.NetWorldCellDAO;
 
+@ModelEntity
 public abstract class NetWorldCell<T extends NetWorldCellDAO> extends Model{
 
 	public T dao;

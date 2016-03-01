@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.entity.anot.Persistable;
+import com.entity.anot.entities.ModelEntity;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.items.Model;
@@ -13,6 +14,7 @@ import com.entity.network.core.beans.CellViewQuad;
 import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.utils.Vector2;
 
+@ModelEntity
 public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCell> extends Model{
 	public static final int CELLS_CACHE_SIZE = 10;
 	

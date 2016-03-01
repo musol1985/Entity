@@ -89,10 +89,10 @@ public class CellViewQuad {
 	 * @return
 	 */
 	public List<CellId> getCellsNotIn(CellViewQuad view){
-		List<CellId> res=new ArrayList<CellId>(4);
+		List<CellId> res=new ArrayList<CellId>(4);		
 		
 		for(CellId c:cells){
-			if(!view.hasCell(c))
+			if(c!=null && (view==null || !view.hasCell(c)))
 				res.add(c);
 		}
 		

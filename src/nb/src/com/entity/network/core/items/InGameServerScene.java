@@ -19,16 +19,7 @@ import com.jme3.network.Server;
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
 public abstract class InGameServerScene<T extends InGameServerMessageListener, W extends NetWorld, S extends NetWorldService> extends Scene{
-	
-	@MessageListener
-	public T listener;
-	
-	@Entity
-	public W world;
-        
-        @WorldService
-	public S service;
-	
+
 	
 	@ServerConnectionsListener
 	public ConnectionListener cnnListener=new ConnectionListener() {
@@ -55,11 +46,9 @@ public abstract class InGameServerScene<T extends InGameServerMessageListener, W
 
 	}
 
-
-	public S getService() {
-		return service;
-	}
-	
+	public abstract W getWorld();
+	public abstract S getService();
+	public abstract T getListener();
 	
 	
 }

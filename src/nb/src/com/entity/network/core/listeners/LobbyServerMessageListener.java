@@ -116,9 +116,9 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 				getEntity().getService().preload();
 			}                        
 			MsgOnStartGame start=new MsgOnStartGame(world);
-			broadCast(cnn, start, false);
-                        getEntity().onStarGame();
+			broadCast(cnn, start, false);			
 			log.info("Starting world "+world.getId());
+			getEntity().onStarGame();
 		}		
 	}
 }

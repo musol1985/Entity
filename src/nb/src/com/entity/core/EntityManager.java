@@ -148,6 +148,7 @@ public abstract class EntityManager {
 			log.info("onInstance "+res.getClass().getName()+" using builder "+template.getClass().getName());
 			template.onInstance(res, template, params);
 		}catch(Exception e){
+                    log.severe("Can't instantiate an entity of class "+c.getName()+" reason: "+e.getMessage());
 			e.printStackTrace();
 		}
 		return res;
@@ -284,10 +285,13 @@ public abstract class EntityManager {
     	if(res!=null)
     		return res;
 
-		try {
-			Method fSuper = m.getDeclaringClass().getSuperclass().getMethod(m.getName(), m.getParameterTypes());
-			if(fSuper!=null){
-	    		return getAnnotation(a, fSuper);
+		try {  
+                        Class cls=m.getDeclaringClass().getSuperclass();
+                        if(cls!=null){
+                            Method fSuper = cls.getMethod(m.getName(), m.getParameterTypes());
+                            if(fSuper!=null){
+                            return getAnnotation(a, fSuper);
+                        }
 	    	}
 		} catch (NoSuchMethodException e) {
 			

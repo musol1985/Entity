@@ -2,6 +2,8 @@ package com.entity.network.core.service.impl;
 
 import java.util.List;
 
+import com.entity.core.EntityManager;
+import com.entity.core.IEntity;
 import com.entity.network.core.beans.CellId;
 import com.entity.network.core.beans.CellViewQuad;
 import com.entity.network.core.dao.NetPlayerDAO;
@@ -55,7 +57,7 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 	public void updatePlayerLocation(Vector3f position){
 		CellViewQuad newView=getViewByRealPosition(position);
 		
-		if(!world.getView().equals(newView)){
+		if(world.getView()==null || !world.getView().equals(newView)){
 			
 			log.info("On new CellViewQuad-> "+newView);
 			CellViewQuad oldView=world.getView();				
@@ -66,10 +68,12 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 			MsgGetCells msg=new MsgGetCells(cellsToLoad);
 			msg.send();
 			
-			List<CellId> cellsToUnLoad=oldView.getCellsNotIn(newView);
-			for(CellId c:cellsToUnLoad){
-				log.info("Unloading cell..."+c);
-				//TODO unload cells
+			if(oldView!=null){
+				List<CellId> cellsToUnLoad=oldView.getCellsNotIn(newView);
+				for(CellId c:cellsToUnLoad){
+					log.info("Unloading cell..."+c);
+					//TODO unload cells
+				}
 			}
 		}
 	}
@@ -81,12 +85,21 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 	public void reuseCell(Vector2 id){
 		log.info("Reusing cell "+id);
 		C cell=getCellById(id);
+		
 		//TODO attach cell
 	}
 	
 	public void reloadCell(F cellDao){
 		log.info("Reloading cell "+cellDao.getId().id);
 		C cell=createNewCellFromDAO(cellDao);
+		try {
+			log.info("Position of cell "+cellDao.getId()+" ->"+getRealFromVirtual(cellDao.getId().id));
+			cell.setLocalTranslation(getRealFromVirtual(cellDao.getId().id).add(world.getCellSize()/2, 0, world.getCellSize()/2));
+			cell.attachToParent((IEntity) EntityManager.getCurrentScene());
+		} catch (Exception e) {
+			log.severe("Error attaching to parent the cell "+cellDao.getId());
+			e.printStackTrace();			
+		}
 		//TODO attach cell		
 	}
 }

@@ -13,6 +13,7 @@ import com.entity.core.items.Model;
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
+import com.jme3.terrain.Terrain;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 
 public class MaterialBean extends AnnotationFieldBean<MaterialComponent>{
@@ -66,7 +67,7 @@ public class MaterialBean extends AnnotationFieldBean<MaterialComponent>{
 	}
 	
 	public static boolean isComponent(Field f){
-		return f.getType()==Geometry.class || f.getType()==TerrainQuad.class;
+		return f.getType()==Geometry.class || f.getType()==TerrainQuad.class || f.getType()==Terrain.class;
 	}
 	
 	public void onLoad(Model e)throws Exception{
@@ -84,7 +85,9 @@ public class MaterialBean extends AnnotationFieldBean<MaterialComponent>{
 				if(field==null)
 					throw new Exception("Cannot apply material to component. Field "+component.getName()+" is null. Verify the injector order!!!");
 
-				if(field instanceof TerrainQuad){
+                                if(field instanceof Terrain){
+					((TerrainQuad) field).setMaterial(m);
+				}else if(field instanceof TerrainQuad){
 					((TerrainQuad) field).setMaterial(m);
 				}else if(field instanceof Spatial){
 					((Spatial) field).setMaterial(m);
