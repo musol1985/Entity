@@ -10,13 +10,13 @@ import com.entity.core.items.Scene;
 import com.entity.network.core.listeners.InGameClientMessageListener;
 import com.entity.network.core.models.NetPlayer;
 import com.entity.network.core.models.NetWorld;
-import com.entity.network.core.service.NetWorldService;
+import com.entity.network.core.service.impl.ClientNetWorldService;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
 
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
-public abstract class InGameClientScene<T extends InGameClientMessageListener, W extends NetWorld, P extends NetPlayer, S extends NetWorldService> extends Scene {
+public abstract class InGameClientScene<T extends InGameClientMessageListener, W extends NetWorld, P extends NetPlayer, S extends ClientNetWorldService> extends Scene {
 	
 	@MessageListener
 	private T listener;
@@ -50,5 +50,11 @@ public abstract class InGameClientScene<T extends InGameClientMessageListener, W
 	}
 
 
+	public S getService() {
+		return service;
+	}
+
+
+	
 
 }

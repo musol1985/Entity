@@ -19,8 +19,10 @@ import net.sf.cglib.proxy.MethodProxy;
 
 import com.entity.anot.BuilderDefinition;
 import com.entity.anot.Instance;
+import com.entity.anot.OnBackground;
 import com.entity.anot.Persistable;
 import com.entity.anot.RayPick;
+import com.entity.core.interceptors.BackgroundInterceptor;
 import com.entity.core.interceptors.BaseMethodInterceptor;
 import com.entity.core.interceptors.RayPickInterceptor;
 import com.entity.core.items.Scene;
@@ -157,6 +159,8 @@ public abstract class EntityManager {
 		public Object interceptMethod(Object obj, Method method, MethodProxy mp, Object[] args) throws Throwable {
 			if(EntityManager.isAnnotationPresent(RayPick.class,method)){
 				return RayPickInterceptor.rayPick(obj, method, args, mp, this);
+			}else if(EntityManager.isAnnotationPresent(OnBackground.class,method)){
+				return BackgroundInterceptor.onBackground(obj, method, mp, this, args);
 			}else if(EntityManager.isAnnotationPresent(Instance.class,method)){
                 IEntity instance=(IEntity)instanceGeneric(method.getParameterTypes()[0]);
                 Instance anot=EntityManager.getAnnotation(Instance.class,method);

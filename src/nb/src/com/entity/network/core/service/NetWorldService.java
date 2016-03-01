@@ -1,6 +1,5 @@
 package com.entity.network.core.service;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import com.entity.core.EntityManager;
@@ -12,36 +11,61 @@ import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.network.core.models.NetPlayer;
 import com.entity.network.core.models.NetWorld;
 import com.entity.network.core.models.NetWorldCell;
-import com.entity.network.core.msg.MsgGetCells;
 import com.entity.utils.Vector2;
 import com.jme3.math.Vector3f;
-import com.jme3.network.HostedConnection;
 
-public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C extends NetWorldCell, D extends NetWorldDAO<E>, E extends NetPlayerDAO> {
+public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C extends NetWorldCell, D extends NetWorldDAO<E>, E extends NetPlayerDAO, F extends NetWorldCellDAO> {
 	protected static final Logger log = Logger.getLogger(NetWorldService.class.getName());
 
 	protected W world;
 	protected P player;
-	
-	
 
-	
 	
 	/**
 	 * Get a cell by ID
 	 * 
-	 * Can override isCellInLimits and canCreateCell
-	 * 
 	 * @param id
-	 * @return cell from(cache->Fs->Create) or null if id is not in limits
+	 * @return cell
 	 */
 	public abstract C getCellById(Vector2 cellId);
+	
+
+	
+	/**
+	 * Create a PlayerDAO
+	 * @param name
+	 * @return
+	 */
+	public abstract void onNewPlayerDAO(E player);
+
+	
+	/**
+	 * Returns the class that implements the NetworldCell
+	 * @return
+	 */
+	public abstract Class<C> getCellClass();
+	
+	/**
+	 * Returns the class that implements the NetWorld
+	 * @return
+	 */
+	public abstract Class<W> getWorldClass();
+
+
+	/**
+	 * Returns the class that implements the NetPlayerDAO
+	 * @return
+	 */
+	public abstract Class<E> getPlayerDAOClass();
 	
 	
 	public C getCellFromFS(Vector2 cellId){
 		NetWorldCellDAO cell=(NetWorldCellDAO)EntityManager.loadPersistable(world.getDao().getCachePath()+cellId+".cache");
 		if(cell!=null){
 			Class c=getCellClass();
+			if(c==null){
+				throw new RuntimeException("You must implement getCellClass on NetWorldService.getCellFromFS");
+			}
 			return (C)EntityManager.instanceGeneric(c, cell);
 		}
 		return null;
@@ -59,8 +83,7 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 		EntityManager.savePersistable(world.getDao().getCachePath()+cell.getDao().getId()+".cache", cell.dao);		
 	}
 	
-	public abstract C createNewCell(Vector2 cellId);
-	public abstract E createNewPlayerDAO(String name);
+
 	
 	public boolean isCellInLimits(Vector2 v){
 		if(world.getDao().getMaxRealSize()==NetWorldDAO.INFINITE_SIZE)return true;
@@ -77,14 +100,7 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 	public void onCellPopCache(C cell){
 		saveCellFS(cell);
 	}
-	
-	
-	
-	/**
-	 * Returns the class of the NetworldCell
-	 * @return
-	 */
-	public abstract Class getCellClass();
+
 	
 	
 
@@ -93,20 +109,20 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 		return (D)world.getDao();
             return null;
 	}
-	
-	/**
-	 * Preload the world when starting the game the first time
-	 * Example: position player, initial values, seeds, etc.
-	 */
-	public abstract W createTempNetWorld();
+
 
 	public void setWorldDAO(D world) {
-		if(this.world==null){			
-			log.warning("WorldService: world model is null, create temp world model to set the worldDao");		
-			this.world=createTempNetWorld();
-                        this.world.setTemporal(true);
+		try{
+			if(this.world==null){			
+				log.warning("WorldService: world model is null, create temp world model to set the worldDao");		
+				this.world=(W)getWorldClass().newInstance();
+	            this.world.setTemporal(true);
+			}
+			this.world.setDao(world);
+		}catch(Exception e){
+			e.printStackTrace();
+			log.severe("Error setting worldDAO");
 		}
-		this.world.setDao(world);
 	}
 
 
@@ -226,34 +242,31 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 				return false;
 		return true;
 	}
-	
-	/**
-	 * Checks if the player visor has change and then try to load the Cells
-	 * @param position
-	 */
-	public void updatePlayerLocation(Vector3f position){
-		CellViewQuad newView=getViewByRealPosition(position);
-		
-		if(!world.getView().equals(newView)){
-			
-			log.info("On new CellViewQuad-> "+newView);
-			CellViewQuad oldView=world.getView();				
-			world.setView(newView);
-			
-			List<CellId> cellsToLoad=newView.getCellsNotIn(oldView);	
 
-			MsgGetCells msg=new MsgGetCells(cellsToLoad);
-			msg.send();
-			
-			List<CellId> cellsToUnLoad=oldView.getCellsNotIn(newView);
-			for(CellId c:cellsToUnLoad){
-				log.info("Unloading cell..."+c);
-				//TODO unload cells
-			}
+	/**
+	 * Create a new PlayerDAO from nickname
+	 * @param name
+	 * @return
+	 */
+	public E createNewPlayerDAO(String name){
+		try{
+			E player=getPlayerDAOClass().newInstance();
+			player.setId(name);
+			onNewPlayerDAO(player);
+			return player;
+		}catch(Exception e){
+			log.severe("Cant create a new player dao");
+			e.printStackTrace();
 		}
+		return null;
 	}
 	
-	
-	
+	public C createNewCellFromDAO(F dao){
+		C cell=(C)EntityManager.instanceGeneric(getCellClass(), dao);
+		log.info("The cell "+dao.getId()+" has been created. Inserting in cache and in indexes");
+		world.cellsIndex.put(dao.getId(), cell.dao);
+		world.cellsCache.put(dao.getId(), cell);
+		return cell;
+	}
 
 }

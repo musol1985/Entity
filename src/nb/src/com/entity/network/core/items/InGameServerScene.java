@@ -54,4 +54,12 @@ public abstract class InGameServerScene<T extends InGameServerMessageListener, W
 	public void onLoadScene() throws Exception{
 
 	}
+
+
+	public S getService() {
+		return service;
+	}
+	
+	
+	
 }

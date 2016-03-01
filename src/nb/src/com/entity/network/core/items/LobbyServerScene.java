@@ -17,13 +17,13 @@ import com.entity.network.core.dao.NetPlayerDAO;
 import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.network.core.listeners.LobbyServerMessageListener;
 import com.entity.network.core.msg.MsgListWorlds;
-import com.entity.network.core.service.NetWorldService;
+import com.entity.network.core.service.impl.ServerNetWorldService;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Server;
 
 @BuilderDefinition(builderClass=LobbyBuilder.class)
-public abstract class LobbyServerScene<T extends LobbyServerMessageListener, S extends NetWorldService, W extends NetWorldDAO, P extends NetPlayerDAO, G extends EntityGame> extends Scene<G>  {
+public abstract class LobbyServerScene<T extends LobbyServerMessageListener, S extends ServerNetWorldService, W extends NetWorldDAO, P extends NetPlayerDAO, G extends EntityGame> extends Scene<G>  {
 	@MessageListener
 	public T listener;
 	
