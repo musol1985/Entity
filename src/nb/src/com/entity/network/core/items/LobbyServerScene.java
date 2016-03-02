@@ -56,10 +56,12 @@ public abstract class LobbyServerScene<T extends LobbyServerMessageListener, S e
 
 	@Override
 	public void onPreInject(IBuilder builder, Object[] params) throws Exception {
-		Network opts=EntityManager.getGame().getNet().getNetworkOptions();
-		int port=EntityManager.getGame().getNet().getPort();
-		log.info("Listening on... "+port);
-		EntityManager.getGame().getNet().setNetwork(com.jme3.network.Network.createServer(opts.gameName(), opts.version(), port, port));
+		if(EntityManager.getGame().getNet().getServer()==null){
+			Network opts=EntityManager.getGame().getNet().getNetworkOptions();
+			int port=EntityManager.getGame().getNet().getPort();
+			log.info("Listening on... "+port);
+			EntityManager.getGame().getNet().setNetwork(com.jme3.network.Network.createServer(opts.gameName(), opts.version(), port, port));
+		}
 	}
 
 	@Override

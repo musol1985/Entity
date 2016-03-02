@@ -5,6 +5,9 @@
  */
 package com.entity.adapters;
 
+import java.lang.reflect.Method;
+
+import com.entity.adapters.listeners.IScrollCameraListener;
 import com.entity.anot.CamNode;
 import com.entity.anot.OnUpdate;
 import com.entity.anot.ScrollCameraNode;
@@ -58,6 +61,7 @@ public class ScrollCameraAdapter extends Model{
     private boolean wheelClick;
     
     private Vector3f tmp=new Vector3f();
+    private IScrollCameraListener listener;
 
     @Override
     public void onInstance(IBuilder builder, Object[] params) {
@@ -130,14 +134,10 @@ public class ScrollCameraAdapter extends Model{
         tmp.addLocal(modelForwardDir.mult(moveZ*tpf));
         
         move(tmp);
-    	/*
-        if(moveX!=0){
-            move(moveX*tpf, 0, 0);
+
+        if(listener!=null && tmp.length()>0){
+        	listener.onUpdate(this);
         }
-        if(moveZ!=0){
-            move(0,0,-moveZ*tpf);
-        }
-        */
     }
 
     @Override
@@ -175,6 +175,19 @@ public class ScrollCameraAdapter extends Model{
 	public void setRotateSpeed(int rotateSpeed) {
 		this.rotateSpeed = rotateSpeed;
 	}
+
+
+
+	public IScrollCameraListener getListener() {
+		return listener;
+	}
+
+
+
+	public void setListener(IScrollCameraListener listener) {
+		this.listener = listener;
+	}
+
 
 }
 

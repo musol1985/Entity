@@ -94,7 +94,7 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 		C cell=createNewCellFromDAO(cellDao);
 		try {
 			log.info("Position of cell "+cellDao.getId()+" ->"+getRealFromVirtual(cellDao.getId().id));
-			cell.setLocalTranslation(getRealFromVirtual(cellDao.getId().id).add(world.getCellSize()/2, 0, world.getCellSize()/2));
+			cell.setLocalTranslation(getRealFromVirtual(cellDao.getId().id));//.add(world.getCellSize()/2, 0, world.getCellSize()/2));
 			cell.attachToParent((IEntity) EntityManager.getCurrentScene());
 		} catch (Exception e) {
 			log.severe("Error attaching to parent the cell "+cellDao.getId());
