@@ -5,8 +5,6 @@
  */
 package com.entity.adapters;
 
-import java.lang.reflect.Method;
-
 import com.entity.adapters.listeners.IScrollCameraListener;
 import com.entity.anot.CamNode;
 import com.entity.anot.OnUpdate;
@@ -21,11 +19,16 @@ import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
 import com.entity.core.items.Model;
 import com.jme3.input.MouseInput;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.control.CameraControl;
+import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Sphere;
 
 /**
  *
@@ -62,6 +65,7 @@ public class ScrollCameraAdapter extends Model{
     
     private Vector3f tmp=new Vector3f();
     private IScrollCameraListener listener;
+    private Geometry debug;
 
     @Override
     public void onInstance(IBuilder builder, Object[] params) {
@@ -110,12 +114,12 @@ public class ScrollCameraAdapter extends Model{
     
     @Input(action = MOUSE_WHEEL_POSITIVE)
     public void mouseWheel(float valor, float tpf){
-        move(0,5*valor,-5*valor);
+        camNode.move(0,5*valor,-5*valor);
     }
     
     @Input(action = MOUSE_WHEEL_NEGATIVE)
     public void mouseWheelNeg(float valor, float tpf){
-        move(0,-5*valor,5*valor);
+        camNode.move(0,-5*valor,5*valor);
     }
     
     @Input(action = MOUSE_WHEEL_CLICK)
@@ -188,6 +192,24 @@ public class ScrollCameraAdapter extends Model{
 		this.listener = listener;
 	}
 
+	private void createDebug(){
+            debug = new Geometry("ScrollCamDEbug", new Sphere(30,30,1));
 
+            Material mat = new Material(EntityManager.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+            mat.setColor("Color", ColorRGBA.Red);
+            debug.setMaterial(mat);      
+	}
+
+   public void debug(boolean active){
+	   if(active){
+		   if(debug==null)
+			   createDebug();
+		   if(debug.getParent()==null)
+			   attachChild(debug);
+	   }else{
+		   if(debug!=null && debug.getParent()!=null)
+			   detachChild(debug);
+	   }
+    } 
 }
 

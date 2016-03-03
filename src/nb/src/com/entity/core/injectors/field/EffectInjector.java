@@ -1,6 +1,7 @@
 package com.entity.core.injectors.field;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.Callable;
 
 import com.entity.anot.effects.WaterEffect;
 import com.entity.bean.custom.EffectBean;
@@ -29,10 +30,18 @@ public class EffectInjector<T  extends IEntity> extends ListBeanInjector<EffectB
 
 
 	@Override
-	public <G extends EntityGame> void onAttach(G app, T instance) throws Exception{
-		for(EffectBean effect:beans){
-			app.addPostProcessor(effect.getFilter());
-		}		
+	public <G extends EntityGame> void onAttach(final G app, T instance) throws Exception{
+		app.enqueue(new Callable<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				for(EffectBean effect:beans){
+					app.addPostProcessor(effect.getFilter());
+				}	
+				
+				return true;
+			}
+		});
+			
 	}
 
 	@Override

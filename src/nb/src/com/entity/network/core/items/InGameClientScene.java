@@ -16,7 +16,7 @@ import com.jme3.network.ClientStateListener;
 
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
-public abstract class InGameClientScene<T extends InGameClientMessageListener, W extends NetWorld, P extends NetPlayer, S extends ClientNetWorldService> extends Scene {
+public abstract class InGameClientScene<T extends InGameClientMessageListener, W extends NetWorld, P extends NetPlayer, S extends ClientNetWorldService> extends Scene implements IWorldInGameScene<W,S>{
     private boolean loaded;
 	
 	@ClientConnectionListener

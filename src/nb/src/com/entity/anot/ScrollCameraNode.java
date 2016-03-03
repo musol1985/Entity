@@ -14,6 +14,7 @@ public @interface ScrollCameraNode {
         int offset() default 30;
         int speed() default 20;
         int rotateSpeed() default 20;
+        boolean debug() default false;
         /**
          * Method name to callback on update
          * @return

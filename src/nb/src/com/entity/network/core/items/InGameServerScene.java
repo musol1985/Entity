@@ -5,6 +5,7 @@ import com.entity.anot.network.ServerConnectionsListener;
 import com.entity.core.EntityGame;
 import com.entity.core.builders.SceneBuilder;
 import com.entity.core.items.Scene;
+import com.entity.network.core.dao.NetPlayerDAO;
 import com.entity.network.core.listeners.InGameServerMessageListener;
 import com.entity.network.core.models.NetWorld;
 import com.entity.network.core.service.impl.ServerNetWorldService;
@@ -14,7 +15,7 @@ import com.jme3.network.Server;
 
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
-public abstract class InGameServerScene<T extends InGameServerMessageListener, W extends NetWorld, S extends ServerNetWorldService, G extends EntityGame> extends Scene<G>{
+public abstract class InGameServerScene<T extends InGameServerMessageListener, W extends NetWorld, S extends ServerNetWorldService, G extends EntityGame> extends Scene<G> implements IWorldInGameScene<W,S>{
 
 	
 	@ServerConnectionsListener
@@ -33,7 +34,10 @@ public abstract class InGameServerScene<T extends InGameServerMessageListener, W
 			}else{
 				log.severe("Player quit and not found in world!!");
 			}*/
+			NetPlayerDAO player= getService().getPlayerByConnection(cnn);
+			player.setCnn(null);
 			if(!server.hasConnections()){
+				getService().getWorldDAO().reset();
                             getService().setPlayer(null);
                             getService().setWorld(null);
 				showLobby();
@@ -47,9 +51,14 @@ public abstract class InGameServerScene<T extends InGameServerMessageListener, W
 
 	}
 
+
+
+	public abstract void showLobby();
+
+
+
 	public abstract W getWorld();
 	public abstract S getService();
 	public abstract T getListener();
-	public abstract void showLobby();
 	
 }

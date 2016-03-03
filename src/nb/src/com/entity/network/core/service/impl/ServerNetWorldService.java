@@ -116,9 +116,12 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 		if(isCellInLimits(cellId)){
 			CreatingCell creating=creatingCell.get(cellId);
 			if(creating!=null){
+                                log.info("getcellById "+cellId+" is creating, we put the player in the listener list");
 				creating.addPlayer(cnn);
 			}else{
-				creatingCell.put(cellId, new CreatingCell(cellId, cnn));
+                                creating=new CreatingCell(cellId, cnn);
+				creatingCell.put(cellId, creating);
+                                log.info("getcellById "+cellId+" we start to creating the cell in background");
 				createCellDAOBackground(creating);
 			}		
 		}
@@ -127,9 +130,10 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 	
 	@OnExecutor
 	private void createCellDAOBackground(CreatingCell creating){
+                log.info("getcellById "+creating.getCellId()+" begin the creation of cell dao in background thread");
 		F dao=onNewCellDAO(creating.getCellId());
 		creating.setCellDao(dao);
-		
+		log.info("getcellById "+creating.getCellId()+" has been created in background. Now create de cellModel");
 		createCellModelFromDAOBackground(creating);
 	}
 	
@@ -140,11 +144,12 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 	@RunOnGLThread
 	private void createCellModelFromDAOBackground(CreatingCell creating){
 		for(HostedConnection cnn:creating.getPlayers()){
+                        log.info("getcellById sending the cell "+creating.getCellId()+" to the connection "+cnn.getAddress());
 			cnn.send(new MsgShowCell(creating.getCellDao()));
 		}
-		
-		C cell=createNewCellFromDAO((F)creating.getCellDao());
-		
+		log.info("getcellById "+creating.getCellId()+" creating the cellModel in GLThread");
+		createNewCellFromDAO((F)creating.getCellDao());
+		log.info("getcellById "+creating.getCellId()+" created the cellModel in GLThread");
 		creatingCell.remove(creating.getCellId());
 	}
 

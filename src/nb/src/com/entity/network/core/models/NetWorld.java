@@ -16,7 +16,7 @@ import com.entity.utils.Vector2;
 
 @ModelEntity
 public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCell> extends Model{
-	public static final int CELLS_CACHE_SIZE = 10;
+	public static final int CELLS_CACHE_SIZE = 20;
 	
 	private static float HASH_TABLE_LOAD_FACTOR=0.75f;
 	private static int HASH_TABLE_CAPACITY = (int) Math.ceil(CELLS_CACHE_SIZE / HASH_TABLE_LOAD_FACTOR) + 1;

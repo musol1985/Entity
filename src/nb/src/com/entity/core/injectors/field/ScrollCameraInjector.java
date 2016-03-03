@@ -27,6 +27,8 @@ public class ScrollCameraInjector<T extends IEntity>  extends ListBeanInjector<A
 			ScrollCameraAdapter entity=(ScrollCameraAdapter) EntityManager.instanceGeneric(bean.getField().getType());
 			entity.onInstance(builder, null); 
 
+			if(bean.getAnnot().debug())
+				entity.debug(true);
 			
 			bean.getField().set(e, entity);
 			

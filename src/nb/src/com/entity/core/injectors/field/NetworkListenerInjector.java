@@ -35,6 +35,7 @@ public class NetworkListenerInjector<T extends IEntity>  extends ListBeanInjecto
 		for(NetworkListenerBean bean:beans){			
 			if(bean.isMessageListener()){
 				NetworkMessageListener listener=(NetworkMessageListener) bean.instance();
+				bean.getField().set(instance, listener);
 				listener.setEntity(instance);
 				log.info("Adding MessageListener "+listener+" on "+instance);
 				app.getNet().addMsgListener(listener);

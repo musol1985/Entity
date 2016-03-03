@@ -73,7 +73,18 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 				List<CellId> cellsToUnLoad=oldView.getCellsNotIn(newView);
 				for(CellId c:cellsToUnLoad){
 					log.info("Unloading cell..."+c);
-					//TODO unload cells
+					C cell=((C)world.cellsCache.get(c.getId()));
+					if(cell!=null){
+						try {
+                                                        log.info("Dettaching cell..."+c);
+							cell.dettach();
+						} catch (Exception e) {
+							log.severe("Error detaching cell "+c.getId()+" "+e.getMessage());
+							e.printStackTrace();
+						}
+					}else{
+						log.info("Trying to unload a cell that is not in cache: "+c.getId());
+					}
 				}
 			}
 		}
@@ -112,10 +123,14 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 	 * @param cells
 	 */
 	public void reuseCell(Vector2 id){
-		log.info("Reusing cell "+id);
-		C cell=getCellById(id);
-		
-		//TODO attach cell
+		try{
+			log.info("Reusing cell "+id);
+			C cell=getCellById(id);
+			//cell.attachToParent(world);
+		}catch(Exception e){
+			log.severe("Error attaching cell to world: "+e.getMessage());
+			e.printStackTrace();
+		}
 	}
 	
 	public void reloadCell(F cellDao){
@@ -124,8 +139,9 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 		try {
 			log.info("Position of cell "+cellDao.getId()+" ->"+getRealFromVirtual(cellDao.getId().id));
 			cell.setLocalTranslation(getRealFromVirtual(cellDao.getId().id));
-			if(world.getView()!=null && world.getView().hasCell(cell.dao.getId())){
+			if(world.getView()!=null && world.getView().hasCell(cell.dao.getId())){                                
 				cell.attachToParent(world);
+                log.info("The cell "+cellDao.getId().id+" has been attached");
 			}else{
 				log.info("The cell "+cellDao.getId().id+" isn't in the view. We don't attach it to the world");
 			}

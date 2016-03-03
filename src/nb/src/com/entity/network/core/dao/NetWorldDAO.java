@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+import com.entity.network.core.beans.CellId;
+
 @com.jme3.network.serializing.Serializable
 public abstract class NetWorldDAO<T extends NetPlayerDAO> implements Serializable{
 	public static final int INFINITE_SIZE=0;
@@ -131,5 +133,43 @@ public abstract class NetWorldDAO<T extends NetPlayerDAO> implements Serializabl
 		this.loaded = loaded;
 	}
 	
+	/**
+	 * if the world is not infinite
+	 * Returns true if cell is in 0,0
+	 * @return
+	 */
+	public boolean isLowerRightCorner(CellId cell){
+		if(getMaxRealSize()>0)
+			return (cell.id.x==0 && cell.id.z==0);
+		return false;
+	}
 	
+	/**
+	 * if the world is not infinite
+	 * Returns true if cell is in X,0(cell.id.z==0)
+	 * @return
+	 */
+	public boolean isLowerXSide(CellId cell){
+		if(getMaxRealSize()>0)
+			return (cell.id.z==0);
+		return false;
+	}
+	
+	/**
+	 * if the world is not infinite
+	 * Returns true if cell is in 0,X(cell.id.x==0)
+	 * @return
+	 */
+	public boolean isLowerZSide(CellId cell){
+		if(getMaxRealSize()>0)
+			return (cell.id.x==0);
+		return false;
+	}
+	
+	public void reset(){
+		log.info("Reset the world "+getId());
+		for(T player:players.values()){
+			player.setCnn(null);
+		}
+	}
 }
