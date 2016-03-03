@@ -10,7 +10,7 @@ import com.entity.anot.DAO;
 import com.entity.anot.Instance;
 import com.entity.anot.OnCollision;
 import com.entity.anot.RayPick;
-import com.entity.anot.RunGLThread;
+import com.entity.anot.RunOnGLThread;
 import com.entity.anot.components.model.SubModelComponent;
 import com.entity.anot.entities.ModelEntity;
 import com.entity.core.EntityManager;
@@ -80,7 +80,7 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
 	@Override
 	public void loadMethod(Class<T> c, Method m) throws Exception {
 		if(!mustEnhance){
-			if(EntityManager.isAnnotationPresent(RunGLThread.class,m)){
+			if(EntityManager.isAnnotationPresent(RunOnGLThread.class,m)){
 				mustEnhance=true;
                         }else if(EntityManager.isAnnotationPresent(Instance.class,m)){
                             mustEnhance=true;

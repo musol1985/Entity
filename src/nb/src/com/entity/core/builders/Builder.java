@@ -16,6 +16,7 @@ import com.entity.core.IEntity;
 import com.entity.core.Injector;
 import com.entity.core.InjectorAttachable;
 import com.entity.core.injectors.BaseInjector;
+import com.entity.core.interceptors.BaseMethodInterceptor;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.scene.Node;
 
@@ -27,6 +28,7 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 	private List<InjectorAttachable> attachableInjectors=new ArrayList<InjectorAttachable>();
 	
 	private List<Field> daoFields=new ArrayList<Field>();
+	private BaseMethodInterceptor interceptor;
 
 	@Override
 	public void onCreate(Class<T> c) throws Exception {
@@ -133,6 +135,14 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 
 	public List<Field> getDaoFields() {
 		return daoFields;
+	}
+
+	public BaseMethodInterceptor getInterceptor() {
+		return interceptor;
+	}
+
+	public void setInterceptor(BaseMethodInterceptor interceptor) {
+		this.interceptor = interceptor;
 	}
 	
 	

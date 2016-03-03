@@ -31,6 +31,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
+import com.jme3.system.JmeContext;
 
 public abstract class EntityManager {
 	protected static final Logger log = Logger.getLogger(EntityManager.class.getName());
@@ -43,13 +44,17 @@ public abstract class EntityManager {
 	private static Class[] modelCustomInjectors;
 	
 	public static <T extends EntityGame> T startGame(Class<T> gameClass)throws Exception{
-		return startGame(gameClass, true);
+		return startGame(gameClass, true, false);
 	}
 	
-	public static <T extends EntityGame> T startGame(Class<T> gameClass, boolean autostart)throws Exception{
+	public static <T extends EntityGame> T startGame(Class<T> gameClass, boolean autostart, boolean server)throws Exception{
 		game=gameClass.newInstance();
 		game.setPauseOnLostFocus(false);
-		game.start();
+		if(server){
+			game.start(JmeContext.Type.Headless);
+		}else{
+			game.start();
+		}
 		return (T) game;
 	}
 	
@@ -137,10 +142,14 @@ public abstract class EntityManager {
 		try{
 			IBuilder template=EntityManager.getBuilder(c);
 			if(template.isMustEnhance()){
+				if(template.getInterceptor()==null){
+					BuilderDefinition anot=(BuilderDefinition) c.getAnnotation(BuilderDefinition.class);
+					template.setInterceptor((BaseMethodInterceptor) anot.methodInterceptorClass().newInstance());
+				}
 				if(EntityManager.isAndroidGame()){
-					res=(IEntity)ProxyBuilder.forClass(c).handler(interceptor).build();
+					res=(IEntity)ProxyBuilder.forClass(c).handler(template.getInterceptor()).build();
 				}else{
-					res=(IEntity)Enhancer.create(c, interceptor);
+					res=(IEntity)Enhancer.create(c, template.getInterceptor());
 				}
 			}else{
 				res=(IEntity) c.newInstance();
@@ -153,31 +162,6 @@ public abstract class EntityManager {
 		}
 		return res;
 	}
-	
-	private static BaseMethodInterceptor interceptor=new BaseMethodInterceptor() {
-
-		@Override
-		public Object interceptMethod(Object obj, Method method, MethodProxy mp, Object[] args) throws Throwable {
-			if(EntityManager.isAnnotationPresent(RayPick.class,method)){
-				return RayPickInterceptor.rayPick(obj, method, args, mp, this);
-			}else if(EntityManager.isAnnotationPresent(OnBackground.class,method)){
-				return BackgroundInterceptor.onBackground(obj, method, mp, this, args);
-			}else if(EntityManager.isAnnotationPresent(Instance.class,method)){
-                IEntity instance=(IEntity)instanceGeneric(method.getParameterTypes()[0]);
-                Instance anot=EntityManager.getAnnotation(Instance.class,method);
-                if(Instance.THIS.equals(anot.attachTo())){
-                    IEntity e=(IEntity)obj;
-                    instance.attachToParent(e);
-                }else{
-                    IEntity e=(IEntity)obj.getClass().getField(anot.attachTo()).get(obj);
-                    instance.attachToParent(e);
-                }
-                return callSuper(obj, method, mp, new Object[]{instance});
-            }else{
-                return callSuper(obj, method, mp,  args);
-			}
-		}
-	};
 
 	public static void setCustomInjectors(Class[] sceneInjectors, Class[] modelInjectos){
 		EntityManager.sceneCustomInjectors=sceneInjectors;

@@ -9,11 +9,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.logging.Logger;
 
 import org.reflections.Reflections;
 
 import com.entity.anot.CustomInjectors;
+import com.entity.anot.Executor;
 import com.entity.anot.Physics;
 import com.entity.anot.entities.SceneEntity;
 import com.entity.anot.network.NetSync;
@@ -44,6 +46,8 @@ public abstract class EntityGame extends SimpleApplication{
 	private String path;
 	
 	protected NetGame net;
+	
+	private ScheduledThreadPoolExecutor executor;
 	
 	@Override
 	public void simpleInitApp() {
@@ -118,6 +122,11 @@ public abstract class EntityGame extends SimpleApplication{
 						f.set(this, scene);
 					}					
 				}
+			}
+			
+			Executor exe=getClass().getAnnotation(Executor.class);
+			if(exe!=null){
+				executor=new ScheduledThreadPoolExecutor(exe.threads());
 			}
 		
                         
@@ -243,5 +252,28 @@ public abstract class EntityGame extends SimpleApplication{
 	public String getPersistPath(){
 		return "/EntityPersist";
 	}
+
+	@Override
+	public void destroy() {
+		try{
+			if(net!=null){
+				if(getNet().isNetServerGame()){
+					net.getServer().close();
+				}else{
+					net.getClient().close();
+				}
+			}
+		}catch(Exception e){
+			log.info("Error closing network connection: "+e.getMessage());
+		}
+		super.destroy();
+	}
+
+	public ScheduledThreadPoolExecutor getExecutor() {
+		if(executor==null)
+			throw new RuntimeException("Trying to get a null executor. Please put @Executor in your EntityGame class");
+		return executor;
+	}
+	
 	
 }

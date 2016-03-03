@@ -3,8 +3,6 @@ package com.entity.network.core;
 import com.entity.adapters.NetworkMessageListener;
 import com.entity.anot.network.Network;
 import com.entity.core.EntityManager;
-import com.entity.network.core.dao.NetPlayerDAO;
-import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.network.core.service.NetWorldService;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
@@ -25,7 +23,7 @@ public class NetGame{
 	public NetGame(Network anot)throws Exception{
 		this.anot=anot;
 		port=anot.port();
-                service=(NetWorldService) anot.worldService().newInstance();
+        service=(NetWorldService) EntityManager.instanceGeneric(anot.worldService());
 	}
 	
 	public void addConnectionListener(ClientStateListener listener){

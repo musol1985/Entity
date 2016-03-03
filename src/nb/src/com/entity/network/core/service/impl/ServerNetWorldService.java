@@ -1,19 +1,25 @@
 package com.entity.network.core.service.impl;
 
-import com.entity.anot.OnBackground;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.entity.anot.OnExecutor;
+import com.entity.anot.RunOnGLThread;
 import com.entity.core.EntityManager;
+import com.entity.network.core.beans.CreatingCell;
 import com.entity.network.core.dao.NetPlayerDAO;
 import com.entity.network.core.dao.NetWorldCellDAO;
 import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.network.core.models.NetPlayer;
 import com.entity.network.core.models.NetWorld;
 import com.entity.network.core.models.NetWorldCell;
+import com.entity.network.core.msg.MsgShowCell;
 import com.entity.network.core.service.NetWorldService;
 import com.entity.utils.Vector2;
 import com.jme3.network.HostedConnection;
-import com.jme3.network.NetworkClient;
 
 public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPlayer, C extends NetWorldCell, D extends NetWorldDAO<E>, E extends NetPlayerDAO, F extends NetWorldCellDAO> extends NetWorldService<W,P,C,D,E,F>{
+	
+	protected ConcurrentHashMap<Vector2, CreatingCell> creatingCell = new ConcurrentHashMap<Vector2, CreatingCell>();
 	
 	/**
 	 * Create a new cellDAO(called when a player reuqests new Cell
@@ -68,7 +74,7 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 	}
 
 	/**
-	 * Get a cell by ID if not exist it creates the cell
+	 * Get a cell by ID 
 	 */
 	@Override
 	public C getCellById(Vector2 cellId) {
@@ -92,38 +98,54 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 				log.info("The cell "+cellId+" already exist. Put on first place in cache.");
 				world.cellsCache.remove(cellId);
 				world.cellsCache.put(cellId, cell);
-			}else{
-				log.info("getcellById creating the cell->"+cellId);
-				F cellDao=createCellDAO(cellId);
-				log.info("getcellById cell dao created->"+cellId);
-				cell=createNewCellFromDAO(cellDao);
-				log.info("getcellById cell created->"+cellId);
+			}else{				
+				log.info("getcellById "+cellId+" doesn't exist. It must be created");
 			}
 						
 		}
 		return cell;
 	}
 	
-	
 	/**
-	 * Create a new cell dao(background)
+	 * Create a new cell on background
+	 * when the cell is created, it will send to the players that request it
 	 * @param cellId
-	 * @return
+	 * @param cnn
 	 */
-	public F createCellDAO(Vector2 cellId){
+	public void createNewCell(Vector2 cellId, HostedConnection cnn){
 		if(isCellInLimits(cellId)){
-			log.info("The cell "+cellId+" isn't in cache and fs. It has to be created.");				
-			F cellDao=createCellDAOBackground(cellId);
-			log.info("The cell dao "+cellId+" has been created.");
-			//C cell=createNewCellFromDAO(cellDao);
-			return cellDao;
-		}else{
-			return null;
+			CreatingCell creating=creatingCell.get(cellId);
+			if(creating!=null){
+				creating.addPlayer(cnn);
+			}else{
+				creatingCell.put(cellId, new CreatingCell(cellId, cnn));
+				createCellDAOBackground(creating);
+			}		
 		}
 	}
 	
-	@OnBackground
-	private F createCellDAOBackground(Vector2 cellId){
-		return onNewCellDAO(cellId);
+	
+	@OnExecutor
+	private void createCellDAOBackground(CreatingCell creating){
+		F dao=onNewCellDAO(creating.getCellId());
+		creating.setCellDao(dao);
+		
+		createCellModelFromDAOBackground(creating);
 	}
+	
+	/**
+	 * Create a new CellModel from a CellDAO and put it in indexes and cache
+	 * then it removes from creatingcell and send to all the players requested the cell
+	 */
+	@RunOnGLThread
+	private void createCellModelFromDAOBackground(CreatingCell creating){
+		for(HostedConnection cnn:creating.getPlayers()){
+			cnn.send(new MsgShowCell(creating.getCellDao()));
+		}
+		
+		C cell=createNewCellFromDAO((F)creating.getCellDao());
+		
+		creatingCell.remove(creating.getCellId());
+	}
+
 }

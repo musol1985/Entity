@@ -2,6 +2,7 @@ package com.entity.network.core.service.impl;
 
 import java.util.List;
 
+import com.entity.anot.RunOnGLThread;
 import com.entity.core.EntityManager;
 import com.entity.core.IEntity;
 import com.entity.network.core.beans.CellId;
@@ -79,6 +80,34 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 	}
 	
 	/**
+	 * Reloads(newer CellDAO) or reuses(cached CellDAO on cache or FS) a cellDAO
+	 * it is running on @RunOnGLThread
+	 * @param reloadCells
+	 * @param reuseCells
+	 */
+	@RunOnGLThread
+	public void showCells(List<F> reloadCells, List<Vector2> reuseCells){
+		 for(F cell:reloadCells){
+             reloadCell(cell);
+	     }
+	     for(Vector2 cId:reuseCells){
+	         reuseCell(cId);
+	     }
+	}
+	
+	
+	/**
+	 * Reloads(newer CellDAO) or reuses(cached CellDAO on cache or FS) a cellDAO
+	 * it is running on @RunOnGLThread
+	 * @param reloadCells
+	 * @param reuseCells
+	 */
+	@RunOnGLThread
+	public void showCell(F cell){
+		reloadCell(cell);
+	}
+	
+	/**
 	 * Get a cell from cache or FS, load it in cache and index and 
 	 * @param cells
 	 */
@@ -94,12 +123,15 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 		C cell=createNewCellFromDAO(cellDao);
 		try {
 			log.info("Position of cell "+cellDao.getId()+" ->"+getRealFromVirtual(cellDao.getId().id));
-			cell.setLocalTranslation(getRealFromVirtual(cellDao.getId().id));//.add(world.getCellSize()/2, 0, world.getCellSize()/2));
-			cell.attachToParent((IEntity) EntityManager.getCurrentScene());
+			cell.setLocalTranslation(getRealFromVirtual(cellDao.getId().id));
+			if(world.getView()!=null && world.getView().hasCell(cell.dao.getId())){
+				cell.attachToParent(world);
+			}else{
+				log.info("The cell "+cellDao.getId().id+" isn't in the view. We don't attach it to the world");
+			}
 		} catch (Exception e) {
 			log.severe("Error attaching to parent the cell "+cellDao.getId());
 			e.printStackTrace();			
 		}
-		//TODO attach cell		
 	}
 }

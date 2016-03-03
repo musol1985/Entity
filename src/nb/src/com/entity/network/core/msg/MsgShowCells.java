@@ -22,5 +22,9 @@ public class MsgShowCells extends BaseNetMessage {
 	public MsgShowCells() {
 		
 	}
+	
+	public boolean hasCells(){
+		return cellsToReload.size()>0 || cellsToReuse.size()>0;
+	}
 
 }

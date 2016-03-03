@@ -7,14 +7,14 @@ import com.entity.core.builders.SceneBuilder;
 import com.entity.core.items.Scene;
 import com.entity.network.core.listeners.InGameServerMessageListener;
 import com.entity.network.core.models.NetWorld;
-import com.entity.network.core.service.NetWorldService;
+import com.entity.network.core.service.impl.ServerNetWorldService;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Server;
 
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
-public abstract class InGameServerScene<T extends InGameServerMessageListener, W extends NetWorld, S extends NetWorldService, G extends EntityGame> extends Scene<G>{
+public abstract class InGameServerScene<T extends InGameServerMessageListener, W extends NetWorld, S extends ServerNetWorldService, G extends EntityGame> extends Scene<G>{
 
 	
 	@ServerConnectionsListener

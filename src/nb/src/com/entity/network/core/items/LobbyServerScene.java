@@ -4,15 +4,13 @@ import java.util.HashMap;
 
 import com.entity.anot.BuilderDefinition;
 import com.entity.anot.Persistable;
-import com.entity.anot.network.MessageListener;
 import com.entity.anot.network.Network;
 import com.entity.anot.network.ServerConnectionsListener;
-import com.entity.anot.network.WorldService;
 import com.entity.core.EntityGame;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
+import com.entity.core.builders.SceneBuilder;
 import com.entity.core.items.Scene;
-import com.entity.network.core.builders.LobbyBuilder;
 import com.entity.network.core.dao.NetPlayerDAO;
 import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.network.core.listeners.LobbyServerMessageListener;
@@ -22,7 +20,7 @@ import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Server;
 
-@BuilderDefinition(builderClass=LobbyBuilder.class)
+@BuilderDefinition(builderClass=SceneBuilder.class)
 public abstract class LobbyServerScene<T extends LobbyServerMessageListener, S extends ServerNetWorldService, W extends NetWorldDAO, P extends NetPlayerDAO, G extends EntityGame> extends Scene<G>  {
 	@Persistable(fileName="worlds",newOnNull=true)
 	public HashMap<String, W> worlds;

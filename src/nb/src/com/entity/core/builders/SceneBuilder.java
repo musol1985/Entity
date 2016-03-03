@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 
 import com.entity.anot.Instance;
 import com.entity.anot.RayPick;
-import com.entity.anot.RunGLThread;
+import com.entity.anot.RunOnGLThread;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.Injector;
@@ -69,7 +69,7 @@ public class SceneBuilder extends Builder<Scene>{
 	@Override
 	public void loadMethod(Class<Scene> c, Method m) throws Exception {
 		if(!mustEnhance){
-            if(EntityManager.isAnnotationPresent(RunGLThread.class,m)){
+            if(EntityManager.isAnnotationPresent(RunOnGLThread.class,m)){
                     mustEnhance=true;
             }else if(EntityManager.isAnnotationPresent(Instance.class,m)){
                 mustEnhance=true;

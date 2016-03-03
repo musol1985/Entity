@@ -2,10 +2,14 @@ package com.entity.network.core.service;
 
 import java.util.logging.Logger;
 
+import com.entity.anot.BuilderDefinition;
 import com.entity.core.EntityManager;
+import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
+import com.entity.core.items.interceptors.ThreadsMethodInterceptor;
 import com.entity.network.core.beans.CellId;
 import com.entity.network.core.beans.CellViewQuad;
+import com.entity.network.core.builders.NetWorldServiceBuilder;
 import com.entity.network.core.dao.NetPlayerDAO;
 import com.entity.network.core.dao.NetWorldCellDAO;
 import com.entity.network.core.dao.NetWorldDAO;
@@ -14,8 +18,11 @@ import com.entity.network.core.models.NetWorld;
 import com.entity.network.core.models.NetWorldCell;
 import com.entity.utils.Vector2;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
-public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C extends NetWorldCell, D extends NetWorldDAO<E>, E extends NetPlayerDAO, F extends NetWorldCellDAO> {
+@BuilderDefinition(builderClass=NetWorldServiceBuilder.class, methodInterceptorClass=ThreadsMethodInterceptor.class)
+public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C extends NetWorldCell, D extends NetWorldDAO<E>, E extends NetPlayerDAO, F extends NetWorldCellDAO> implements IEntity{
 	protected static final Logger log = Logger.getLogger(NetWorldService.class.getName());
 
 	protected W world;
@@ -262,6 +269,11 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 		return null;
 	}
 	
+	/**
+	 * Create a new CellModel from a CellDAO and put it in indexes and cache
+	 * @param dao
+	 * @return
+	 */
 	public C createNewCellFromDAO(F dao){
 		C cell=(C)EntityManager.instanceGeneric(getCellClass(), dao);
 		log.info("The cell "+dao.getId()+" has been created. Inserting in cache and in indexes");
@@ -269,5 +281,70 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 		world.cellsCache.put(dao.getId(), cell);
 		return cell;
 	}
+
+
+
+	@Override
+	public void onAttachToParent(IEntity parent) throws Exception {
+		
+	}
+
+
+
+	@Override
+	public Node getNode() {
+		return null;
+	}
+
+
+
+	@Override
+	public void attachToParent(IEntity parent) throws Exception {
+		
+	}
+
+
+
+	@Override
+	public void dettach() throws Exception {
+		
+	}
+
+
+
+	@Override
+	public void onDettach(IEntity parent) throws Exception {
+		
+	}
+
+
+
+	@Override
+	public void onInstance(IBuilder builder, Object[] params) {
+		
+	}
+
+
+
+	@Override
+	public void onPreInject(IBuilder builder, Object[] params) throws Exception {
+		
+	}
+
+
+
+	@Override
+	public void setBuilder(IBuilder builder) {
+		
+	}
+
+
+
+	@Override
+	public void attachChilFromInjector(Spatial s) {
+		
+	}
+	
+	
 
 }

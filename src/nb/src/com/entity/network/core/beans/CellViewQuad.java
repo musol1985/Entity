@@ -39,7 +39,8 @@ public class CellViewQuad {
 	}
 	
 	private boolean sameCell(CellId c1, CellId c2){
-		return (c1!=null && c2!=null && c1.equals(c2));
+		
+		return (c1==null && c2==null)||(c1!=null && c2!=null && c1.equals(c2));
 	}
 	public CellId getCellById(int id){
 		return cells[id];

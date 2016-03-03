@@ -3,7 +3,7 @@ package com.entity.test;
 import com.entity.anot.OnCollision;
 import com.entity.anot.OnUpdate;
 import com.entity.anot.RayPick;
-import com.entity.anot.RunGLThread;
+import com.entity.anot.RunOnGLThread;
 import com.entity.anot.components.model.RigidBodyComponent;
 import com.entity.anot.components.model.SubModelComponent;
 import com.entity.anot.components.model.collision.CompBoxCollisionShape;
@@ -35,7 +35,7 @@ public class Player extends NetworkModel implements IFieldUpdateListener{
 	@NetSync(timeout=10)
 	private NetPosition position;
 
-	@RunGLThread
+	@RunOnGLThread
 	public void onTest(){
 		System.out.println("onTest");
 		//body.test();
