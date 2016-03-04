@@ -5,11 +5,16 @@ import java.lang.reflect.Field;
 import com.entity.anot.components.lights.AmbientLightComponent;
 import com.entity.anot.components.lights.DirectionalLightComponent;
 import com.entity.bean.custom.LightBean;
+import com.entity.bean.custom.RigidBodyBean;
+import com.entity.core.EntityGame;
+import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
+import com.entity.core.InjectorAttachable;
 import com.entity.core.injectors.ListBeanInjector;
+import com.jme3.bullet.control.PhysicsControl;
 
-public class LightInjector<T  extends IEntity>  extends ListBeanInjector<LightBean, T>{
+public class LightInjector<T  extends IEntity>  extends ListBeanInjector<LightBean, T> implements InjectorAttachable<T>{
 
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
@@ -28,4 +33,17 @@ public class LightInjector<T  extends IEntity>  extends ListBeanInjector<LightBe
 		}
 	}
 
+	@Override
+	public <G extends EntityGame> void onAttach(G app, T instance)throws Exception {
+		for(LightBean bean:beans){
+			bean.attachShadow(instance, app);
+		}
+	}
+
+	@Override
+	public <G extends EntityGame> void onDettach(G app, T instance)throws Exception {
+		for(LightBean bean:beans){
+			bean.dettachShadow(instance, app);
+		}
+	}
 }
