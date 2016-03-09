@@ -16,6 +16,7 @@ import com.entity.anot.entities.ModelEntity;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.Injector;
+import com.entity.core.injectors.ListBeanSingletonInjector;
 import com.entity.core.injectors.TriggerInjector;
 import com.entity.core.injectors.field.BodyInjector;
 import com.entity.core.injectors.field.CameraInjector;
@@ -30,6 +31,7 @@ import com.entity.core.injectors.field.TerrainInjector;
 import com.entity.core.injectors.input.InputInjector;
 import com.entity.core.injectors.method.UpdateInjector;
 import com.entity.core.items.Model;
+import com.entity.core.items.Scene;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -61,6 +63,7 @@ public class ModelBuilder extends Builder<Model>{
         addInjector(new EffectInjector<Model>());
         addInjector(new BodyInjector<Model>());
         addInjector(new ListInjector<Model>());
+        addInjector(new ListBeanSingletonInjector<Scene>());
         addInjector(new MapInjector<Model>());
         addInjector(new PersistableInjector<Model>());
 		

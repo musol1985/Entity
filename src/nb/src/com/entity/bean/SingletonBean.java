@@ -2,6 +2,7 @@ package com.entity.bean;
 
 import java.lang.reflect.Field;
 
+import com.entity.core.EntityManager;
 import com.entity.core.IEntity;
 
 public class SingletonBean {
@@ -9,25 +10,13 @@ public class SingletonBean {
 	private Field f;
 	private boolean singleton;
 	
-	public SingletonBean(Object instance, Field f) {
+	public SingletonBean(Object instance, Field f, boolean singleton) {
 		this.instance = instance;
 		this.f = f;
-		this.singleton=true;
+		this.singleton=singleton;
 	}
-	public SingletonBean(Field f){
-		this.f=f;
-		this.singleton=false;
-	}
-	public Object getInstance()throws Exception{
-		if(singleton)
-			return instance;
-		return f.getType().newInstance();
-	}	
-	public Object getInstance(IEntity entity)throws Exception{
-		if(singleton)
-			return instance;
-		return f.get(entity);
-	}
+
+	
 	public Field getF() {
 		return f;
 	}
@@ -35,4 +24,14 @@ public class SingletonBean {
 		return singleton;
 	}
 	
+	public void setInstance(IEntity entity, Object[] args)throws Exception{
+		if(singleton){
+			if(instance==null){
+				instance=EntityManager.instanceGeneric(f.getType(), args);
+			}
+			f.set(entity, instance);
+		}else{
+			f.set(entity, EntityManager.instanceGeneric(f.getType(), args));
+		}
+	}
 }

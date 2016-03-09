@@ -2,6 +2,7 @@ package com.entity.bean.custom;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.concurrent.Callable;
 
 import com.entity.adapters.DirectionalLightShadow;
 import com.entity.anot.components.lights.AmbientLightComponent;
@@ -77,11 +78,19 @@ public class LightBean extends AnnotationFieldBean{
 		return l;
 	}
 	
-	public void attachShadow(IEntity e, EntityGame g)throws Exception{
-		Light l=(Light)getValueField(e);
-		if(l!=null && l instanceof DirectionalLightShadow){
-			((DirectionalLightShadow)l).attachShadow(g);
-		}
+	public void attachShadow(IEntity e, final EntityGame g)throws Exception{
+		final Light l=(Light)getValueField(e);
+		g.enqueue(new Callable<Boolean>() {
+
+			@Override
+			public Boolean call() throws Exception {
+				if(l!=null && l instanceof DirectionalLightShadow){
+					((DirectionalLightShadow)l).attachShadow(g);
+				}
+				return true;
+			}
+		});
+		
 	}
 	
 	public void dettachShadow(IEntity e, EntityGame g)throws Exception{

@@ -1,7 +1,6 @@
 package com.entity.adapters;
 
-import com.entity.core.IEntity;
-import com.entity.core.items.ModelBase;
+import com.entity.core.items.Model;
 import com.jme3.scene.BatchNode;
 
 public class AutoBatchNode extends BatchNode{
@@ -21,14 +20,14 @@ public class AutoBatchNode extends BatchNode{
 	}
 
 
-	public int attachEntity(ModelBase child) {
+	public int attachEntity(Model child) {
 		int res=attachChild(child);
 		if(autoBatch)
 			batch();
 		return res;
 	}
 
-	public int detachEntity(ModelBase child) {
+	public int detachEntity(Model child) {
 		int res=detachChild(child);
 		if(autoBatch)
 			batch();

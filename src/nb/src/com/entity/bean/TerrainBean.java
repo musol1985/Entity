@@ -77,7 +77,9 @@ public class TerrainBean extends AnnotationFieldBean<TerrainComponent>{
 				return getImageHeight(heightField, e, asset);
 			}
 		}else if(isHeightMethod()){
-			return (AbstractHeightMap) heightMethod.invoke(e, f.get(e));
+                   AbstractHeightMap height= (AbstractHeightMap) heightMethod.invoke(e, f.get(e));
+                   height.load();
+			return height;
 		}else if(height!=null){
 			return getImageHeight(height, asset);
 		}else{

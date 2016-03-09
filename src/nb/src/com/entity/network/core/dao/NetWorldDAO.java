@@ -154,6 +154,15 @@ public abstract class NetWorldDAO<T extends NetPlayerDAO> implements Serializabl
 			return (cell.id.z==0);
 		return false;
 	}
+        
+        /**
+	 * if the world is not infinite
+	 * Returns if is a side cell
+	 * @return
+	 */
+        public boolean isSide(CellId cell){
+            return isLowerXSide(cell) || isLowerZSide(cell);
+        }
 	
 	/**
 	 * if the world is not infinite

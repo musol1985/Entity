@@ -17,5 +17,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Instance {
 	public static final String THIS="this";
-    String attachTo() default THIS;
+	/**
+	 * If "" it won't attach, you have to return and attach in the caller
+	 * if !="" it will attach to the field with this name 
+	 * @return
+	 */
+    String attachTo() default "";
 }

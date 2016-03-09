@@ -9,6 +9,7 @@ import com.entity.core.EntityGame;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
 import com.entity.core.InjectorAttachable;
+import com.entity.core.injectors.BaseInjector;
 import com.entity.core.injectors.ListBeanInjector;
 
 public class EffectInjector<T  extends IEntity> extends ListBeanInjector<EffectBean, T> implements InjectorAttachable<T>{
@@ -50,5 +51,9 @@ public class EffectInjector<T  extends IEntity> extends ListBeanInjector<EffectB
 			app.removePostProcessor(effect.getFilter());
 		}	
 	}
-
+	@Override
+	public int compareTo(BaseInjector t) {
+		// TODO Auto-generated method stub
+		return 99;
+	}
 }

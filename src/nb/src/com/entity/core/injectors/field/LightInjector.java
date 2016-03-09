@@ -1,9 +1,11 @@
 package com.entity.core.injectors.field;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.Callable;
 
 import com.entity.anot.components.lights.AmbientLightComponent;
 import com.entity.anot.components.lights.DirectionalLightComponent;
+import com.entity.bean.custom.EffectBean;
 import com.entity.bean.custom.LightBean;
 import com.entity.bean.custom.RigidBodyBean;
 import com.entity.core.EntityGame;
@@ -11,6 +13,7 @@ import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
 import com.entity.core.InjectorAttachable;
+import com.entity.core.injectors.BaseInjector;
 import com.entity.core.injectors.ListBeanInjector;
 import com.jme3.bullet.control.PhysicsControl;
 
@@ -34,10 +37,18 @@ public class LightInjector<T  extends IEntity>  extends ListBeanInjector<LightBe
 	}
 
 	@Override
-	public <G extends EntityGame> void onAttach(G app, T instance)throws Exception {
-		for(LightBean bean:beans){
-			bean.attachShadow(instance, app);
-		}
+	public <G extends EntityGame> void onAttach(final G app, final T instance)throws Exception {
+		
+		app.enqueue(new Callable<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				for(LightBean bean:beans){
+					bean.attachShadow(instance, app);
+				}
+				
+				return true;
+			}
+		});
 	}
 
 	@Override
@@ -46,4 +57,13 @@ public class LightInjector<T  extends IEntity>  extends ListBeanInjector<LightBe
 			bean.dettachShadow(instance, app);
 		}
 	}
+
+
+	@Override
+	public int compareTo(BaseInjector t) {
+		// TODO Auto-generated method stub
+		return 100;
+	}
+	
+	
 }

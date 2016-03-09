@@ -25,6 +25,7 @@ import com.entity.anot.RayPick;
 import com.entity.core.interceptors.BackgroundInterceptor;
 import com.entity.core.interceptors.BaseMethodInterceptor;
 import com.entity.core.interceptors.RayPickInterceptor;
+import com.entity.core.items.Model;
 import com.entity.core.items.Scene;
 import com.google.dexmaker.stock.ProxyBuilder;
 import com.jme3.asset.AssetManager;
@@ -141,7 +142,8 @@ public abstract class EntityManager {
 		IEntity res=null;
 		try{
 			IBuilder template=EntityManager.getBuilder(c);
-			if(template.isMustEnhance()){
+			if(template.isMustEnhance()){				
+				System.out.println("Enhance ####################################-------------------------------------------------------------------------------->"+c.getName());
 				if(template.getInterceptor()==null){
 					BuilderDefinition anot=(BuilderDefinition) c.getAnnotation(BuilderDefinition.class);
 					template.setInterceptor((BaseMethodInterceptor) anot.methodInterceptorClass().newInstance());
@@ -151,14 +153,16 @@ public abstract class EntityManager {
 				}else{
 					res=(IEntity)Enhancer.create(c, template.getInterceptor());
 				}
+				if(res instanceof Node || res instanceof Scene)
+					throw new RuntimeException("You can't use enhancer annotations in Node or Scene class!!! "+res.getClass().getName());
 			}else{
 				res=(IEntity) c.newInstance();
 			}
 			log.info("onInstance "+res.getClass().getName()+" using builder "+template.getClass().getName());
 			template.onInstance(res, template, params);
 		}catch(Exception e){
-                    log.severe("Can't instantiate an entity of class "+c.getName()+" reason: "+e.getMessage());
-			e.printStackTrace();
+            log.severe("Can't instantiate an entity of class "+c.getName()+" reason: "+e.getMessage());
+			throw new RuntimeException(e.getMessage());
 		}
 		return res;
 	}

@@ -26,6 +26,10 @@ public abstract class BatchModel extends ModelBase{
 	public Node getNode() {
 		return batch;
 	}
+        
+        public void batch(){
+            batch.batch();
+        }
 
 
 
@@ -59,20 +63,20 @@ public abstract class BatchModel extends ModelBase{
 
     @Override
 	public int attachChild(Spatial child) {
-		return batch.attachEntity((ModelBase)child);
+		return batch.attachEntity((Model)child);
 	}
 
 
 	@Override
 	public int detachChild(Spatial child) {
-		return batch.detachEntity((ModelBase)child);
+		return batch.detachEntity((Model)child);
 	}
 	
-	public int attachEntity(ModelBase model){
+	public int attachEntity(Model model){
 		return batch.attachEntity(model);
 	}
 
-	public int dettachEntity(ModelBase model){
+	public int dettachEntity(Model model){
 		return batch.detachEntity(model);
 	}
 	@Override
@@ -90,5 +94,8 @@ public abstract class BatchModel extends ModelBase{
 		batch.setAutoBatch(autoBatch);
 	}
 	
-	
+    @Override
+    public void onPreInject(IBuilder builder, Object[] params) throws Exception {
+        
+    }
 }	

@@ -9,7 +9,7 @@ import com.entity.anot.RunOnGLThread;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.Injector;
-import com.entity.core.injectors.FieldInjector;
+import com.entity.core.injectors.ListBeanSingletonInjector;
 import com.entity.core.injectors.TriggerInjector;
 import com.entity.core.injectors.field.CameraInjector;
 import com.entity.core.injectors.field.EffectInjector;
@@ -36,7 +36,7 @@ public class SceneBuilder extends Builder<Scene>{
 		addInjector(new InputInjector<Scene>());
 		addInjector(new LightInjector<Scene>());
 		addInjector(new EntityInjector<Scene>());
-		addInjector(new FieldInjector<Scene>());
+		addInjector(new ListBeanSingletonInjector<Scene>());
 		addInjector(new NetworkListenerInjector<Scene>());
 		addInjector(new TriggerInjector<Scene>());
 		addInjector(new SkyInjector<Scene>());
