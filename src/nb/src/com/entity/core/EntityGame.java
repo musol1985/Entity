@@ -152,23 +152,12 @@ public abstract class EntityGame extends SimpleApplication{
 			filters=new ArrayList<Filter>();
 			viewPort.addProcessor(postProcessor);
 		}
-		postProcessor.removeAllFilters();
-		filters.add(f);
-		Collections.sort(filters, new Comparator<Filter>() {
-			@Override
-			public int compare(Filter o1, Filter o2) {
-				return 0;
-			}
-		});
-		
-		for(Filter filter:filters){
-			postProcessor.addFilter(filter);
-		}
+
+		postProcessor.addFilter(f);
 	}
 	
 	public void removePostProcessor(Filter f)throws Exception{
 		postProcessor.removeFilter(f);
-		filters.remove(f);
 	}
 	
 
