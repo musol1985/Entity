@@ -29,6 +29,7 @@ public class DirectionalLightShadow extends DirectionalLight{
      
     public void attachShadow(EntityGame g){
     	g.getViewPort().addProcessor(shadow);
+        g.onAddShadowRender();
     }
     
     public void dettachShadow(EntityGame g){

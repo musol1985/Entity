@@ -2,6 +2,7 @@ package com.entity.core.items;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.logging.Logger;
 
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
@@ -17,27 +18,17 @@ import com.jme3.scene.Spatial;
 
 
 public abstract class ModelBase<T extends BaseModelBuilder> extends Node implements IEntity{
+	protected static final Logger log = Logger.getLogger(ModelBase.class.getName());
 	protected T builder;
 	
 	protected boolean isCollidableWith(ModelBase e){
 		return false;
 	}
-
-
-
-	@Override
-	public void onAttachToParent(IEntity parent) throws Exception {
-		
-	}
-
-
-
+	
 	@Override
 	public Node getNode() {
 		return this;
 	}
-
-
 
 	@Override
 	public void attachToParent(IEntity parent) throws Exception {
@@ -50,9 +41,7 @@ public abstract class ModelBase<T extends BaseModelBuilder> extends Node impleme
 		onAttachToParent(parent);
 	}
 
-    @Override
-    public void onInstance(IBuilder builder, Object[] params){
-    }
+
     
     @Override
     public void setBuilder(IBuilder builder) {
@@ -72,6 +61,17 @@ public abstract class ModelBase<T extends BaseModelBuilder> extends Node impleme
 		}
 	}
 
+	/**
+	 * Called when the parent of this model has been dettached
+	 * @throws Exception
+	 */
+	public void parentDettached(IEntity parent) throws Exception {
+		if(getParent()!=null){
+			builder.onDettachInstance(this);
+			onDettach(parent);
+		}
+	}
+
 	@Override
 	public void attachChilFromInjector(Spatial s) {
 		attachChild(s);
@@ -79,10 +79,12 @@ public abstract class ModelBase<T extends BaseModelBuilder> extends Node impleme
 
     @Override
     public void onDettach(IEntity parent)throws Exception{
-        
+        for(Spatial s:getChildren()){
+        	if(s instanceof ModelBase){
+        		((ModelBase) s).parentDettached(this);
+        	}
+        }
     }
-
-
 
 	@Override
 	public void read(JmeImporter i) throws IOException {
@@ -130,6 +132,24 @@ public abstract class ModelBase<T extends BaseModelBuilder> extends Node impleme
 				ee.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public void onInstance(IBuilder builder, Object[] params) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onAttachToParent(IEntity parent) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPreInject(IBuilder builder, Object[] params) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

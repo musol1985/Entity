@@ -6,6 +6,8 @@ package com.entity.utils;
 
 import java.io.Serializable;
 
+import com.jme3.math.Vector2f;
+
 /**
  *
  * @author Edu
@@ -96,4 +98,10 @@ public class Vector2 implements Serializable{
 		return true;
 	}
 
+	public Vector2f mult(float scalar){
+		Vector2f n=new Vector2f();
+		n.x=x*scalar;
+		n.y=z*scalar;
+		return n;
+	}
 }

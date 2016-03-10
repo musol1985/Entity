@@ -20,6 +20,7 @@ import com.entity.core.injectors.ListBeanInjector;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.scene.Spatial;
 
 
 /**
@@ -29,7 +30,7 @@ import com.jme3.bullet.control.RigidBodyControl;
 public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyBean, T> implements InjectorAttachable<T>{
 
 	@Override
-	public void loadField(Class<T> c, Field f) throws Exception {
+	public void loadField(Class<T> c, Field f) throws Exception {            
 		if(EntityManager.isAnnotationPresent(PhysicsBodyComponent.class,f)){
 			beans.add(new RigidBodyBean(c, f));
 		}
@@ -54,28 +55,38 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 
 	@Override
 	public <G extends EntityGame> void onAttach(G app, T instance)throws Exception {
-		for(RigidBodyBean bean:beans){
-			if(bean.getAnnot().attachWorld()){
-				PhysicsControl  body=(PhysicsControl)bean.getField().get(instance);	
-				if(bean.getComponentField()!=null){
-					IEntity node=(IEntity) bean.getComponentField().get(instance);
-					node.getNode().addControl(body);
-				}else{
-					instance.getNode().addControl(body);
+		if(EntityManager.getGame().isPhysics())
+			for(RigidBodyBean bean:beans){
+				if(bean.getAnnot().attachWorld()){
+					PhysicsControl  body=(PhysicsControl)bean.getField().get(instance);	
+					if(bean.getComponentField()!=null){
+						Object component=bean.getComponentField().get(instance);
+						if(component instanceof IEntity){
+							((IEntity)component).getNode().addControl(body);
+						}else{
+							((Spatial)component).addControl(body);
+						}
+					}else{
+						instance.getNode().addControl(body);
+					}                                
+					EntityManager.getCurrentScene().getPhysics().add(body);
 				}
-				EntityManager.getCurrentScene().getPhysics().add(body);
 			}
-		}
 	}
 
 	@Override
 	public <G extends EntityGame> void onDettach(G app, T instance)throws Exception {
+            if(EntityManager.getGame().isPhysics())
 		for(RigidBodyBean bean:beans){
 			if(bean.getAnnot().attachWorld()){
 				PhysicsControl body=(PhysicsControl)bean.getField().get(instance);	
 				if(bean.getComponentField()!=null){
-					IEntity node=(IEntity) bean.getComponentField().get(instance);
-					node.getNode().removeControl(body);
+                                        Object component=bean.getComponentField().get(instance);
+					if(component instanceof IEntity){
+						((IEntity)component).getNode().removeControl(body);
+					}else{
+						((Spatial)component).removeControl(body);
+					}
 				}else{
 					instance.getNode().removeControl(body);
 				}

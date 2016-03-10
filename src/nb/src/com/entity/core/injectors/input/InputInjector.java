@@ -21,17 +21,11 @@ public class InputInjector<T extends IEntity>  extends ListBeanInjector<InputBea
 	public void loadMethod(Class<T> c, Method m) throws Exception {
 		if(EntityManager.isAnnotationPresent(Input.class,m)){
 			log.info("Input annotation detected : "+m.getParameterTypes().length+" "+m.getParameterTypes()[0]);
-			if(isDigitalMethod(m)){
-				beans.add(new InputBean(m, Input.class, true));
-			}else{
-				beans.add(new InputBean(m, Input.class, false));				
-			}
+
+                        beans.add(new InputBean(m, Input.class));
 		}
 	}
-	
-	private boolean isDigitalMethod(Method m){
-		return (m.getParameterTypes().length==2 && m.getParameterTypes()[0]==boolean.class);
-	}
+
 	
 
 	@Override
@@ -50,7 +44,8 @@ public class InputInjector<T extends IEntity>  extends ListBeanInjector<InputBea
 									bean.getMethod().invoke(e, arg1, arg2);
 								}
 							}else{
-								bean.getMethod().invoke(e, arg1, arg2);
+                                                                bean.invoke(e, arg1, arg2);
+								//bean.getMethod().invoke(e, arg1, arg2);
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -63,7 +58,7 @@ public class InputInjector<T extends IEntity>  extends ListBeanInjector<InputBea
 				InputListener listener=new AnalogListener() {
 					public void onAnalog(String arg0, float arg1, float tpf) {
 						try {
-							bean.getMethod().invoke(e, arg1, tpf);
+							bean.invoke(e, arg1, tpf);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

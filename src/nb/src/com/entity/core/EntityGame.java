@@ -160,6 +160,12 @@ public abstract class EntityGame extends SimpleApplication{
 		postProcessor.removeFilter(f);
 	}
 	
+        public void onAddShadowRender(){
+            if(postProcessor!=null){
+               viewPort.removeProcessor(postProcessor);
+               viewPort.addProcessor(postProcessor);
+            }
+        }
 
 	
 	private void setScene(Scene scene){
@@ -189,6 +195,10 @@ public abstract class EntityGame extends SimpleApplication{
 	public HashMap<Type, AnnotationFieldBean<NetSync>> getSyncFieldsByClass(Class c){
 		return netSyncFields.get(c);
 	}
+        
+        public boolean isPhysics(){
+            return bullet!=null;
+        }
 	
 	public PhysicsSpace getPhysics(){
 		return bullet.getPhysicsSpace();

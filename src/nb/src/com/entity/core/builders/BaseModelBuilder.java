@@ -11,12 +11,10 @@ import com.entity.anot.Instance;
 import com.entity.anot.OnCollision;
 import com.entity.anot.RayPick;
 import com.entity.anot.RunOnGLThread;
-import com.entity.anot.components.model.SubModelComponent;
-import com.entity.anot.entities.ModelEntity;
 import com.entity.core.EntityManager;
-import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
 import com.entity.core.Injector;
+import com.entity.core.injectors.ListBeanSingletonInjector;
 import com.entity.core.injectors.TriggerInjector;
 import com.entity.core.injectors.field.BodyInjector;
 import com.entity.core.injectors.field.CameraInjector;
@@ -26,13 +24,11 @@ import com.entity.core.injectors.field.LightInjector;
 import com.entity.core.injectors.field.ListInjector;
 import com.entity.core.injectors.field.MapInjector;
 import com.entity.core.injectors.field.MaterialInjector;
+import com.entity.core.injectors.field.PersistableInjector;
 import com.entity.core.injectors.field.TerrainInjector;
 import com.entity.core.injectors.input.InputInjector;
 import com.entity.core.injectors.method.UpdateInjector;
 import com.entity.core.items.Model;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 
 public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
 	public static final String ENTITY_MODEL_REFERENCE="EntityModelReference";
@@ -41,9 +37,9 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
 	private boolean mustEnhance;
 
 	
-	private HashMap<Class<Model>, Method> collisions=new HashMap<Class<Model>, Method>();
+	protected HashMap<Class<Model>, Method> collisions=new HashMap<Class<Model>, Method>();
 	
-	private List<Field> daoFields=new ArrayList<Field>();
+	protected List<Field> daoFields=new ArrayList<Field>();
 
 	@Override
 	public void loadInjectors(Class<T> c) throws Exception {
@@ -58,7 +54,9 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
         addInjector(new EffectInjector<T>());
         addInjector(new BodyInjector<T>());
         addInjector(new ListInjector<T>());
+        addInjector(new ListBeanSingletonInjector<T>());
         addInjector(new MapInjector<T>());
+        addInjector(new PersistableInjector<T>());
 		
         Class<? extends Injector>[] customInjectors=EntityManager.getModelCustomInjectors();
 		if(customInjectors!=null){

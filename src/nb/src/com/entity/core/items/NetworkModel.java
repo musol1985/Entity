@@ -20,7 +20,7 @@ public abstract class NetworkModel extends Model{
 		if(!controlled){
 			Scene s=EntityManager.getCurrentScene();
 			if(s!=null){
-				SyncMessageInjector<NetworkModel> injector=builder.getInjector(SyncMessageInjector.class);
+				SyncMessageInjector<NetworkModel> injector=(SyncMessageInjector<NetworkModel>) builder.getInjector(SyncMessageInjector.class);
 				for(AnnotationFieldBean<NetSync> bean:injector.getBeans()){
 					s.getNetSync().controlField(FieldSync.getID(this, bean));
 				}				
@@ -33,7 +33,7 @@ public abstract class NetworkModel extends Model{
 		if(controlled){
 			Scene s=EntityManager.getCurrentScene();
 			if(s!=null){
-				SyncMessageInjector<NetworkModel> injector=builder.getInjector(SyncMessageInjector.class);
+				SyncMessageInjector<NetworkModel> injector=(SyncMessageInjector<NetworkModel>) builder.getInjector(SyncMessageInjector.class);
 				for(AnnotationFieldBean<NetSync> bean:injector.getBeans()){
 					s.getNetSync().unControlField(FieldSync.getID(this, bean));
 				}		

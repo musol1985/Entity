@@ -4,7 +4,7 @@ import com.entity.anot.OnCollision;
 import com.entity.anot.OnUpdate;
 import com.entity.anot.RayPick;
 import com.entity.anot.RunOnGLThread;
-import com.entity.anot.components.model.RigidBodyComponent;
+
 import com.entity.anot.components.model.SubModelComponent;
 import com.entity.anot.components.model.collision.CompBoxCollisionShape;
 import com.entity.anot.entities.ModelEntity;
@@ -22,7 +22,7 @@ import com.jme3.scene.Node;
 @ModelEntity(asset="Models/player.j3o", name="Girl")
 public class Player extends NetworkModel implements IFieldUpdateListener{
 	
-	@RigidBodyComponent
+
 	@CompBoxCollisionShape(x=1, y=3, z=4)
 	private PhysicsRigidBody body;
 	

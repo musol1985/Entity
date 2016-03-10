@@ -127,6 +127,7 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 			ee.printStackTrace();
 		}
 	}
+	
 
     @Override
     public void injectInstance(T e) throws Exception{

@@ -3,6 +3,7 @@ package com.entity.core.builders;
 import com.entity.anot.entities.BatchModelEntity;
 import com.entity.core.IBuilder;
 import com.entity.core.items.BatchModel;
+import com.entity.core.items.Model;
 
 public class BatchModelBuilder extends BaseModelBuilder<BatchModel>{
 	private BatchModelEntity anot;
@@ -21,5 +22,7 @@ public class BatchModelBuilder extends BaseModelBuilder<BatchModel>{
         e.setName(anot.name());
         e.setAutoBatch(anot.autoBatch());
         super.onInstance(e, builder, params);        		
-    }        	
+    }        
+	
+	
 }

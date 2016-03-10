@@ -72,16 +72,22 @@ public abstract class BatchModel extends ModelBase{
 		return batch.detachEntity((Model)child);
 	}
 	
-	public int attachEntity(Model model){
-		return batch.attachEntity(model);
+	public void attachEntity(Model model){
+            model.attachToBatchNode(batch);
+		//return batch.attachEntity(model);            
 	}
 
 	public int dettachEntity(Model model){
 		return batch.detachEntity(model);
 	}
+	
 	@Override
     public void onDettach(IEntity parent)throws Exception{
-        
+        for(Spatial s:batch.getChildren()){
+        	if(s instanceof ModelBase){
+        		((ModelBase) s).parentDettached(this);
+        	}
+        }
     }
 
 

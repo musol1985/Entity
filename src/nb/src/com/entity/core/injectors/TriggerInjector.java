@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import com.entity.anot.components.input.ComposedKeyInput;
 import com.entity.anot.components.input.ComposedMouseButtonInput;
 import com.entity.anot.components.input.ComposedMouseMoveInputMapping;
 import com.entity.anot.components.input.KeyInputMapping;
@@ -71,6 +72,10 @@ public class TriggerInjector<T extends IEntity>  extends BaseInjector<T> impleme
                         for(Annotation multi:((ComposedMouseButtonInput)a).inputs()){
                             mapAnnotation(c, multi);
                         }
+                    }else if(a instanceof ComposedKeyInput){
+                    	for(Annotation multi:((ComposedKeyInput)a).inputs()){
+                    		mapAnnotation(c, multi);
+                    	}
                     }else{
                         mapAnnotation(c, a);
                     }

@@ -14,7 +14,9 @@ import com.entity.core.IEntity;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.math.Vector3f;
+import com.jme3.terrain.geomipmap.TerrainQuad;
 
 public class RigidBodyBean extends AnnotationFieldBean<PhysicsBodyComponent>{
 	private Field componentField;
@@ -46,6 +48,11 @@ public class RigidBodyBean extends AnnotationFieldBean<PhysicsBodyComponent>{
 			
 		}else if(customShape!=null){
 			shape=(CollisionShape)customShape.invoke(entity, null);
+		}else if(componentField!=null){
+			Object fieldValue=componentField.get(entity);
+			if(fieldValue!=null && fieldValue instanceof TerrainQuad){
+				shape=CollisionShapeFactory.createMeshShape((TerrainQuad)fieldValue);
+			}			
 		}
 		
 		return shape;

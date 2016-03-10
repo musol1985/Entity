@@ -162,6 +162,7 @@ public abstract class EntityManager {
 			template.onInstance(res, template, params);
 		}catch(Exception e){
             log.severe("Can't instantiate an entity of class "+c.getName()+" reason: "+e.getMessage());
+                    e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
 		}
 		return res;
