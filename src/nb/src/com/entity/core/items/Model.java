@@ -10,15 +10,4 @@ import com.jme3.scene.Spatial;
 public abstract class Model extends ModelBase<ModelBuilder>{
 
 
-
-
-	public void attachToBatchNode(AutoBatchNode n){
-		builder.onAttachInstance(this);
-		
-		n.attachEntity(this);
-	}
-
-   
-
-
 }	

@@ -126,7 +126,7 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 		try{
 			log.info("Reusing cell "+id);
 			C cell=getCellById(id);
-			//cell.attachToParent(world);
+			cell.attachToParent(world);
 		}catch(Exception e){
 			log.severe("Error attaching cell to world: "+e.getMessage());
 			e.printStackTrace();

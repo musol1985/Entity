@@ -27,68 +27,81 @@ public abstract class BatchModel extends ModelBase{
 		return batch;
 	}
         
-        public void batch(){
-            batch.batch();
-        }
+    public void batch(){
+        batch.batch();
+    }
 
-
-
-	@Override
-	public void attachToParent(IEntity parent) throws Exception {
-		if(parent.getNode()==null)
-			throw new Exception(getClass().getName()+" Cannot attach to a "+parent.getClass().getName());
-		
-		builder.onAttachInstance(this);
-		
-		parent.getNode().attachChild(this);
-		onAttachToParent(parent);
-	}
 
     @Override
     public void onInstance(IBuilder builder, Object[] params){
     	super.attachChild(batch);
     }
-
-	@Override
-	public void dettach() throws Exception {
-		if(getParent()!=null){
-			IEntity parent=(IEntity) getParent();
-			
-			builder.onDettachInstance(this);
-			
-			getParent().detachChild(this);
-			onDettach(parent);
-		}
+    
+	/**
+	 * Called when a parent of the tree(this parent's, or his parent, etc) has been dettached
+	 * @throws Exception
+	 */
+	public void onAParentDettached(IEntity parent) throws Exception {
+		builder.onDettachInstance(this);	
+		//Notify my ModelBase children that a parent has been dettached
+		for(Spatial s:batch.getChildren()){
+        	if(s instanceof ModelBase){
+        		((ModelBase) s).onAParentDettached(this);
+        	}
+        }
 	}
+	
+	
+	/**
+	 * Called when a parent of the tree has been attached
+	 * @throws Exception
+	 */
+	public void onAParentAttached(IEntity parent) throws Exception {
+		builder.onAttachInstance(this);
+		//Notify my ModelBase children that a parent has been attached
+		for(Spatial s:batch.getChildren()){
+        	if(s instanceof ModelBase){
+        		((ModelBase) s).onAParentAttached(this);
+        	}
+        }		
+	}
+
+
 
     @Override
 	public int attachChild(Spatial child) {
-		return batch.attachEntity((Model)child);
+		return attachEntity((Model)child);
 	}
 
 
 	@Override
 	public int detachChild(Spatial child) {
-		return batch.detachEntity((Model)child);
+		return dettachEntity((Model)child);
 	}
 	
-	public void attachEntity(Model model){
-            model.attachToBatchNode(batch);
-		//return batch.attachEntity(model);            
+	public int attachEntity(Model model){
+		int res=batch.attachEntity(model);
+		
+		try {
+			model.onAParentAttached(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Error on attach entity to a batchModel");
+		}
+		return res;                        
 	}
 
 	public int dettachEntity(Model model){
-		return batch.detachEntity(model);
+		int res=batch.detachEntity(model);
+		try {
+			model.onAParentDettached(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Error on dettach entity to a batchModel");
+		}
+		return res;    
 	}
 	
-	@Override
-    public void onDettach(IEntity parent)throws Exception{
-        for(Spatial s:batch.getChildren()){
-        	if(s instanceof ModelBase){
-        		((ModelBase) s).parentDettached(this);
-        	}
-        }
-    }
 
 
 	public boolean isAutoBatch() {
@@ -99,9 +112,5 @@ public abstract class BatchModel extends ModelBase{
 	public void setAutoBatch(boolean autoBatch) {
 		batch.setAutoBatch(autoBatch);
 	}
-	
-    @Override
-    public void onPreInject(IBuilder builder, Object[] params) throws Exception {
-        
-    }
+
 }	
