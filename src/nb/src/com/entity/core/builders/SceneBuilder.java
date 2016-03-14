@@ -19,7 +19,7 @@ import com.entity.core.injectors.field.ListInjector;
 import com.entity.core.injectors.field.MapInjector;
 import com.entity.core.injectors.field.NetworkListenerInjector;
 import com.entity.core.injectors.field.PersistableInjector;
-import com.entity.core.injectors.field.ScrollCameraInjector;
+import com.entity.core.injectors.field.CamerasInjector;
 import com.entity.core.injectors.field.SkyInjector;
 import com.entity.core.injectors.field.TerrainInjector;
 import com.entity.core.injectors.input.InputInjector;
@@ -41,7 +41,7 @@ public class SceneBuilder extends Builder<Scene>{
 		addInjector(new TriggerInjector<Scene>());
 		addInjector(new SkyInjector<Scene>());
         addInjector(new CameraInjector<Scene>());
-        addInjector(new ScrollCameraInjector<Scene>());
+        addInjector(new CamerasInjector<Scene>());
         addInjector(new TerrainInjector<Scene>());
         addInjector(new EffectInjector<Scene>());
         addInjector(new ListInjector<Model>());
