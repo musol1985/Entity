@@ -15,7 +15,11 @@ public class NetPlayer<T extends NetPlayerDAO> extends Model{
 	@Override
 	public void onInstance(IBuilder builder, Object[] params) {
 		dao=(T) EntityManager.getGame().getNet().getWorldService().getPlayerDAO();
-		EntityManager.getGame().getNet().getWorldService().setPlayer(this);
+                if(EntityManager.getGame().getNet().getWorldService()==null){
+                    EntityManager.getGame().getNet().getWorldService().setPlayer(this);
+                }else if( EntityManager.getGame().getNet().getWorldService().getPlayer().dao.getId().equals(dao.getId())){
+                    EntityManager.getGame().getNet().getWorldService().setPlayer(this);
+                }
 		super.onInstance(builder, params);
 	}
 

@@ -61,6 +61,8 @@ public abstract class EntityGame extends SimpleApplication{
 				bullet = new BulletAppState();
 				if(physics.debug())
 					bullet.setDebugEnabled(true);
+				bullet.setEnabled(physics.active());
+				
 				getStateManager().attach(bullet);
 			}
 			
@@ -198,6 +200,14 @@ public abstract class EntityGame extends SimpleApplication{
         
         public boolean isPhysics(){
             return bullet!=null;
+        }
+        
+        public boolean isPhysicsActive(){
+            return bullet.isEnabled();
+        }
+        
+        public void activatePhysics(){
+            bullet.setEnabled(true);
         }
 	
 	public PhysicsSpace getPhysics(){

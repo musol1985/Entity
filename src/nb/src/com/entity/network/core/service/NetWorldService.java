@@ -58,6 +58,12 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 	 * @return
 	 */
 	public abstract Class<W> getWorldClass();
+	
+	/**
+	 * Returns the class that implements the NetPlayer
+	 * @return
+	 */
+	public abstract Class<P> getPlayerClass();
 
 
 	/**

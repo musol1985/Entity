@@ -26,6 +26,7 @@ import com.entity.core.injectors.field.MapInjector;
 import com.entity.core.injectors.field.MaterialInjector;
 import com.entity.core.injectors.field.PersistableInjector;
 import com.entity.core.injectors.field.TerrainInjector;
+import com.entity.core.injectors.field.VehicleInjector;
 import com.entity.core.injectors.input.InputInjector;
 import com.entity.core.injectors.method.UpdateInjector;
 import com.entity.core.items.Model;
@@ -53,6 +54,7 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
         addInjector(new MaterialInjector<T>());
         addInjector(new EffectInjector<T>());
         addInjector(new BodyInjector<T>());
+        addInjector(new VehicleInjector<T>());
         addInjector(new ListInjector<T>());
         addInjector(new ListBeanSingletonInjector<T>());
         addInjector(new MapInjector<T>());

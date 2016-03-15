@@ -63,7 +63,7 @@ public class CamerasInjector<T extends IEntity>  extends ListBeanInjector<Camera
 					entity.followTo((ModelBase)f.get(e));
 				}
 				
-				if(!bean.hasListener()){
+				if(bean.hasListener()){
 					entity.setListener(bean.getListener(e));
 				}
 				

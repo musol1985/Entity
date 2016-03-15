@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Physics {
 	boolean debug() default false;
+	boolean active() default true;
 }

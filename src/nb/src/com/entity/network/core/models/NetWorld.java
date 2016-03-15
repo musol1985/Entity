@@ -13,9 +13,10 @@ import com.entity.network.core.beans.CellId;
 import com.entity.network.core.beans.CellViewQuad;
 import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.utils.Vector2;
+import java.util.List;
 
 @ModelEntity
-public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCell> extends Model{
+public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCell, P extends NetPlayer> extends Model{
 	public static final int CELLS_CACHE_SIZE = 20;
 	
 	private static float HASH_TABLE_LOAD_FACTOR=0.75f;
@@ -28,6 +29,8 @@ public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCell> ex
     //Only will load when injecting
     @Persistable(fileName="cells.idx", newOnNull=true, onNewSave=true)
     public HashMap<Vector2, CellId> cellsIndex;
+    
+    public List<P> players;
     
     public CellViewQuad view;
 
@@ -94,6 +97,14 @@ public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCell> ex
 
 	public void setView(CellViewQuad view) {
 		this.view = view;
+	}
+
+	public List<P> getPlayers() {
+		return players;
+	}
+
+	public void setPlayers(List<P> players) {
+		this.players = players;
 	}
 
 }

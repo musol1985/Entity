@@ -36,6 +36,7 @@ public abstract class InGameClientScene<T extends InGameClientMessageListener, W
 	@Override
 	public void onLoadScene() throws Exception{
 		getService().updatePlayerLocation(getPlayer().getDao().getPosition());
+		getService().initWorld();
 	}
 
 

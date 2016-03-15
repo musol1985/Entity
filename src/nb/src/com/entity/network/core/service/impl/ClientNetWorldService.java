@@ -1,10 +1,10 @@
 package com.entity.network.core.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.entity.anot.RunOnGLThread;
 import com.entity.core.EntityManager;
-import com.entity.core.IEntity;
 import com.entity.network.core.beans.CellId;
 import com.entity.network.core.beans.CellViewQuad;
 import com.entity.network.core.dao.NetPlayerDAO;
@@ -104,6 +104,7 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 	     for(Vector2 cId:reuseCells){
 	         reuseCell(cId);
 	     }
+	     onCellsLoaded();
 	}
 	
 	
@@ -116,6 +117,19 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 	@RunOnGLThread
 	public void showCell(F cell){
 		reloadCell(cell);
+		onCellsLoaded();
+	}
+	
+	
+	/**
+	 * If the viewer cellds has been loaded, it will call a listener to activate physics
+	 */
+	private void onCellsLoaded(){
+		if(EntityManager.getGame().isPhysics() && !EntityManager.getGame().isPhysicsActive()){
+			if(world.cellsCache.size()>=4){
+				EntityManager.getGame().activatePhysics();
+			}
+		}		
 	}
 	
 	/**
@@ -149,5 +163,21 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 			log.severe("Error attaching to parent the cell "+cellDao.getId());
 			e.printStackTrace();			
 		}
+	}
+	
+	
+	public void initWorld(){
+		List<P> players=new ArrayList<P>(world.dao.getPlayers().size());
+		
+		for(Object p:world.dao.getPlayers().values()){
+			E pDAO=(E)p;
+			if(!pDAO.getId().equals(getPlayer().dao.getId())){
+				P player=(P)EntityManager.instanceGeneric(getPlayerClass());
+				player.setDao(pDAO);
+				players.add(player);
+			}
+		}
+		
+		world.setPlayers(players);
 	}
 }
