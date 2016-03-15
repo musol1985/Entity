@@ -6,7 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.entity.adapters.listeners.IFollowCameraListener;
-import com.entity.adapters.listeners.IScrollCameraListener;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
@@ -15,6 +14,7 @@ public @interface FollowCameraNode {
     boolean attach() default true;
     boolean debug() default false;
     String followTo() default "";
+    String listenerField() default "";
         /**
          * Method name to callback on update
          * @return

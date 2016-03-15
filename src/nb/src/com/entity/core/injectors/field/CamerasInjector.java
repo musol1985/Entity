@@ -17,9 +17,9 @@ public class CamerasInjector<T extends IEntity>  extends ListBeanInjector<Camera
 	@Override
 	public void loadField(Class<T> c, Field f) throws Exception {
 		if(CameraBean.isScrollCamera(f)){
-			beans.add(new CameraBean(f, ScrollCameraNode.class));
+			beans.add(new CameraBean(c, f, ScrollCameraNode.class));
 		}else if(CameraBean.isFollowCamera(f)){
-			beans.add(new CameraBean(f, FollowCameraNode.class));
+			beans.add(new CameraBean(c, f, FollowCameraNode.class));
 		}
 	}
 
@@ -61,6 +61,10 @@ public class CamerasInjector<T extends IEntity>  extends ListBeanInjector<Camera
 					f.setAccessible(true);
 					
 					entity.followTo((ModelBase)f.get(e));
+				}
+				
+				if(!bean.hasListener()){
+					entity.setListener(bean.getListener(e));
 				}
 				
 				if(anot.attach())

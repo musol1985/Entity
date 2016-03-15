@@ -1,39 +1,23 @@
 package com.entity.bean.custom;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import com.entity.anot.components.model.PhysicsBodyComponent;
 import com.entity.anot.components.model.collision.CompBoxCollisionShape;
 import com.entity.anot.components.model.collision.CompSphereCollisionShape;
-import com.entity.anot.components.model.collision.CustomCollisionShape;
-import com.entity.anot.modificators.ApplyToComponent;
-import com.entity.bean.AnnotationFieldBean;
+import com.entity.bean.BodyBean;
 import com.entity.core.EntityManager;
 import com.entity.core.IEntity;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.math.Vector3f;
-import com.jme3.terrain.geomipmap.TerrainQuad;
 
-public class RigidBodyBean extends AnnotationFieldBean<PhysicsBodyComponent>{
-	private Field componentField;
-	private Method customShape;
+public class RigidBodyBean extends BodyBean<PhysicsBodyComponent>{
+
 	
 	public RigidBodyBean(Class c, Field f)throws Exception{
-		super(f, PhysicsBodyComponent.class);
-
-		if(EntityManager.isAnnotationPresent(ApplyToComponent.class,f)){
-			componentField=c.getDeclaredField(EntityManager.getAnnotation(ApplyToComponent.class, f).component());
-			if(componentField==null)
-				throw new Exception("Can't apply RigidBodyControl to field "+EntityManager.getAnnotation(ApplyToComponent.class,f).component()+" in "+c.getName());
-			componentField.setAccessible(true);
-		}
-		if(EntityManager.isAnnotationPresent(CustomCollisionShape.class,f)){
-			customShape=c.getDeclaredMethod(EntityManager.getAnnotation(CustomCollisionShape.class,f).methodName(), null);
-		}
+		super(c, f, PhysicsBodyComponent.class);
 	}
 	
 	public CollisionShape getCollisionShape(IEntity entity)throws Exception{
@@ -46,21 +30,10 @@ public class RigidBodyBean extends AnnotationFieldBean<PhysicsBodyComponent>{
 			
 			shape=new BoxCollisionShape(new Vector3f(anot.x(), anot.y(), anot.z()));
 			
-		}else if(customShape!=null){
-			shape=(CollisionShape)customShape.invoke(entity, null);
-		}else if(componentField!=null){
-			Object fieldValue=componentField.get(entity);
-			if(fieldValue!=null && fieldValue instanceof TerrainQuad){
-				shape=CollisionShapeFactory.createMeshShape((TerrainQuad)fieldValue);
-			}			
+		}else{
+			shape=super.getCollisionShape(entity);
 		}
 		
 		return shape;
 	}
-
-	public Field getComponentField() {
-		return componentField;
-	}
-	
-	
 }
