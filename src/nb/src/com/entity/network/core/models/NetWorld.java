@@ -30,7 +30,7 @@ public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCell, P 
     @Persistable(fileName="cells.idx", newOnNull=true, onNewSave=true)
     public HashMap<Vector2, CellId> cellsIndex;
     
-    public List<P> players;
+    public HashMap<String, P> players;
     
     public CellViewQuad view;
 
@@ -99,11 +99,11 @@ public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCell, P 
 		this.view = view;
 	}
 
-	public List<P> getPlayers() {
+	public HashMap<String,P> getPlayers() {
 		return players;
 	}
 
-	public void setPlayers(List<P> players) {
+	public void setPlayers(HashMap<String,P> players) {
 		this.players = players;
 	}
 

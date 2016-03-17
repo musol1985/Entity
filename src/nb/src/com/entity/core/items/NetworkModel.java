@@ -13,7 +13,7 @@ public abstract class NetworkModel extends Model{
 	private boolean controlled;
 	
 	public String getNetID(){
-		return "EntityNet"+getName();
+		return "EntityNet#"+getName();
 	}
 	
 	public void netControl(){

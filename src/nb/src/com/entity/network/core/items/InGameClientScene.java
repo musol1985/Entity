@@ -37,6 +37,9 @@ public abstract class InGameClientScene<T extends InGameClientMessageListener, W
 	public void onLoadScene() throws Exception{
 		getService().updatePlayerLocation(getPlayer().getDao().getPosition());
 		getService().initWorld();
+		
+		onLoadPlayer();
+		onLoadRemotePlayers();
 	}
 
 
@@ -44,5 +47,8 @@ public abstract class InGameClientScene<T extends InGameClientMessageListener, W
 	public abstract P getPlayer();
 	public abstract S getService();
 	public abstract T getListener();
+	
+	public abstract void onLoadPlayer() throws Exception;
+	public abstract void onLoadRemotePlayers() throws Exception;
 
 }

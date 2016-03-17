@@ -41,7 +41,7 @@ public class FieldSync<T extends SyncMessage<NetMessage>> {
 	}
 	
 	public static String getID(NetworkModel model, AnnotationFieldBean<NetSync> bean){
-		return model.getNetID()+bean.getField().getName();
+		return model.getNetID()+"#"+bean.getField().getName();
 	}
 
 

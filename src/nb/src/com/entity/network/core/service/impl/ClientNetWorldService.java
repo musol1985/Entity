@@ -1,6 +1,6 @@
 package com.entity.network.core.service.impl;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.entity.anot.RunOnGLThread;
@@ -167,14 +167,13 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 	
 	
 	public void initWorld(){
-		List<P> players=new ArrayList<P>(world.dao.getPlayers().size());
+		HashMap<String, P> players=new HashMap<String, P>(world.dao.getPlayers().size());
 		
 		for(Object p:world.dao.getPlayers().values()){
 			E pDAO=(E)p;
 			if(!pDAO.getId().equals(getPlayer().dao.getId())){
-				P player=(P)EntityManager.instanceGeneric(getPlayerClass());
-				player.setDao(pDAO);
-				players.add(player);
+				P player=(P)EntityManager.instanceGeneric(getPlayerClass(), pDAO);				
+				players.put(pDAO.getId(), player);
 			}
 		}
 		
