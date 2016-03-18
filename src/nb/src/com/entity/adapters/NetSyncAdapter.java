@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import com.entity.core.EntityManager;
-import com.entity.network.FieldSync;
-import com.entity.network.NetMessage;
-import com.entity.network.SyncMessage;
+import com.entity.network.core.msg.MsgSync;
+import com.entity.network.core.msg.sync.FieldSync;
+import com.entity.network.core.msg.sync.NetMessage;
 import com.jme3.network.MessageConnection;
 
 
@@ -48,7 +48,7 @@ public class NetSyncAdapter extends ControlAdapter{
 	}
 	
 	//Called from networkMessageListener
-	public void onMessage(MessageConnection cnn, SyncMessage msg)throws Exception{
+	public void onMessage(MessageConnection cnn, MsgSync msg)throws Exception{
 		FieldSync field=syncExternal.get(msg.getId());
 		if(field==null)
 			throw new Exception("Null fieldsync for "+msg.getId());

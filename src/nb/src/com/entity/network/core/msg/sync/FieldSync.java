@@ -1,12 +1,13 @@
-package com.entity.network;
+package com.entity.network.core.msg.sync;
 
 import com.entity.anot.network.NetSync;
 import com.entity.bean.AnnotationFieldBean;
 import com.entity.core.items.NetworkModel;
+import com.entity.network.core.msg.MsgSync;
 
 
 public class FieldSync<T extends NetMessage> {
-	private SyncMessage<T> msg;
+	private MsgSync<T> msg;
 	private AnnotationFieldBean<NetSync> bean;
 
 	private long lastSend;
@@ -21,10 +22,10 @@ public class FieldSync<T extends NetMessage> {
                     field=(T)bean.getField().getType().newInstance();
                     bean.getField().set(model, field);
                 }
-		this.msg = new SyncMessage<T>(getID(), field);	
+		this.msg = new MsgSync<T>(getID(), field);	
 	}
 	
-	public void onMessage(SyncMessage<T> msg)throws Exception{
+	public void onMessage(MsgSync<T> msg)throws Exception{
 		bean.getField().set(entity, msg.getField());
 		
 		if(entity instanceof IFieldUpdateListener){
@@ -50,7 +51,7 @@ public class FieldSync<T extends NetMessage> {
 	}
 
 
-	public SyncMessage<T> getMsg() {
+	public MsgSync<T> getMsg() {
 		return msg;
 	}
 

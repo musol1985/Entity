@@ -1,6 +1,6 @@
 package com.entity.test.network;
 
-import com.entity.network.NetMessage;
+import com.entity.network.core.msg.sync.NetMessage;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 

@@ -4,13 +4,12 @@ import com.entity.anot.OnCollision;
 import com.entity.anot.OnUpdate;
 import com.entity.anot.RayPick;
 import com.entity.anot.RunOnGLThread;
-
 import com.entity.anot.components.model.SubModelComponent;
 import com.entity.anot.components.model.collision.CompBoxCollisionShape;
 import com.entity.anot.entities.ModelEntity;
 import com.entity.anot.network.NetSync;
 import com.entity.core.items.NetworkModel;
-import com.entity.network.IFieldUpdateListener;
+import com.entity.network.core.msg.sync.IFieldUpdateListener;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.collision.CollisionResult;

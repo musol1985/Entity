@@ -1,4 +1,4 @@
-package com.entity.network;
+package com.entity.network.core.msg.sync;
 
 import com.entity.core.EntityManager;
 import com.entity.core.items.NetworkModel;

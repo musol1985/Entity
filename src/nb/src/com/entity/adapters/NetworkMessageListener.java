@@ -9,7 +9,7 @@ import com.entity.core.EntityGame;
 import com.entity.core.EntityManager;
 import com.entity.core.IEntity;
 import com.entity.core.items.Scene;
-import com.entity.network.SyncMessage;
+import com.entity.network.core.msg.MsgSync;
 import com.jme3.network.Filters;
 import com.jme3.network.Message;
 import com.jme3.network.MessageConnection;
@@ -73,17 +73,17 @@ public class NetworkMessageListener<T extends IEntity> implements MessageListene
 
         try {            
         	
-        	if(msg instanceof SyncMessage){
+        	if(msg instanceof MsgSync){
         		Scene s=EntityManager.getCurrentScene();
         		if(s!=null)
-        			s.getNetSync().onMessage(cnn, (SyncMessage) msg);
+        			s.getNetSync().onMessage(cnn, (MsgSync) msg);
         		
         		if(ignoreSync){
         			return;        			
         		}else{
-        			Method m=methods.get(((SyncMessage)msg).getField().getClass());
+        			Method m=methods.get(((MsgSync)msg).getField().getClass());
         			if(m!=null){
-        				m.invoke(this, ((SyncMessage)msg).getField(), ((SyncMessage)msg).getId().split("#")[1]);
+        				m.invoke(this, ((MsgSync)msg).getField(), ((MsgSync)msg).getId().split("#")[1]);
         				broadCast(cnn, msg, true);
         			}else{
         				log.warning("No method implemented por message class "+msg+" in "+getClass().getName());

@@ -6,7 +6,7 @@ import com.entity.bean.AnnotationFieldBean;
 import com.entity.core.EntityManager;
 import com.entity.core.builders.NetworkModelBuilder;
 import com.entity.core.injectors.field.SyncMessageInjector;
-import com.entity.network.FieldSync;
+import com.entity.network.core.msg.sync.FieldSync;
 
 @BuilderDefinition(builderClass=NetworkModelBuilder.class)
 public abstract class NetworkModel extends Model{

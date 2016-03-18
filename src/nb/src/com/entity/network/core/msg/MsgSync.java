@@ -1,12 +1,13 @@
-package com.entity.network;
+package com.entity.network.core.msg;
 
+import com.entity.network.core.msg.sync.NetMessage;
 import com.jme3.network.Message;
 
-public class SyncMessage<T> implements Message{
+public class MsgSync<T extends NetMessage> implements Message{
 	private String id;
 	private T field;
 	
-	public SyncMessage(String id, T msg){
+	public MsgSync(String id, T msg){
 		this.field=msg;
 		this.id=id;
 	}

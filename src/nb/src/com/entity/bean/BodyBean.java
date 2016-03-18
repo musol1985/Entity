@@ -15,6 +15,8 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 public class BodyBean<T extends Annotation> extends AnnotationFieldBean<T>{
 	protected Field componentField;
 	protected Method customShape;
+	protected CollisionShape singletonShape;
+	protected boolean singleton;
 	
 	public BodyBean(Class c, Field f, Class<T> anot)throws Exception{
 		super(f, anot);
@@ -25,16 +27,23 @@ public class BodyBean<T extends Annotation> extends AnnotationFieldBean<T>{
 				throw new Exception("Can't apply Body to field "+EntityManager.getAnnotation(ApplyToComponent.class,f).component()+" in "+c.getName());
 			componentField.setAccessible(true);
 		}
-		if(EntityManager.isAnnotationPresent(CustomCollisionShape.class,f)){
-			customShape=c.getDeclaredMethod(EntityManager.getAnnotation(CustomCollisionShape.class,f).methodName(), null);
+		CustomCollisionShape customShape=EntityManager.getAnnotation(CustomCollisionShape.class,f);
+		if(customShape!=null){
+			singleton=customShape.singleton();
+			this.customShape=c.getDeclaredMethod(EntityManager.getAnnotation(CustomCollisionShape.class,f).methodName(), null);			
 		}
 	}
 	
 	public CollisionShape getCollisionShape(IEntity entity)throws Exception{
 		CollisionShape shape=null;
 		
+		if(singletonShape!=null)
+			return singletonShape;
+		
 		if(customShape!=null){
 			shape=(CollisionShape)customShape.invoke(entity, null);
+			if(singleton)
+				singletonShape=shape;
 		}else if(componentField!=null){
 			Object fieldValue=componentField.get(entity);
 			if(fieldValue!=null && fieldValue instanceof TerrainQuad){

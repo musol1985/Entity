@@ -13,7 +13,7 @@ import com.entity.core.injectors.BaseInjector;
 import com.entity.core.injectors.ListBeanInjector;
 import com.entity.core.items.NetworkModel;
 import com.entity.core.items.Scene;
-import com.entity.network.FieldSync;
+import com.entity.network.core.msg.sync.FieldSync;
 
 public class SyncMessageInjector<T extends NetworkModel>  extends ListBeanInjector<AnnotationFieldBean<NetSync>, T> implements InjectorAttachable<T>{
 	
