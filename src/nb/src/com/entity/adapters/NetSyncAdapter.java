@@ -18,6 +18,7 @@ public class NetSyncAdapter extends ControlAdapter{
 	public void update(float tpf) {
 		for(Entry<String, FieldSync> field:syncLocal.entrySet()){
 			if(field.getValue().mustSend()){
+                            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Sending: "+field.getValue().getID());
 				if(EntityManager.getGame().getNet().isNetClientGame()){
 					EntityManager.getGame().getNet().getClient().send(field.getValue().getMsg());
 				}else{
@@ -28,7 +29,7 @@ public class NetSyncAdapter extends ControlAdapter{
 	}
 	
 	public void addField(FieldSync field){
-		syncExternal.put(field.getID(), field);
+		syncExternal.put(field.getID(), field);                
 	}
 	
 	public void removeField(String fieldId){

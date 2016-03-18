@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import com.entity.anot.Instance;
 import com.entity.anot.RayPick;
 import com.entity.anot.RunOnGLThread;
+import com.entity.anot.network.ActivateNetSync;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.Injector;
@@ -83,7 +84,11 @@ public class SceneBuilder extends Builder<Scene>{
 	@Override
 	public void injectInstance(Scene e) throws Exception {
             super.injectInstance(e);
-            e.setNode();                
+            e.setNode();  
+            		
+            if(e.getClass().isAnnotationPresent(ActivateNetSync.class)){
+                    e.activateNetSync();
+            }
 	}
 
 
@@ -95,6 +100,7 @@ public class SceneBuilder extends Builder<Scene>{
 	@Override
 	public void onInstance(Scene item, IBuilder builder, Object[] params) throws Exception {
 		item.setApp(EntityManager.getGame());
+		
 		super.onInstance(item, builder, params);
 	}
 

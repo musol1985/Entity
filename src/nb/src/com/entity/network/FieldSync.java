@@ -5,7 +5,7 @@ import com.entity.bean.AnnotationFieldBean;
 import com.entity.core.items.NetworkModel;
 
 
-public class FieldSync<T extends SyncMessage<NetMessage>> {
+public class FieldSync<T extends NetMessage> {
 	private SyncMessage<T> msg;
 	private AnnotationFieldBean<NetSync> bean;
 
@@ -14,12 +14,17 @@ public class FieldSync<T extends SyncMessage<NetMessage>> {
 	
 	public FieldSync(AnnotationFieldBean<NetSync> bean, NetworkModel model) throws Exception{
 		this.entity=model;
+                this.bean=bean;
 				
-		T field=(T) bean.getField().get(model);
+		T field=(T) bean.getField().get(model);   
+                if(field==null){
+                    field=(T)bean.getField().getType().newInstance();
+                    bean.getField().set(model, field);
+                }
 		this.msg = new SyncMessage<T>(getID(), field);	
 	}
 	
-	public void onMessage(T msg)throws Exception{
+	public void onMessage(SyncMessage<T> msg)throws Exception{
 		bean.getField().set(entity, msg.getField());
 		
 		if(entity instanceof IFieldUpdateListener){
@@ -33,7 +38,7 @@ public class FieldSync<T extends SyncMessage<NetMessage>> {
 		if(entity instanceof IFieldPreSendListener){
 			((IFieldPreSendListener) entity).onPreSend(bean.getField().getName(), msg.getField());
 		}
-		msg.getField().getField().onSend(entity);
+		msg.getField().onSend(entity);
 	}
 	
 	public String getID(){

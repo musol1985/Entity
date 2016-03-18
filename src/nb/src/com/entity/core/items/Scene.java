@@ -89,9 +89,7 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 		
 		builder.onAttachInstance(this);
 
-		initPhysics();
-		
-		netSync=new NetSyncAdapter();
+		initPhysics();				
 		
 		try{
 			onLoadScene();
@@ -100,6 +98,10 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 		}
 	}
 
+        public void activateNetSync(){
+            netSync=new NetSyncAdapter();
+            node.addControl(netSync);
+        }
 	
 	private void initPhysics(){		
 		BulletAppState appState=app.getStateManager().getState(BulletAppState.class);
