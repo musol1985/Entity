@@ -84,7 +84,8 @@ public class NetworkMessageListener<T extends IEntity> implements MessageListene
         			Method m=methods.get(((MsgSync)msg).getField().getClass());
         			if(m!=null){
         				m.invoke(this, ((MsgSync)msg).getField(), ((MsgSync)msg).getId().split("#")[1]);
-        				broadCast(cnn, msg, true);
+        				if(EntityManager.getGame().getNet().isNetServerGame())
+        					broadCast(cnn, msg, true);
         			}else{
         				log.warning("No method implemented por message class "+msg+" in "+getClass().getName());
                         return;
