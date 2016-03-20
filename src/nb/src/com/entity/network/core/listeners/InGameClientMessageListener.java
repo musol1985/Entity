@@ -13,6 +13,7 @@ public class InGameClientMessageListener extends NetworkMessageListener<InGameCl
 	}
 	
 	public void onShowCell(MsgShowCell msg)throws Exception{
+		System.out.println("ONSHOWCELL ->"+msg.cell.getId().id+" ts: "+msg.cell.getId().timestamp);
 		getEntity().getService().showCell(msg.cell);
 	}
 }

@@ -17,14 +17,18 @@ public class NetSyncAdapter extends ControlAdapter{
 	
 	public void update(float tpf) {
 		for(Entry<String, FieldSync> field:syncLocal.entrySet()){
+                    try{
 			if(field.getValue().mustSend()){
-                            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Sending: "+field.getValue().getID());
+                            field.getValue().preSend();                            
 				if(EntityManager.getGame().getNet().isNetClientGame()){
 					EntityManager.getGame().getNet().getClient().send(field.getValue().getMsg());
 				}else{
 					EntityManager.getGame().getNet().getServer().broadcast(field.getValue().getMsg());
 				}
 			}
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
 		}
 	}
 	
@@ -50,10 +54,13 @@ public class NetSyncAdapter extends ControlAdapter{
 	//Called from networkMessageListener
 	public void onMessage(MessageConnection cnn, MsgSync msg)throws Exception{
 		FieldSync field=syncExternal.get(msg.getId());
-		if(field==null)
-			throw new Exception("Null fieldsync for "+msg.getId());
+		if(field!=null){
+                    field.onMessage(msg);
+                    
+                }
+			//throw new Exception("Null fieldsync for "+msg.getId());
 		
-		field.onMessage(msg);
+		
 	}
 	
 	public boolean forceSync(NetMessage msg)throws Exception{

@@ -2,8 +2,10 @@ package com.entity.network.core.msg.sync;
 
 import com.entity.anot.network.NetSync;
 import com.entity.bean.AnnotationFieldBean;
+import com.entity.core.EntityManager;
 import com.entity.core.items.NetworkModel;
 import com.entity.network.core.msg.MsgSync;
+import java.util.concurrent.Callable;
 
 
 public class FieldSync<T extends NetMessage> {
@@ -25,14 +27,23 @@ public class FieldSync<T extends NetMessage> {
 		this.msg = new MsgSync<T>(getID(), field);	
 	}
 	
-	public void onMessage(MsgSync<T> msg)throws Exception{
+	public void onMessage(final MsgSync<T> msg)throws Exception{
 		bean.getField().set(entity, msg.getField());
 		
 		if(entity instanceof IFieldUpdateListener){
 			((IFieldUpdateListener) entity).onFieldUpdate(bean.getField().getName(), msg.getField());
 		}
 		
-		msg.getField().onReceive(entity);
+                EntityManager.getGame().enqueue(new Callable<Boolean>(){
+
+                    @Override
+                    public Boolean call() throws Exception {
+                        msg.getField().onReceive(entity);
+                        return true;
+                    }
+                    
+                });
+		
 	}
 	
 	public void preSend()throws Exception{

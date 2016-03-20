@@ -1,11 +1,17 @@
 package com.entity.network.core.msg;
 
 import com.entity.network.core.msg.sync.NetMessage;
+import com.jme3.network.AbstractMessage;
 import com.jme3.network.Message;
-
-public class MsgSync<T extends NetMessage> implements Message{
+import com.jme3.network.serializing.Serializable;
+@Serializable
+public class MsgSync<T extends NetMessage> extends AbstractMessage{
 	private String id;
 	private T field;
+	
+	public MsgSync(){
+		
+	}
 	
 	public MsgSync(String id, T msg){
 		this.field=msg;
@@ -18,15 +24,6 @@ public class MsgSync<T extends NetMessage> implements Message{
 	public T getField() {
 		return field;
 	}
-
-	@Override
-	public boolean isReliable() {
-		return true;
-	}
-	@Override
-	public Message setReliable(boolean arg0) {
-		return null;
-	} 
 	
 	
 }

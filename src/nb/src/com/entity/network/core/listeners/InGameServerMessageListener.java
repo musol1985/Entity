@@ -18,7 +18,8 @@ public class InGameServerMessageListener extends NetworkMessageListener<InGameSe
 			
 			if(cell!=null){
 				if(c.timestamp<cell.getDao().getId().timestamp){
-					log.info("onGetCells: "+c.getId()+" newer on server, must be sent to client");				
+					log.info("onGetCells: "+c.getId()+" newer on server, must be sent to client");
+					log.info("onGetCells: "+c.getId()+" timestamp client: "+c.timestamp+" server: "+cell.getDao().getId().timestamp);
 					res.cellsToReload.add(cell.getDao());
 				}else if(c.timestamp==cell.getDao().getId().timestamp){
 					log.info("onGetCells: "+c.getId()+" same timestamp, client must load his cell");

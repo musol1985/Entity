@@ -87,7 +87,7 @@ public class NetworkMessageListener<T extends IEntity> implements MessageListene
         				if(EntityManager.getGame().getNet().isNetServerGame())
         					broadCast(cnn, msg, true);
         			}else{
-        				log.warning("No method implemented por message class "+msg+" in "+getClass().getName());
+        				
                         return;
         			}
         		}
