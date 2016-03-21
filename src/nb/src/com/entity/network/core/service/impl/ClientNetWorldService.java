@@ -42,8 +42,8 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 			
 			if(cell!=null){
 				log.info("The cell "+cellId+" already exist. Put on first place in cache.");
-				world.cellsCache.remove(cellId);
-				world.cellsCache.put(cellId, cell);
+				world.getCells().remove(cellId);
+				world.getCells().put(cellId, cell);
 			}
 		}
 		return cell;
@@ -73,7 +73,7 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 				List<CellId> cellsToUnLoad=oldView.getCellsNotIn(newView);
 				for(CellId c:cellsToUnLoad){
 					log.info("Unloading cell..."+c);
-					C cell=((C)world.cellsCache.get(c.getId()));
+					C cell=((C)world.getCells().get(c.getId()));
 					if(cell!=null){
 						try {
                                                         log.info("Dettaching cell..."+c);
@@ -126,7 +126,7 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 	 */
 	private void onCellsLoaded(){
 		if(EntityManager.getGame().isPhysics() && !EntityManager.getGame().isPhysicsActive()){
-			if(world.cellsCache.size()>=4){
+			if(world.getCells().size()>=4){
 				EntityManager.getGame().activatePhysics();
 			}
 		}		

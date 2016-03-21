@@ -62,11 +62,15 @@ public class ModelBuilder<T extends Model> extends BaseModelBuilder<T>{
 			for(Field f:subModels){
 				SubModelComponent a=EntityManager.getAnnotation(SubModelComponent.class,f);
 				Spatial s=n.getChild(a.name());
-				if(a.rayPickResponse() && s instanceof Geometry){
-					s.setUserData(ENTITY_GEOMETRY_REFERENCE, e);
+				if(s!=null){
+					if(a.rayPickResponse() && s instanceof Geometry){
+						s.setUserData(ENTITY_GEOMETRY_REFERENCE, e);
+					}
+					
+					f.set(e, s);
+				}else{
+					log.warning("No submodel with name: "+a.name());
 				}
-				
-				f.set(e, s);
 			}
 			
 			e.attachChild(n);

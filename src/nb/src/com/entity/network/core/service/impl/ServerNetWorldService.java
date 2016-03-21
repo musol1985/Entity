@@ -96,8 +96,8 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 			
 			if(cell!=null){				
 				log.info("The cell "+cellId+" already exist. Put on first place in cache.");
-				world.cellsCache.remove(cellId);
-				world.cellsCache.put(cellId, cell);
+				world.getCells().remove(cellId);
+				world.getCells().put(cellId, cell);
 			}else{				
 				log.info("getcellById "+cellId+" doesn't exist. It must be created");
 			}
@@ -112,7 +112,7 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 	 * @param cellId
 	 * @param cnn
 	 */
-	public void createNewCell(Vector2 cellId, HostedConnection cnn){
+	public void createNewCell(Vector2 cellId, HostedConnection cnn)throws Exception{
 		if(isCellInLimits(cellId)){
 			CreatingCell creating=creatingCell.get(cellId);
 			if(creating!=null){
@@ -129,7 +129,7 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 	
 	
 	@OnExecutor
-	private void createCellDAOBackground(CreatingCell creating){
+	private void createCellDAOBackground(CreatingCell creating)throws Exception{
                 log.info("getcellById "+creating.getCellId()+" begin the creation of cell dao in background thread");
 		F dao=onNewCellDAO(creating.getCellId());
 		creating.setCellDao(dao);
@@ -142,15 +142,25 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 	 * then it removes from creatingcell and send to all the players requested the cell
 	 */
 	@RunOnGLThread
-	private void createCellModelFromDAOBackground(CreatingCell creating){
+	private void createCellModelFromDAOBackground(CreatingCell creating)throws Exception{
 		for(HostedConnection cnn:creating.getPlayers()){
                         log.info("getcellById sending the cell "+creating.getCellId()+" to the connection "+cnn.getAddress());
 			cnn.send(new MsgShowCell(creating.getCellDao()));
 		}
 		log.info("getcellById "+creating.getCellId()+" creating the cellModel in GLThread");
-		createNewCellFromDAO((F)creating.getCellDao());
+		C cell=createNewCellFromDAO((F)creating.getCellDao());
 		log.info("getcellById "+creating.getCellId()+" created the cellModel in GLThread");
 		creatingCell.remove(creating.getCellId());
+		
+		log.info("Position of cell "+cell.getDao().getId()+" ->"+getRealFromVirtual(cell.getDao().getId().id));
+		cell.setLocalTranslation(getRealFromVirtual(cell.getDao().getId().id));            
+		cell.attachToParent(world);
+		dettachUnusedCells();
+	}
+	
+	
+	private void dettachUnusedCells(){
+		//TODO dettach unused cells(no dynamic bodies in)
 	}
 
 }

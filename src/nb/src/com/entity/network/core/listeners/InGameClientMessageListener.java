@@ -6,7 +6,7 @@ import com.entity.network.core.msg.MsgShowCell;
 import com.entity.network.core.msg.MsgShowCells;
 import com.jme3.network.MessageConnection;
 
-public class InGameClientMessageListener extends NetworkMessageListener<InGameClientScene>{
+public class InGameClientMessageListener<S extends InGameClientScene> extends NetworkMessageListener<S>{
 	
 	public void onShowCells(MsgShowCells msg, MessageConnection cnn)throws Exception{
 		getEntity().getService().showCells(msg.cellsToReload, msg.cellsToReuse);

@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.entity.anot.DAO;
 import com.entity.anot.Instance;
@@ -32,6 +33,8 @@ import com.entity.core.injectors.method.UpdateInjector;
 import com.entity.core.items.Model;
 
 public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
+	protected static final Logger log = Logger.getLogger(BaseModelBuilder.class.getName());
+	
 	public static final String ENTITY_MODEL_REFERENCE="EntityModelReference";
 	public static final String ENTITY_GEOMETRY_REFERENCE="EntityGeometryReference";
 	

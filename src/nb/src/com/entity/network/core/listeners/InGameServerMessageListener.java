@@ -8,7 +8,7 @@ import com.entity.network.core.msg.MsgGetCells;
 import com.entity.network.core.msg.MsgShowCells;
 import com.jme3.network.HostedConnection;
 
-public class InGameServerMessageListener extends NetworkMessageListener<InGameServerScene>{
+public class InGameServerMessageListener<S extends InGameServerScene> extends NetworkMessageListener<S>{
 	public void onGetCells(MsgGetCells msg, HostedConnection cnn)throws Exception{
 		MsgShowCells res=MsgShowCells.getNew();
 		

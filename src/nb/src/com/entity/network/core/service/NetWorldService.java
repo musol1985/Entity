@@ -284,7 +284,7 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 		C cell=(C)EntityManager.instanceGeneric(getCellClass(), dao);
 		log.info("The cell "+dao.getId()+" has been created. Inserting in cache and in indexes. TS: "+dao.getId().timestamp);		
 		world.cellsIndex.put(dao.getId().id, cell.dao.getId());
-		world.cellsCache.put(dao.getId().id, cell);
+		world.getCells().put(dao.getId().id, cell);
 		return cell;
 	}
 
@@ -351,6 +351,6 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 		
 	}
 	
-	
+	public abstract int getCellCacheSize();
 
 }

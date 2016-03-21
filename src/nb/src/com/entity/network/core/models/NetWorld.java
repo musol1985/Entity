@@ -17,10 +17,8 @@ import java.util.List;
 
 @ModelEntity
 public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCell, P extends NetPlayer> extends Model{
-	public static final int CELLS_CACHE_SIZE = 20;
-	
-	private static float HASH_TABLE_LOAD_FACTOR=0.75f;
-	private static int HASH_TABLE_CAPACITY = (int) Math.ceil(CELLS_CACHE_SIZE / HASH_TABLE_LOAD_FACTOR) + 1;
+
+	private static float HASH_TABLE_LOAD_FACTOR=0.75f;	
 	
 	public T dao;
 	public LinkedHashMap<Vector2, C> cellsCache;		
@@ -40,10 +38,13 @@ public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCell, P 
 	public void onInstance(IBuilder builder, Object[] params) {
 		dao=(T) EntityManager.getGame().getNet().getWorldService().getWorldDAO();
 		EntityManager.getGame().getNet().getWorldService().setWorld(this);
+		
+		int HASH_TABLE_CAPACITY = (int) Math.ceil(EntityManager.getGame().getNet().getWorldService().getCellCacheSize() / HASH_TABLE_LOAD_FACTOR) + 1;
+		
 		cellsCache=new LinkedHashMap<Vector2, C>(HASH_TABLE_CAPACITY, HASH_TABLE_LOAD_FACTOR, true) {
             @Override
             protected boolean removeEldestEntry(Map.Entry<Vector2, C> eldest) {
-                boolean pop=this.size() > CELLS_CACHE_SIZE;
+                boolean pop=this.size() > EntityManager.getGame().getNet().getWorldService().getCellCacheSize();
                 if(pop){
                 	EntityManager.getGame().getNet().getWorldService().onCellPopCache(eldest.getValue());                    
                 }

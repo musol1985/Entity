@@ -45,4 +45,7 @@ public class NetPlayer<T extends NetPlayerDAO> extends Model{
 		return remote;
 	}
 	
+	public boolean isMe(){
+		return EntityManager.getGame().getNet().getWorldService().getPlayer()!=null && EntityManager.getGame().getNet().getWorldService().getPlayer().dao.getId().equals(dao.getId());
+	}
 }
