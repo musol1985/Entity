@@ -86,10 +86,9 @@ public class NetworkMessageListener<T extends IEntity> implements MessageListene
         				m.invoke(this, ((MsgSync)msg).getField(), ((MsgSync)msg).getId().split("#")[1]);
         				if(EntityManager.getGame().getNet().isNetServerGame())
         					broadCast(cnn, msg, true);
-        			}else{
-        				
-                        return;
         			}
+        			
+        			 return;
         		}
     		}
 

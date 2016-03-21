@@ -14,13 +14,13 @@ public class NetPlayer<T extends NetPlayerDAO> extends Model{
 
 	@Override
 	public void onInstance(IBuilder builder, Object[] params) {			
-        if(EntityManager.getGame().getNet().getWorldService().getPlayer()==null){
+        if(EntityManager.getGame().getNet().getWorldService().getPlayer()==null && EntityManager.getGame().getNet().isNetClientGame()){
         	dao=(T) EntityManager.getGame().getNet().getWorldService().getPlayerDAO();
             EntityManager.getGame().getNet().getWorldService().setPlayer(this);            
         }else{
         	if(params!=null && params.length>0){
             	dao=(T) params[0];
-            	if( EntityManager.getGame().getNet().getWorldService().getPlayer().dao.getId().equals(dao.getId())){
+            	if(EntityManager.getGame().getNet().isNetClientGame() && EntityManager.getGame().getNet().getWorldService().getPlayer().dao.getId().equals(dao.getId())){
             		EntityManager.getGame().getNet().getWorldService().setPlayer(this);
             	}else{
             		remote=true;

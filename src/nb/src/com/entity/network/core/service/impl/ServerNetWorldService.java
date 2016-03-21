@@ -154,7 +154,7 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 		
 		log.info("Position of cell "+cell.getDao().getId()+" ->"+getRealFromVirtual(cell.getDao().getId().id));
 		cell.setLocalTranslation(getRealFromVirtual(cell.getDao().getId().id));            
-		cell.attachToParent(world);
+		//cell.attachToParent(world);
 		dettachUnusedCells();
 	}
 	

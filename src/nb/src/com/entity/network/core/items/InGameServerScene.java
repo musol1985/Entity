@@ -48,7 +48,8 @@ public abstract class InGameServerScene<T extends InGameServerMessageListener, W
 
 	@Override
 	public void onLoadScene() throws Exception{
-
+            getService().initWorld();
+            onLoadRemotePlayers();
 	}
 
 
@@ -60,5 +61,6 @@ public abstract class InGameServerScene<T extends InGameServerMessageListener, W
 	public abstract W getWorld();
 	public abstract S getService();
 	public abstract T getListener();
+        public abstract void onLoadRemotePlayers() throws Exception;
 	
 }

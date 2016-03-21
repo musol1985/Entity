@@ -166,17 +166,5 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 	}
 	
 	
-	public void initWorld(){
-		HashMap<String, P> players=new HashMap<String, P>(world.dao.getPlayers().size());
-		
-		for(Object p:world.dao.getPlayers().values()){
-			E pDAO=(E)p;
-			if(!pDAO.getId().equals(getPlayer().dao.getId())){
-				P player=(P)EntityManager.instanceGeneric(getPlayerClass(), pDAO);				
-				players.put(pDAO.getId(), player);
-			}
-		}
-		
-		world.setPlayers(players);
-	}
+	
 }

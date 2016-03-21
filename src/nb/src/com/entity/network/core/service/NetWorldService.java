@@ -20,6 +20,7 @@ import com.entity.utils.Vector2;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import java.util.HashMap;
 
 @BuilderDefinition(builderClass=NetWorldServiceBuilder.class, methodInterceptorClass=ThreadsMethodInterceptor.class)
 public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C extends NetWorldCell, D extends NetWorldDAO<E>, E extends NetPlayerDAO, F extends NetWorldCellDAO> implements IEntity{
@@ -352,5 +353,20 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 	}
 	
 	public abstract int getCellCacheSize();
+        
+        
+        public void initWorld(){
+		HashMap<String, P> players=new HashMap<String, P>(world.dao.getPlayers().size());
+		
+		for(Object p:world.dao.getPlayers().values()){
+			E pDAO=(E)p;
+			if(getPlayer()==null || !pDAO.getId().equals(getPlayer().dao.getId())){
+				P player=(P)EntityManager.instanceGeneric(getPlayerClass(), pDAO);				
+				players.put(pDAO.getId(), player);
+			}
+		}
+		
+		world.setPlayers(players);
+	}
 
 }
