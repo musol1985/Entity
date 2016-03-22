@@ -42,7 +42,7 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 			
 			PhysicsControl  body=null;
 			if(bean.getAnnot().type()==PhysicsBodyType.RIGID_BODY){
-				body=new RigidBodyControl(bean.getCollisionShape(item), bean.getAnnot().mass());
+				body=new RigidBodyControl(bean.getCollisionShape(item), bean.getAnnot().mass());				
 			}else if(bean.getAnnot().type()==PhysicsBodyType.KINEMATIC_BODY){
 				body=new RigidBodyControl(bean.getCollisionShape(item), bean.getAnnot().mass());
 				((RigidBodyControl)body).setKinematic(true);
