@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import com.entity.anot.Instance;
 import com.entity.anot.OnCollision;
+import com.entity.anot.OnExecutor;
 import com.entity.anot.RayPick;
 import com.entity.anot.RunOnGLThread;
 import com.entity.core.EntityManager;
@@ -47,6 +48,8 @@ public class ServiceBuilder extends Builder<BaseService>{
                         }else if(EntityManager.isAnnotationPresent(Instance.class,m)){
                             mustEnhance=true;
                         }else if(EntityManager.isAnnotationPresent(RayPick.class,m)){
+                            mustEnhance=true;
+                        }else if(EntityManager.isAnnotationPresent(OnExecutor.class,m)){
                             mustEnhance=true;
                         }
 		}

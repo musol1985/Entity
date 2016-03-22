@@ -6,6 +6,7 @@ import com.entity.network.core.items.InGameServerScene;
 import com.entity.network.core.models.NetWorldCell;
 import com.entity.network.core.msg.MsgGetCells;
 import com.entity.network.core.msg.MsgShowCells;
+import com.entity.utils.Vector2;
 import com.jme3.network.HostedConnection;
 
 public class InGameServerMessageListener<S extends InGameServerScene> extends NetworkMessageListener<S>{
@@ -37,5 +38,5 @@ public class InGameServerMessageListener<S extends InGameServerScene> extends Ne
 		if(res.hasCells())
 			res.send();
 	}
- 
+
 }

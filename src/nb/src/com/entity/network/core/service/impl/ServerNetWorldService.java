@@ -129,7 +129,7 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 	
 	
 	@OnExecutor
-	private void createCellDAOBackground(CreatingCell creating)throws Exception{
+	public void createCellDAOBackground(CreatingCell creating)throws Exception{
                 log.info("getcellById "+creating.getCellId()+" begin the creation of cell dao in background thread");
 		F dao=onNewCellDAO(creating.getCellId());
 		creating.setCellDao(dao);
@@ -142,7 +142,7 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 	 * then it removes from creatingcell and send to all the players requested the cell
 	 */
 	@RunOnGLThread
-	private void createCellModelFromDAOBackground(CreatingCell creating)throws Exception{
+	public void createCellModelFromDAOBackground(CreatingCell creating)throws Exception{
 		for(HostedConnection cnn:creating.getPlayers()){
                         log.info("getcellById sending the cell "+creating.getCellId()+" to the connection "+cnn.getAddress());
 			cnn.send(new MsgShowCell(creating.getCellDao()));
@@ -153,8 +153,9 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 		creatingCell.remove(creating.getCellId());
 		
 		log.info("Position of cell "+cell.getDao().getId()+" ->"+getRealFromVirtual(cell.getDao().getId().id));
-		cell.setLocalTranslation(getRealFromVirtual(cell.getDao().getId().id));            
-		//cell.attachToParent(world);
+		cell.setLocalTranslation(getRealFromVirtual(cell.getDao().getId().id));          
+		System.out.println("*************************************************"+Thread.currentThread());
+		cell.attachToParent(world);
 		dettachUnusedCells();
 	}
 	
