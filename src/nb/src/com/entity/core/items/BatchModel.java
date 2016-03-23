@@ -9,7 +9,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 @BuilderDefinition(builderClass=BatchModelBuilder.class)
-public abstract class BatchModel extends ModelBase{
+public abstract class BatchModel<T extends ModelBase> extends ModelBase<T, BatchModelBuilder>{
 	protected AutoBatchNode batch=new AutoBatchNode("",true);
 	
 	protected boolean isCollidableWith(BatchModel e){

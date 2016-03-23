@@ -17,7 +17,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 
-public abstract class ModelBase<T extends BaseModelBuilder> extends Node implements IEntity{
+public abstract class ModelBase<R extends ModelBase, T extends BaseModelBuilder> extends Node implements IEntity{
 	protected static final Logger log = Logger.getLogger(ModelBase.class.getName());
 	protected T builder;
 	
@@ -42,6 +42,10 @@ public abstract class ModelBase<T extends BaseModelBuilder> extends Node impleme
 		onAParentAttached(parent);
 		
 		onAttachToParent(parent);
+	}
+	
+	public R getParentModel(){
+		return (R)getParent();
 	}
 
 
