@@ -1,5 +1,6 @@
 package com.entity.core.items;
 
+import com.entity.adapters.AutoBatchNode;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
@@ -45,7 +46,11 @@ public abstract class ModelBase<R extends ModelBase, T extends BaseModelBuilder>
 	}
 	
 	public R getParentModel(){
-		return (R)getParent();
+            Spatial s=getParent();
+            if(s instanceof AutoBatchNode)
+                return (R)((AutoBatchNode)s).getUserData(BatchModel.BATCH_MODEL_REFERENCE);
+            
+            return (R)s;
 	}
 
 

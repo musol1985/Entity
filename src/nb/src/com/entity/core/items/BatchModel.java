@@ -10,6 +10,7 @@ import com.jme3.scene.Spatial;
 
 @BuilderDefinition(builderClass=BatchModelBuilder.class)
 public abstract class BatchModel<T extends ModelBase> extends ModelBase<T, BatchModelBuilder>{
+        public static final String BATCH_MODEL_REFERENCE="batchModelReference";
 	protected AutoBatchNode batch=new AutoBatchNode("",true);
 	
 	protected boolean isCollidableWith(BatchModel e){
@@ -27,6 +28,10 @@ public abstract class BatchModel<T extends ModelBase> extends ModelBase<T, Batch
 		return batch;
 	}
         
+        public T getParentModel(){
+		return (T)getParent();
+	}
+        
     public void batch(){
         batch.batch();
     }
@@ -35,6 +40,7 @@ public abstract class BatchModel<T extends ModelBase> extends ModelBase<T, Batch
     @Override
     public void onInstance(IBuilder builder, Object[] params){
     	super.attachChild(batch);
+        batch.setUserData(BATCH_MODEL_REFERENCE, this);
     }
     
 	/**
@@ -90,6 +96,14 @@ public abstract class BatchModel<T extends ModelBase> extends ModelBase<T, Batch
 		}
 		return res;                        
 	}
+        
+        public int dettachEntity(String modelName){
+            Model m=(Model)batch.getChild(modelName);
+            if(m!=null){
+                return dettachEntity(m);
+            }
+            return -1;
+        }
 
 	public int dettachEntity(Model model){
 		int res=batch.detachEntity(model);

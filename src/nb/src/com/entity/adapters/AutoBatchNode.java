@@ -33,6 +33,5 @@ public class AutoBatchNode extends BatchNode{
 			batch();
 		return res;
 	}
-	
-	
+		
 }

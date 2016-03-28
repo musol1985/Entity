@@ -63,7 +63,7 @@ public class EffectBean<T extends Filter> extends AnnotationFieldBean implements
 	}
 	
 	private T createBloom(BloomEffect anot){
-		BloomFilter bloom = new BloomFilter();
+		BloomFilter bloom = new BloomFilter(anot.mode());
         bloom.setDownSamplingFactor(anot.downSamplingFactor());
         bloom.setBlurScale(anot.blurScale());
         bloom.setExposurePower(anot.exposurePower());
