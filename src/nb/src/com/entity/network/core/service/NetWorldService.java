@@ -6,6 +6,7 @@ import com.entity.anot.BuilderDefinition;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
+import com.entity.core.items.BaseService;
 import com.entity.core.items.interceptors.ThreadsMethodInterceptor;
 import com.entity.network.core.beans.CellId;
 import com.entity.network.core.beans.CellViewQuad;
@@ -20,10 +21,11 @@ import com.entity.utils.Vector2;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+
 import java.util.HashMap;
 
 @BuilderDefinition(builderClass=NetWorldServiceBuilder.class, methodInterceptorClass=ThreadsMethodInterceptor.class)
-public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C extends NetWorldCell, D extends NetWorldDAO<E>, E extends NetPlayerDAO, F extends NetWorldCellDAO> implements IEntity{
+public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C extends NetWorldCell, D extends NetWorldDAO<E>, E extends NetPlayerDAO, F extends NetWorldCellDAO> extends BaseService{
 	protected static final Logger log = Logger.getLogger(NetWorldService.class.getName());
 
 	protected W world;
@@ -287,69 +289,6 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 		world.cellsIndex.put(dao.getId().id, cell.dao.getId());
 		world.getCells().put(dao.getId().id, cell);
 		return cell;
-	}
-
-
-
-	@Override
-	public void onAttachToParent(IEntity parent) throws Exception {
-		
-	}
-
-
-
-	@Override
-	public Node getNode() {
-		return null;
-	}
-
-
-
-	@Override
-	public void attachToParent(IEntity parent) throws Exception {
-		
-	}
-
-
-
-	@Override
-	public void dettach() throws Exception {
-		
-	}
-
-
-
-	@Override
-	public void onDettach(IEntity parent) throws Exception {
-		
-	}
-
-
-
-	@Override
-	public void onInstance(IBuilder builder, Object[] params) {
-		
-	}
-
-
-
-	@Override
-	public void onPreInject(IBuilder builder, Object[] params) throws Exception {
-		
-	}
-
-
-
-	@Override
-	public void setBuilder(IBuilder builder) {
-		
-	}
-
-
-
-	@Override
-	public void attachChilFromInjector(Spatial s) {
-		
 	}
 	
 	public abstract int getCellCacheSize();
