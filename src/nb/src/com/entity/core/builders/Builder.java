@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
+import com.entity.anot.Cache;
 import com.entity.bean.MaterialBean;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
@@ -29,6 +30,8 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 	
 	private List<Field> daoFields=new ArrayList<Field>();
 	private BaseMethodInterceptor interceptor;
+	
+	protected boolean cache;
 
 	@Override
 	public void onCreate(Class<T> c) throws Exception {
@@ -40,6 +43,8 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 				attachableInjectors.add((InjectorAttachable) e.getValue());
 			}
 		}
+		
+		cache=c.isAnnotationPresent(Cache.class);		
 
 		log.info("------------>"+c.getName());
         processMethod(c, c);
@@ -146,5 +151,7 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 		this.interceptor = interceptor;
 	}
 	
-	
+	public boolean isCache(){
+		return cache;
+	}
 }

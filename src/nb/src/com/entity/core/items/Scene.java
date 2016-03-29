@@ -199,5 +199,12 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 	public void setApp(T app){
 		this.app=app;
 	}
+
+	@Override
+	public void onInstanceCache(IBuilder builder, Object[] params)
+			throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
     
 }

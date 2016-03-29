@@ -75,6 +75,15 @@ public abstract class BaseService implements IEntity{
 	public void attachChilFromInjector(Spatial s) {
 		
 	}
+
+
+
+	@Override
+	public void onInstanceCache(IBuilder builder, Object[] params)
+			throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 

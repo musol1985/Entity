@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.logging.Logger;
 
@@ -42,6 +43,7 @@ public abstract class EntityGame extends SimpleApplication{
 	private BulletAppState bullet;
 	
 	private HashMap<Class, HashMap<Type, AnnotationFieldBean<NetSync>>> netSyncFields=new HashMap<Class, HashMap<Type, AnnotationFieldBean<NetSync>>>();
+	private HashMap<Class, Stack> cache=new HashMap<Class, Stack>();
 	
 	private String path;
 	
@@ -284,5 +286,20 @@ public abstract class EntityGame extends SimpleApplication{
 		return executor;
 	}
 	
+	public synchronized <T> T getFromCache(Class<T> c){
+		Stack subcache=cache.get(c);
+		if(subcache!=null){
+			return (T)subcache.pop();
+		}
+		return null;
+	}
 	
+	public synchronized <T> void putInCache(T c){
+		Stack subcache=cache.get(c);
+		if(subcache==null){
+			subcache=new Stack();
+			cache.put(c.getClass(), subcache);
+		}
+		subcache.push(c);		
+	}
 }

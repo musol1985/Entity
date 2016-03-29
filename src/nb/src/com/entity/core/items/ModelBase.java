@@ -1,10 +1,12 @@
 package com.entity.core.items;
 
 import com.entity.adapters.AutoBatchNode;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
+import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
 import com.entity.core.builders.BaseModelBuilder;
@@ -177,6 +179,22 @@ public abstract class ModelBase<R extends ModelBase, T extends BaseModelBuilder>
 	@Override
 	public void onPreInject(IBuilder builder, Object[] params) throws Exception {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	/**
+	 * Puts this model in the cache system
+	 */
+	public void cache(){
+		if(!builder.isCache())
+			throw new RuntimeException("The builder has not @Cache");
+		
+		EntityManager.getGame().putInCache(this);
+	}
+
+	@Override
+	public void onInstanceCache(IBuilder builder, Object[] params)
+			throws Exception {
 		
 	}
 	

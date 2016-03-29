@@ -15,17 +15,10 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodProxy;
 
 import com.entity.anot.BuilderDefinition;
-import com.entity.anot.Instance;
-import com.entity.anot.OnBackground;
 import com.entity.anot.Persistable;
-import com.entity.anot.RayPick;
-import com.entity.core.interceptors.BackgroundInterceptor;
 import com.entity.core.interceptors.BaseMethodInterceptor;
-import com.entity.core.interceptors.RayPickInterceptor;
-import com.entity.core.items.Model;
 import com.entity.core.items.Scene;
 import com.google.dexmaker.stock.ProxyBuilder;
 import com.jme3.asset.AssetManager;
@@ -142,24 +135,31 @@ public abstract class EntityManager {
 		IEntity res=null;
 		try{
 			IBuilder template=EntityManager.getBuilder(c);
-			if(template.isMustEnhance()){				
-				System.out.println("Enhance ####################################-------------------------------------------------------------------------------->"+c.getName());
-				if(template.getInterceptor()==null){
-					BuilderDefinition anot=(BuilderDefinition) c.getAnnotation(BuilderDefinition.class);
-					template.setInterceptor((BaseMethodInterceptor) anot.methodInterceptorClass().newInstance());
-				}
-				if(EntityManager.isAndroidGame()){
-					res=(IEntity)ProxyBuilder.forClass(c).handler(template.getInterceptor()).build();
+			if(template.isCache())
+				res=game.getFromCache(c);
+			if(res==null){
+				if(template.isMustEnhance()){				
+					System.out.println("Enhance ####################################-------------------------------------------------------------------------------->"+c.getName());
+					if(template.getInterceptor()==null){
+						BuilderDefinition anot=(BuilderDefinition) c.getAnnotation(BuilderDefinition.class);
+						template.setInterceptor((BaseMethodInterceptor) anot.methodInterceptorClass().newInstance());
+					}
+					if(EntityManager.isAndroidGame()){
+						res=(IEntity)ProxyBuilder.forClass(c).handler(template.getInterceptor()).build();
+					}else{
+						res=(IEntity)Enhancer.create(c, template.getInterceptor());
+					}
+					if(res instanceof Node || res instanceof Scene)
+						throw new RuntimeException("You can't use enhancer annotations in Node or Scene class!!! "+res.getClass().getName());
 				}else{
-					res=(IEntity)Enhancer.create(c, template.getInterceptor());
-				}
-				if(res instanceof Node || res instanceof Scene)
-					throw new RuntimeException("You can't use enhancer annotations in Node or Scene class!!! "+res.getClass().getName());
+					res=(IEntity) c.newInstance();
+				}				
+				log.info("onInstance "+res.getClass().getName()+" using builder "+template.getClass().getName());
+				template.onInstance(res, template, params);
 			}else{
-				res=(IEntity) c.newInstance();
-			}
-			log.info("onInstance "+res.getClass().getName()+" using builder "+template.getClass().getName());
-			template.onInstance(res, template, params);
+				log.info("OnInstanceCache "+res.getClass().getName()+" using builder "+template.getClass().getName());
+				res.onInstanceCache(template, params);
+			}			
 		}catch(Exception e){
             log.severe("Can't instantiate an entity of class "+c.getName()+" reason: "+e.getMessage());
                     e.printStackTrace();
