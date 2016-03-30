@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Inherited
 public @interface Cache {
-
+	String id() default "";
 }

@@ -29,6 +29,7 @@ import com.entity.network.core.NetGame;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.effect.ParticleEmitter;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.network.serializing.Serializer;
 import com.jme3.post.Filter;
@@ -44,6 +45,7 @@ public abstract class EntityGame extends SimpleApplication{
 	
 	private HashMap<Class, HashMap<Type, AnnotationFieldBean<NetSync>>> netSyncFields=new HashMap<Class, HashMap<Type, AnnotationFieldBean<NetSync>>>();
 	private HashMap<Class, Stack> cache=new HashMap<Class, Stack>();
+	private HashMap<String, Stack<ParticleEmitter>> particlesCache=new HashMap<String, Stack<ParticleEmitter>>();
 	
 	private String path;
 	
@@ -74,8 +76,8 @@ public abstract class EntityGame extends SimpleApplication{
 				
 				packages.add("com.entity.network.core.msg");
 				packages.add("com.entity.network.core.dao");
-                                packages.add("com.entity.network.core.beans");
-                                packages.add("com.entity.utils");
+                packages.add("com.entity.network.core.beans");
+                packages.add("com.entity.utils");
 				
 				log.info("++Finding @Serializable in "+packages.size()+" packages");
 				List<Class> classes=new ArrayList<Class>();
@@ -144,7 +146,6 @@ public abstract class EntityGame extends SimpleApplication{
 			}else{
 				log.warning("No first scene defined. You must call setScene(@SceneObject) manually");
 			}
-				//setScene((Scene) firstScene.invoke(this, null));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -302,4 +303,9 @@ public abstract class EntityGame extends SimpleApplication{
 		}
 		subcache.push(c);		
 	}
+
+	public HashMap<String, Stack<ParticleEmitter>> getParticlesCache() {
+		return particlesCache;
+	}
+	
 }

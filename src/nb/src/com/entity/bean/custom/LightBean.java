@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 import com.entity.adapters.DirectionalLightShadow;
 import com.entity.anot.components.lights.AmbientLightComponent;
 import com.entity.anot.components.lights.DirectionalLightComponent;
+import com.entity.anot.components.lights.PointLightComponent;
 import com.entity.anot.components.shadows.DirectionalShadowComponent;
 import com.entity.bean.AnnotationFieldBean;
 import com.entity.core.EntityGame;
@@ -15,8 +16,11 @@ import com.entity.core.IEntity;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.Light;
+import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.control.LightControl;
 
 public class LightBean extends AnnotationFieldBean{
 	private Annotation shadow;
@@ -28,6 +32,10 @@ public class LightBean extends AnnotationFieldBean{
 		}
 	}
 
+	public static boolean isPointLight(Field f){
+		return EntityManager.isAnnotationPresent(PointLightComponent.class,f);
+	}
+	
 	
 	public static boolean isAmbientLight(Field f){
 		return EntityManager.isAnnotationPresent(AmbientLightComponent.class,f);
@@ -43,20 +51,45 @@ public class LightBean extends AnnotationFieldBean{
 	
 	public Light createLight(IEntity instance)throws Exception{
 		if(annot.annotationType()==AmbientLightComponent.class){
-			return createAmbientLight(f, instance);
+			return createAmbientLight(f, instance, (AmbientLightComponent)annot);
 		}else if(annot.annotationType()==DirectionalLightComponent.class){
 			return createDirectionalLight(f, instance, (DirectionalLightComponent) annot);
+		}else if(annot.annotationType()==PointLightComponent.class){
+			return createPointLight(f, instance, (PointLightComponent) annot);
 		}
 		throw new Exception("No type defined for light "+annot.getClass());
 	}
 	
-	private Light createAmbientLight(Field f, IEntity e)throws Exception{
-		AmbientLightComponent anot=EntityManager.getAnnotation(AmbientLightComponent.class,f);
+	private Light createAmbientLight(Field f, IEntity e, AmbientLightComponent anot)throws Exception{		
 		Light l=new AmbientLight();
 		l.setColor(new ColorRGBA(anot.color()[0],anot.color()[1],anot.color()[2],anot.color()[3]));
 		l.getColor().mult(anot.mult());
 		f.set(e, l);
 		e.getNode().addLight(l);
+		
+		return l;
+	}
+	
+	private Light createPointLight(Field f, IEntity e, PointLightComponent anot)throws Exception{
+		PointLight l=new PointLight();
+		l.setColor(new ColorRGBA(anot.color()[0],anot.color()[1],anot.color()[2],anot.color()[3]));
+		l.setRadius(anot.radius());
+		f.set(e, l);
+		if(anot.rootNode()){
+			EntityManager.getCurrentScene().getNode().addLight(l);
+		}else{
+			e.getNode().addLight(l);
+		}
+		
+		if(!anot.nodePosition().isEmpty()){
+			LightControl lc=new LightControl(l);
+			Spatial node=e.getNode().getChild(anot.nodePosition());
+			if(node==null)
+				throw new Exception("The node "+anot.nodePosition()+" doesn't exist and can't add LightControl to it");
+			node.addControl(lc);
+		}else{
+			l.setPosition(e.getNode().getWorldTranslation());
+		}
 		
 		return l;
 	}
@@ -80,17 +113,16 @@ public class LightBean extends AnnotationFieldBean{
 	
 	public void attachShadow(IEntity e, final EntityGame g)throws Exception{
 		final Light l=(Light)getValueField(e);
-		g.enqueue(new Callable<Boolean>() {
-
-			@Override
-			public Boolean call() throws Exception {
-				if(l!=null && l instanceof DirectionalLightShadow){
+		if(l!=null && l instanceof DirectionalLightShadow){
+			g.enqueue(new Callable<Boolean>() {
+	
+				@Override
+				public Boolean call() throws Exception {
 					((DirectionalLightShadow)l).attachShadow(g);
+					return true;
 				}
-				return true;
-			}
-		});
-		
+			});
+		}
 	}
 	
 	public void dettachShadow(IEntity e, EntityGame g)throws Exception{

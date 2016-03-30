@@ -1,21 +1,20 @@
 package com.entity.core.items;
 
-import com.entity.adapters.AutoBatchNode;
-
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
+import com.entity.adapters.AutoBatchNode;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
 import com.entity.core.builders.BaseModelBuilder;
-import com.entity.core.builders.Builder;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
@@ -198,5 +197,8 @@ public abstract class ModelBase<R extends ModelBase, T extends BaseModelBuilder>
 		
 	}
 	
-	
+	public Vector3f getRotation(){
+		float[] v=(getLocalRotation().toAngles(new float[3]));
+		return new Vector3f(v[0], v[1], v[2]);
+	}
 }	

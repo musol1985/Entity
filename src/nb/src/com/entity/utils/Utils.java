@@ -9,5 +9,4 @@ public class Utils {
 	public static float getRandomBetween(Random rnd, float min, float max){
 		return rnd.nextFloat() * (max - min) + min;
 	}
-
 }

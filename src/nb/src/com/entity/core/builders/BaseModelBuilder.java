@@ -25,6 +25,7 @@ import com.entity.core.injectors.field.LightInjector;
 import com.entity.core.injectors.field.ListInjector;
 import com.entity.core.injectors.field.MapInjector;
 import com.entity.core.injectors.field.MaterialInjector;
+import com.entity.core.injectors.field.ParticleInjector;
 import com.entity.core.injectors.field.PersistableInjector;
 import com.entity.core.injectors.field.TerrainInjector;
 import com.entity.core.injectors.field.VehicleInjector;
@@ -62,6 +63,7 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
         addInjector(new ListBeanSingletonInjector<T>());
         addInjector(new MapInjector<T>());
         addInjector(new PersistableInjector<T>());
+        addInjector(new ParticleInjector<T>());
 		
         Class<? extends Injector>[] customInjectors=EntityManager.getModelCustomInjectors();
 		if(customInjectors!=null){

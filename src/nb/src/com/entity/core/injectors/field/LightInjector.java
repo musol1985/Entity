@@ -5,17 +5,13 @@ import java.util.concurrent.Callable;
 
 import com.entity.anot.components.lights.AmbientLightComponent;
 import com.entity.anot.components.lights.DirectionalLightComponent;
-import com.entity.bean.custom.EffectBean;
 import com.entity.bean.custom.LightBean;
-import com.entity.bean.custom.RigidBodyBean;
 import com.entity.core.EntityGame;
-import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
 import com.entity.core.InjectorAttachable;
 import com.entity.core.injectors.BaseInjector;
 import com.entity.core.injectors.ListBeanInjector;
-import com.jme3.bullet.control.PhysicsControl;
 
 public class LightInjector<T  extends IEntity>  extends ListBeanInjector<LightBean, T> implements InjectorAttachable<T>{
 
