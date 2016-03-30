@@ -136,7 +136,7 @@ public abstract class EntityManager {
 		try{
 			IBuilder template=EntityManager.getBuilder(c);
 			if(template.isCache())
-				res=game.getFromCache(c);
+				res=(IEntity)game.getFromCache(c);
 			if(res==null){
 				if(template.isMustEnhance()){				
 					System.out.println("Enhance ####################################-------------------------------------------------------------------------------->"+c.getName());

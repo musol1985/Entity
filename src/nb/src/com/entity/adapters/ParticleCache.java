@@ -11,6 +11,7 @@ import com.entity.core.EntityManager;
 import com.entity.core.IEntity;
 import com.entity.core.items.ModelBase;
 import com.jme3.effect.ParticleEmitter;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 
@@ -32,6 +33,7 @@ public class ParticleCache<T extends ModelBase>{
 		if(emiter==null){
 			Stack<ParticleEmitter> stack=EntityManager.getGame().getParticlesCache().get(asset);
 			if(stack!=null){
+                            if(stack.size()>0)
 				emiter=(ParticleEmitter)stack.pop();
 			}else{
 				stack=new Stack<ParticleEmitter>();
@@ -52,6 +54,10 @@ public class ParticleCache<T extends ModelBase>{
 	public void onAttached(T parent, ParticleEmitter emiter){
 		
 	}
+        
+        public void setLocalTranslation(Vector3f pos){
+            emiter.setLocalTranslation(pos);
+        }
 	
 	public void dettach(boolean emitAll){
 		if(emitAll)
