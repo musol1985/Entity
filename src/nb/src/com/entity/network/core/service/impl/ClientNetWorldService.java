@@ -159,6 +159,7 @@ public abstract class ClientNetWorldService<W extends NetWorld, P extends NetPla
 			}else{
 				log.info("The cell "+cellDao.getId().id+" isn't in the view. We don't attach it to the world");
 			}
+			onUpdateCell(cell);
 		} catch (Exception e) {
 			log.severe("Error attaching to parent the cell "+cellDao.getId());
 			e.printStackTrace();			

@@ -15,9 +15,11 @@ import com.entity.core.injectors.TriggerInjector;
 import com.entity.core.injectors.field.EntityInjector;
 import com.entity.core.injectors.field.ListInjector;
 import com.entity.core.injectors.field.MapInjector;
+import com.entity.core.injectors.field.TaskInjector;
 import com.entity.core.injectors.input.InputInjector;
 import com.entity.core.items.BaseService;
 import com.entity.core.items.Model;
+import com.entity.core.items.Scene;
 
 public class ServiceBuilder extends Builder<BaseService>{
 	private boolean mustEnhance;
@@ -32,6 +34,7 @@ public class ServiceBuilder extends Builder<BaseService>{
         addInjector(new ListInjector<BaseService>());
         addInjector(new ListBeanSingletonInjector<BaseService>());
         addInjector(new MapInjector<BaseService>());
+        addInjector(new TaskInjector<BaseService>());
 	}
 	
 	

@@ -157,6 +157,8 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 		System.out.println("*************************************************"+Thread.currentThread());
 		cell.attachToParent(world);
 		dettachUnusedCells();
+		
+		onUpdateCell(cell);
 	}
 	
 	
@@ -164,4 +166,5 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 		//TODO dettach unused cells(no dynamic bodies in)
 	}
 
+	
 }

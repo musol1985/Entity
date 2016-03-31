@@ -107,5 +107,10 @@ public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCell, P 
 	public void setPlayers(HashMap<String,P> players) {
 		this.players = players;
 	}
+	
+	public int saveWolrdIndexesFS(){
+		EntityManager.savePersistable("cache.idx", cellsIndex);
+		return cellsIndex.size();
+	}
 
 }

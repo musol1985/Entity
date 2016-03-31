@@ -22,6 +22,7 @@ import com.entity.core.injectors.field.NetworkListenerInjector;
 import com.entity.core.injectors.field.PersistableInjector;
 import com.entity.core.injectors.field.CamerasInjector;
 import com.entity.core.injectors.field.SkyInjector;
+import com.entity.core.injectors.field.TaskInjector;
 import com.entity.core.injectors.field.TerrainInjector;
 import com.entity.core.injectors.input.InputInjector;
 import com.entity.core.injectors.method.UpdateInjector;
@@ -48,6 +49,7 @@ public class SceneBuilder extends Builder<Scene>{
         addInjector(new ListInjector<Model>());
         addInjector(new MapInjector<Model>());
         addInjector(new PersistableInjector<Scene>());
+        addInjector(new TaskInjector<Scene>());
                 
                 Class<? extends Injector>[] customInjectors=EntityManager.getSceneCustomInjectors();
 		if(customInjectors!=null){

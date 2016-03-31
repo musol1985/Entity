@@ -1,11 +1,11 @@
 package com.entity.network.core.service;
 
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import com.entity.anot.BuilderDefinition;
+import com.entity.anot.Task;
 import com.entity.core.EntityManager;
-import com.entity.core.IBuilder;
-import com.entity.core.IEntity;
 import com.entity.core.items.BaseService;
 import com.entity.core.items.interceptors.ThreadsMethodInterceptor;
 import com.entity.network.core.beans.CellId;
@@ -17,19 +17,19 @@ import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.network.core.models.NetPlayer;
 import com.entity.network.core.models.NetWorld;
 import com.entity.network.core.models.NetWorldCell;
+import com.entity.network.core.tasks.NetWorldPersistTask;
 import com.entity.utils.Vector2;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 
-import java.util.HashMap;
-
-@BuilderDefinition(builderClass=NetWorldServiceBuilder.class, methodInterceptorClass=ThreadsMethodInterceptor.class)
+//@BuilderDefinition(builderClass=NetWorldServiceBuilder.class, methodInterceptorClass=ThreadsMethodInterceptor.class)
 public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C extends NetWorldCell, D extends NetWorldDAO<E>, E extends NetPlayerDAO, F extends NetWorldCellDAO> extends BaseService{
 	protected static final Logger log = Logger.getLogger(NetWorldService.class.getName());
 
 	protected W world;
 	protected P player;
+	
+	@Task(period=30)
+	public NetWorldPersistTask saveTask;
 
 	
 	/**
@@ -96,8 +96,8 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 		return (NetWorldCellDAO) world.cellsIndex.get(cellId);
 	}
 	
-	private void saveCellFS(C cell){
-		EntityManager.savePersistable(world.getDao().getCachePath()+cell.getDao().getId()+".cache", cell.dao);		
+	public void saveCellFS(F cell){
+		EntityManager.savePersistable(world.getDao().getCachePath()+cell.getId()+".cache", cell);		
 	}
 	
 
@@ -115,7 +115,7 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 	 * @param cell
 	 */
 	public void onCellPopCache(C cell){
-		saveCellFS(cell);
+		//saveCellFS(cell);
 	}
 
 	
@@ -308,4 +308,8 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 		world.setPlayers(players);
 	}
 
+        
+    public void onUpdateCell(C cell){
+    	saveTask.persistCell(cell.dao);
+    }
 }

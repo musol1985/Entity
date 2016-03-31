@@ -1,6 +1,7 @@
 package com.entity.network.core.items;
 
 import com.entity.anot.BuilderDefinition;
+import com.entity.anot.Task;
 import com.entity.anot.network.ServerConnectionsListener;
 import com.entity.core.EntityGame;
 import com.entity.core.builders.SceneBuilder;
@@ -9,6 +10,7 @@ import com.entity.network.core.dao.NetPlayerDAO;
 import com.entity.network.core.listeners.InGameServerMessageListener;
 import com.entity.network.core.models.NetWorld;
 import com.entity.network.core.service.impl.ServerNetWorldService;
+import com.entity.network.core.tasks.NetWorldPersistTask;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Server;
@@ -16,7 +18,6 @@ import com.jme3.network.Server;
 
 @BuilderDefinition(builderClass=SceneBuilder.class)
 public abstract class InGameServerScene<T extends InGameServerMessageListener, W extends NetWorld, S extends ServerNetWorldService, G extends EntityGame> extends Scene<G> implements IWorldInGameScene<W,S>{
-
 	
 	@ServerConnectionsListener
 	public ConnectionListener cnnListener=new ConnectionListener() {

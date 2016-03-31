@@ -1,5 +1,7 @@
 package com.entity.core.items;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Logger;
 
 import com.entity.adapters.NetSyncAdapter;
@@ -37,6 +39,8 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 	private NetSyncAdapter netSync;
 	
 	private FieldSceneBean proxy;
+	
+	private ScheduledExecutorService tasks = Executors.newScheduledThreadPool(1);
 	
 	public Scene(){
 		
@@ -176,9 +180,12 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 
 	@Override
 	public void onDettach(IEntity parent) throws Exception {
-		
+		tasks.shutdownNow();
 	}
 
+	public ScheduledExecutorService getTasks(){
+		return tasks;
+	}
 	
 	@Override
 	public void attachChilFromInjector(Spatial s) {
