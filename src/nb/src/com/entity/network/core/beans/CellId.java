@@ -40,4 +40,8 @@ public class CellId implements Serializable{
         public String toString(){
             return "CellId: "+id.toString()+" - "+timestamp;
         }
+        
+        public void update(){
+            timestamp=System.currentTimeMillis();
+        }
 }

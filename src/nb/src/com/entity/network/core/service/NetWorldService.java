@@ -133,7 +133,7 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 			if(this.world==null){			
 				log.warning("WorldService: world model is null, create temp world model to set the worldDao");		
 				this.world=(W)getWorldClass().newInstance();
-	            this.world.setTemporal(true);
+                                this.world.setTemporal(true);
 			}
 			this.world.setDao(world);
 		}catch(Exception e){
@@ -164,6 +164,7 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 
 	public void setWorld(W world) {
 		this.world = world;
+                saveTask.setIndex(world.cellsIndex.size());
 	}
 
 

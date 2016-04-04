@@ -25,12 +25,12 @@ public class TaskInjector<T  extends IEntity>  extends ListBeanInjector<Annotati
 	@Override
 	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for(AnnotationFieldBean<Task> bean:beans){ 
-			TaskAdapter task=(TaskAdapter) EntityManager.instanceGeneric(bean.getField().getType());
+			TaskAdapter task=(TaskAdapter) bean.getField().getType().newInstance();
 			bean.getField().set(e, task);   
 			
 			task.onCreate(e);
 			
-			task.getScene().getTasks().scheduleAtFixedRate(task, bean.getAnnot().delay(), bean.getAnnot().period(), bean.getAnnot().unit());
+			//task.getScene().getTasks().scheduleAtFixedRate(task, bean.getAnnot().delay(), bean.getAnnot().period(), bean.getAnnot().unit());
 		}
 	}
 	

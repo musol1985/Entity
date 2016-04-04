@@ -22,12 +22,15 @@ public class NetWorldPersistTask extends TaskAdapter<Scene, NetWorldService>{
 	@Override
 	public void onCreate(NetWorldService entity) throws Exception {
 		this.service=entity;
-		index=service.getWorld().getCellsIndex().size();
 	}
 	
+        public void setIndex(int index){
+            this.index=index;
+        }
 
 	@Override
 	public void run() {
+            if(service.getWorld()!=null && !service.getWorld().isTemporal()){
 		log.info("Starting save to FS");
 		if(cells.size()>0){
 			for(NetWorldCellDAO cell:cells.values()){
@@ -41,6 +44,7 @@ public class NetWorldPersistTask extends TaskAdapter<Scene, NetWorldService>{
 			index=getWorld().saveWolrdIndexesFS();			
 		}
 		log.info("Finish save to FS");
+            }
 	}
 
 	public NetWorldService getService(){

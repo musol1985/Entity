@@ -16,5 +16,5 @@ public class NetWorldCellDAO implements Serializable{
 		this.id = id;
 	}
 
-	
+
 }

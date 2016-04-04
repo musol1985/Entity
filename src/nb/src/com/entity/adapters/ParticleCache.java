@@ -8,9 +8,9 @@ package com.entity.adapters;
 import java.util.Stack;
 
 import com.entity.core.EntityManager;
-import com.entity.core.IEntity;
 import com.entity.core.items.ModelBase;
 import com.jme3.effect.ParticleEmitter;
+import com.jme3.material.RenderState;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
@@ -50,6 +50,7 @@ public class ParticleCache<T extends ModelBase>{
 		onAttached(parent, emiter);
 		parent.getNode().attachChild(emiter);
 	}
+        
 	
 	public void onAttached(T parent, ParticleEmitter emiter){
 		
@@ -80,5 +81,8 @@ public class ParticleCache<T extends ModelBase>{
 	    }
 	}
 
+        public void emitAll(){
+            emiter.emitAllParticles();
+        }
 }
 
