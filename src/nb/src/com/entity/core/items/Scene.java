@@ -40,7 +40,7 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 	
 	private FieldSceneBean proxy;
 	
-	private ScheduledExecutorService tasks = Executors.newScheduledThreadPool(1);
+	
 	
 	public Scene(){
 		
@@ -180,12 +180,9 @@ public class Scene<T extends EntityGame> extends AbstractAppState implements IEn
 
 	@Override
 	public void onDettach(IEntity parent) throws Exception {
-		tasks.shutdownNow();
+		app.removeTasks();
 	}
 
-	public ScheduledExecutorService getTasks(){
-		return tasks;
-	}
 	
 	@Override
 	public void attachChilFromInjector(Spatial s) {

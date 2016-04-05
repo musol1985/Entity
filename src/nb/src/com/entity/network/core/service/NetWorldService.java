@@ -14,6 +14,7 @@ import com.entity.network.core.builders.NetWorldServiceBuilder;
 import com.entity.network.core.dao.NetPlayerDAO;
 import com.entity.network.core.dao.NetWorldCellDAO;
 import com.entity.network.core.dao.NetWorldDAO;
+import com.entity.network.core.items.IWorldInGameScene;
 import com.entity.network.core.models.NetPlayer;
 import com.entity.network.core.models.NetWorld;
 import com.entity.network.core.models.NetWorldCell;
@@ -27,9 +28,7 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 
 	protected W world;
 	protected P player;
-	
-	@Task(period=30)
-	public NetWorldPersistTask saveTask;
+
 
 	
 	/**
@@ -164,7 +163,6 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 
 	public void setWorld(W world) {
 		this.world = world;
-                saveTask.setIndex(world.cellsIndex.size());
 	}
 
 
@@ -311,6 +309,6 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 
         
     public void onUpdateCell(C cell){
-    	saveTask.persistCell(cell.dao);
+    	((IWorldInGameScene)EntityManager.getCurrentScene()).getPersistTask().persistCell(cell.dao);
     }
 }

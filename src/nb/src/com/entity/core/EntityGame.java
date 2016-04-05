@@ -10,14 +10,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.logging.Logger;
 
 import org.reflections.Reflections;
 
+import com.entity.adapters.TaskAdapter;
 import com.entity.anot.CustomInjectors;
 import com.entity.anot.Executor;
 import com.entity.anot.Physics;
+import com.entity.anot.Task;
 import com.entity.anot.entities.SceneEntity;
 import com.entity.anot.network.NetSync;
 import com.entity.anot.network.Network;
@@ -46,6 +50,8 @@ public abstract class EntityGame extends SimpleApplication{
 	private HashMap<Class, HashMap<Type, AnnotationFieldBean<NetSync>>> netSyncFields=new HashMap<Class, HashMap<Type, AnnotationFieldBean<NetSync>>>();
 	private HashMap<Class, Stack> cache=new HashMap<Class, Stack>();
 	private HashMap<String, Stack<ParticleEmitter>> particlesCache=new HashMap<String, Stack<ParticleEmitter>>();
+	
+	private ScheduledExecutorService tasks = Executors.newScheduledThreadPool(1);          
 	
 	private String path;
 	
@@ -306,6 +312,14 @@ public abstract class EntityGame extends SimpleApplication{
 
 	public HashMap<String, Stack<ParticleEmitter>> getParticlesCache() {
 		return particlesCache;
+	}
+	
+	public void addTask(TaskAdapter task, Task t){
+		tasks.scheduleAtFixedRate(task, t.delay(), t.period(), t.unit());
+	}
+	
+	public void removeTasks(){
+		tasks.shutdownNow();
 	}
 	
 }

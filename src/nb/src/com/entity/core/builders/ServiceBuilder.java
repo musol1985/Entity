@@ -33,8 +33,7 @@ public class ServiceBuilder extends Builder<BaseService>{
         addInjector(new TriggerInjector<BaseService>());
         addInjector(new ListInjector<BaseService>());
         addInjector(new ListBeanSingletonInjector<BaseService>());
-        addInjector(new MapInjector<BaseService>());
-        addInjector(new TaskInjector<BaseService>());
+        addInjector(new MapInjector<BaseService>());        
 	}
 	
 	

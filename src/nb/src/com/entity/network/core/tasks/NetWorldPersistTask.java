@@ -12,47 +12,41 @@ import com.entity.network.core.models.NetWorld;
 import com.entity.network.core.service.NetWorldService;
 import com.entity.utils.Vector2;
 
-public class NetWorldPersistTask extends TaskAdapter<Scene, NetWorldService>{
+public class NetWorldPersistTask extends TaskAdapter<Scene, IWorldInGameScene>{
 	protected static final Logger log = Logger.getLogger(NetWorldPersistTask.class.getName());
 	
-	private NetWorldService service;
+	private IWorldInGameScene scene;
 	private ConcurrentHashMap<Vector2, NetWorldCellDAO> cells=new ConcurrentHashMap<Vector2, NetWorldCellDAO>();
 	private int index;
 	
 	@Override
-	public void onCreate(NetWorldService entity) throws Exception {
-		this.service=entity;
+	public void onCreate(IWorldInGameScene entity) throws Exception {
+		this.scene=scene;
 	}
-	
-        public void setIndex(int index){
-            this.index=index;
-        }
 
 	@Override
 	public void run() {
-            if(service.getWorld()!=null && !service.getWorld().isTemporal()){
 		log.info("Starting save to FS");
 		if(cells.size()>0){
 			for(NetWorldCellDAO cell:cells.values()){
 				log.info("Saving to FS "+cell.getId());
-				service.saveCellFS(cell);
+				getService().saveCellFS(cell);
 			}
 			cells.clear();
 		}
-		if(index!=service.getWorld().getCellsIndex().size()){
-			log.info("Saving indexes: "+index+"->"+service.getWorld().getCellsIndex().size());
+		if(index!=getWorld().getCellsIndex().size()){
+			log.info("Saving indexes: "+index+"->"+getWorld().getCellsIndex().size());
 			index=getWorld().saveWolrdIndexesFS();			
 		}
 		log.info("Finish save to FS");
-            }
 	}
 
 	public NetWorldService getService(){
-		return ((IWorldInGameScene)getScene()).getService();
+		return scene.getService();
 	}
 	
 	public NetWorld getWorld(){
-		return ((IWorldInGameScene)getScene()).getWorld();
+		return scene.getWorld();
 	}
 
 	public void persistCell(NetWorldCellDAO cell){
