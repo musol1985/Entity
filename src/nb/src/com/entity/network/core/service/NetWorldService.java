@@ -96,7 +96,7 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 	}
 	
 	public void saveCellFS(F cell){
-		EntityManager.savePersistable(world.getDao().getCachePath()+cell.getId()+".cache", cell);		
+		EntityManager.savePersistable(world.getDao().getCachePath()+cell.getId().toFileName()+".cache", cell);		
 	}
 	
 

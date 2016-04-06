@@ -1,5 +1,6 @@
 package com.entity.network.core.beans;
 
+import com.entity.utils.Utils;
 import java.io.Serializable;
 
 import com.entity.utils.Vector2;
@@ -44,4 +45,10 @@ public class CellId implements Serializable{
         public void update(){
             timestamp=System.currentTimeMillis();
         }
+        
+        public String toFileName(){
+            return Utils.toHex(id.toString());
+        }
+        
+        
 }

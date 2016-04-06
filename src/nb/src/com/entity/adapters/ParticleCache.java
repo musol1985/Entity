@@ -71,7 +71,7 @@ public class ParticleCache<T extends ModelBase>{
 	class ParticleDettachListener extends ControlAdapter{
 		@Override
 	    public void update(float tpf) {        
-	        if(emiter.getNumVisibleParticles()==0){
+	        if(emiter!=null && emiter.getNumVisibleParticles()==0){
 	        	if(emiter.getParent()!=null)
 	        		emiter.getParent().detachChild(emiter);
 	            emiter.removeControl(this);

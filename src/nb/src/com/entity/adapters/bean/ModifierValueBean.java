@@ -20,17 +20,21 @@ public class ModifierValueBean {
     
     public void update(float time){
     	if(hasMod()){
-	    	value=v*time;
+	    	delta=v*time;
 	    	
-	    	if(Math.abs(value)>Math.abs(dist))
-	    		value=dist;
+	    	if(Math.abs(delta)>Math.abs(dist)){
+                        delta=dist;
+	    		value=from+dist;
+                }else{
+                    value=from+delta;
+                }
 	    	
-	    	delta=from+value;
+	    	
     	}
     }
     
     public boolean isFinished(){
-    	return value==dist;
+    	return value==from+dist;
     }
 
 	public float getValue() {

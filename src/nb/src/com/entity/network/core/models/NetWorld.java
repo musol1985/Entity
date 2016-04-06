@@ -109,7 +109,7 @@ public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCell, P 
 	}
 	
 	public int saveWolrdIndexesFS(){
-		EntityManager.savePersistable("cache.idx", cellsIndex);
+		EntityManager.savePersistable(getDao().getCachePath()+"cells.idx2", cellsIndex);
 		return cellsIndex.size();
 	}
 

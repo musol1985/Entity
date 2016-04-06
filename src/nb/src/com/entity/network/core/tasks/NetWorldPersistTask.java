@@ -21,7 +21,7 @@ public class NetWorldPersistTask extends TaskAdapter<Scene, IWorldInGameScene>{
 	
 	@Override
 	public void onCreate(IWorldInGameScene entity) throws Exception {
-		this.scene=scene;
+		this.scene=entity;
 	}
 
 	@Override

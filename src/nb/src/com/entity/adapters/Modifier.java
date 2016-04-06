@@ -17,7 +17,7 @@ public abstract class Modifier<S extends Spatial> extends ControlAdapter {
 	}
 	
 	public Modifier(float time, boolean loop, ModifierValueBean... values){
-		this.time=time;
+		this.time=0;
 		this.loop=loop;
 		this.values=values;
 	}
@@ -38,12 +38,12 @@ public abstract class Modifier<S extends Spatial> extends ControlAdapter {
 	public void update(float tpf) {
 		time+=tpf;
 		
-		boolean finish=false;
+		boolean finish=true;
 		
 		for(ModifierValueBean value:values){
-			value.update(tpf);
-			if(!finish)
-				finish=value.isFinished();
+			value.update(time);
+			if(!value.isFinished())
+				finish=false;
 		}
 		
 		onUpdate(tpf, values);

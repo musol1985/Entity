@@ -97,6 +97,10 @@ public abstract class BatchModel<T extends ModelBase> extends ModelBase<T, Batch
 		return res;                        
 	}
         
+         public Model getEntity(String modelName){
+             return (Model)batch.getChild(modelName);
+         }
+        
         public int dettachEntity(String modelName){
             Model m=(Model)batch.getChild(modelName);
             if(m!=null){

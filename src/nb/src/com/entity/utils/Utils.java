@@ -1,5 +1,6 @@
 package com.entity.utils;
 
+import java.math.BigInteger;
 import java.util.Random;
 
 public class Utils {
@@ -9,4 +10,7 @@ public class Utils {
 	public static float getRandomBetween(Random rnd, float min, float max){
 		return rnd.nextFloat() * (max - min) + min;
 	}
+        public static String toHex(String arg) {
+            return String.format("%x", new BigInteger(1, arg.getBytes()));
+        }
 }
