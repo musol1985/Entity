@@ -12,18 +12,28 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 
 public class Trail extends Geometry implements Control{
-	private List<TrailPen> segments=new ArrayList<TrailPen>();
+	private List<TrailSegment> segments=new ArrayList<TrailSegment>();
 	private Vector3f firstPosRender;
 	private Vector3f lastPosRender;
 	private TrailPen pen;
 	
-	private float trailTime=5*1000;
+	private float trailTime;
+	private float penSize;
+	private float penSpeed;
 	private int minSegmentsDistance=1;
 	
 	public Trail(String name, TrailPen pen){
+		this(name, 5, 10*1000, pen);
+	}
+	
+	public Trail(String name, float penSize, float trailTime, TrailPen pen){
 		super(name);
 		this.pen=pen;
-		this.segments.add(pen.clone());
+		this.penSize=penSize;
+		this.trailTime=trailTime;
+		this.penSpeed=penSize/trailTime;
+		
+		this.segments.add(new TrailSegment(penSize, pen));
 		this.mesh=new Mesh();
 	}
 
@@ -62,15 +72,18 @@ public class Trail extends Geometry implements Control{
 		}
 		
 		if(newSegment){
-			TrailPen p=pen.clone();
-			p.trailTime=System.currentTimeMillis();
-			segments.add(p);
+			segments.add(new TrailSegment(penSize, pen));
 		}
 		
-		float[] vertices=new float[pen.points.size()*segments.size()*3];
-		
-		for(TrailPen pen:segments){
-			
+		//float[] vertices=new float[pen.points.size()*segments.size()*3];
+		System.out.println("Draw "+time);
+		for(TrailSegment pen:segments){
+			System.out.println("++Segment "+pen);
+			for(TrailPoint p:pen.points){
+				System.out.println("----->PrePoint"+p.pos.toString());
+				pen.updatePoint(p, time, penSpeed);
+				System.out.println("----->PostPoint"+p.pos.toString());
+			}
 		}
 		
 		
