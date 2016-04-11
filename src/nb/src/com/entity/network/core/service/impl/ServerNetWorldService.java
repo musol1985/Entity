@@ -160,8 +160,10 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 
 	public C createCellModelFromDAO(CreatingCell creating)throws Exception{
 		for(HostedConnection cnn:creating.getPlayers()){
-            log.info("getcellById sending the cell "+creating.getCellId()+" to the connection "+cnn.getAddress());
+                    if(cnn!=null){
+                        log.info("getcellById sending the cell "+creating.getCellId()+" to the connection "+cnn.getAddress());
 			cnn.send(new MsgShowCell(creating.getCellDao()));
+                    }
 		}
 		log.info("getcellById "+creating.getCellId()+" creating the cellModel in GLThread");
 		C cell=createNewCellFromDAO((F)creating.getCellDao());

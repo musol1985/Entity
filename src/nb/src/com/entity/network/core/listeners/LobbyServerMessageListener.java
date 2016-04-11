@@ -111,15 +111,7 @@ public class LobbyServerMessageListener extends NetworkMessageListener<LobbyServ
 			cnn.send(new MsgOnWorldCreatedSelected(true, false));
 		}else{
 			NetWorldDAO world=getEntity().getService().getWorldDAO();
-			
-			//If is new world, preload positions of the players
-			if(world.isCreated()){
-				getEntity().getService().preload();
-			}   
-                        world.setCreated(false);
-			MsgOnStartGame start=new MsgOnStartGame(world);
-			broadCast(cnn, start, false);			
-			log.info("Starting world "+world.getId());
+						
 			getEntity().onStarGame();
 		}		
 	}

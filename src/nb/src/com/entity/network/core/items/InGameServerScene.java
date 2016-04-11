@@ -9,6 +9,7 @@ import com.entity.core.items.Scene;
 import com.entity.network.core.dao.NetPlayerDAO;
 import com.entity.network.core.listeners.InGameServerMessageListener;
 import com.entity.network.core.models.NetWorld;
+import com.entity.network.core.msg.MsgOnStartGame;
 import com.entity.network.core.service.impl.ServerNetWorldService;
 import com.entity.network.core.tasks.NetWorldPersistTask;
 import com.jme3.network.ConnectionListener;
@@ -49,6 +50,16 @@ public abstract class InGameServerScene<T extends InGameServerMessageListener, W
 
 	@Override
 	public void onLoadScene() throws Exception{
+            //If is new world, preload positions of the players
+            if(getService().getWorld().getDao().isCreated()){
+                getService().preload();
+            }   
+            getService().getWorld().getDao().setCreated(false);
+            MsgOnStartGame start=new MsgOnStartGame(getService().getWorld().getDao());
+            start.send();		
+            log.info("Starting world "+getService().getWorld().getDao().getId());
+            
+            
             getService().initWorld();
             onLoadRemotePlayers();
 	}
