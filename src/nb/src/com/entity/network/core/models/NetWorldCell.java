@@ -6,7 +6,7 @@ import com.entity.core.IBuilder;
 import com.entity.core.items.Model;
 import com.entity.network.core.dao.NetWorldCellDAO;
 import com.entity.network.core.items.IWorldInGameScene;
-import com.entity.network.core.service.NetWorldService;
+import com.jme3.math.Vector3f;
 
 @ModelEntity
 public abstract class NetWorldCell<T extends NetWorldCellDAO> extends Model{

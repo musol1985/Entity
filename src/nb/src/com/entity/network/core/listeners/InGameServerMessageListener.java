@@ -30,7 +30,7 @@ public class InGameServerMessageListener<S extends InGameServerScene> extends Ne
 				}		
 			}else{
 				log.info("onGetCells: "+c.getId()+" doesn't exist, we create it");
-				getEntity().getService().createNewCell(c.getId(), cnn);
+				getEntity().getService().createNewCell(c.getId(), cnn, true);
 				log.info("onGetCells: "+c.getId()+" is creating in background, it will be sent to the client automatically");
 			}
 		}

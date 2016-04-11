@@ -56,7 +56,7 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 	 * Preload the world when starting the game the first time
 	 * Example: position player, initial values, seeds, etc.
 	 */
-	public abstract void preload();
+	public abstract void preload() throws Exception;
 	
 
 	
@@ -111,8 +111,9 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 	 * when the cell is created, it will send to the players that request it
 	 * @param cellId
 	 * @param cnn
+	 * returns the cellmodel if background=false, else it returns null
 	 */
-	public void createNewCell(Vector2 cellId, HostedConnection cnn)throws Exception{
+	public C createNewCell(Vector2 cellId, HostedConnection cnn, boolean background)throws Exception{
 		if(isCellInLimits(cellId)){
 			CreatingCell creating=creatingCell.get(cellId);
 			if(creating!=null){
@@ -122,19 +123,29 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
                                 creating=new CreatingCell(cellId, cnn);
 				creatingCell.put(cellId, creating);
                                 log.info("getcellById "+cellId+" we start to creating the cell in background");
-				createCellDAOBackground(creating);
+                if(background){                
+                	createCellDAOBackground(creating);
+                }else{
+                	createCellDAO(creating);
+                	return createCellModelFromDAO(creating);
+                }
 			}		
 		}
+		return null;
 	}
 	
 	
 	@OnExecutor
 	public void createCellDAOBackground(CreatingCell creating)throws Exception{
-                log.info("getcellById "+creating.getCellId()+" begin the creation of cell dao in background thread");
-		F dao=onNewCellDAO(creating.getCellId());
-		creating.setCellDao(dao);
+		log.info("getcellById "+creating.getCellId()+" begin the creation of cell dao in background thread");
+		createCellDAO(creating);
 		log.info("getcellById "+creating.getCellId()+" has been created in background. Now create de cellModel");
 		createCellModelFromDAOBackground(creating);
+	}
+	
+	public void createCellDAO(CreatingCell creating)throws Exception{                
+		F dao=onNewCellDAO(creating.getCellId());
+		creating.setCellDao(dao);				
 	}
 	
 	/**
@@ -143,8 +154,13 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 	 */
 	@RunOnGLThread
 	public void createCellModelFromDAOBackground(CreatingCell creating)throws Exception{
+		createCellModelFromDAO(creating);
+	}
+	
+
+	public C createCellModelFromDAO(CreatingCell creating)throws Exception{
 		for(HostedConnection cnn:creating.getPlayers()){
-                        log.info("getcellById sending the cell "+creating.getCellId()+" to the connection "+cnn.getAddress());
+            log.info("getcellById sending the cell "+creating.getCellId()+" to the connection "+cnn.getAddress());
 			cnn.send(new MsgShowCell(creating.getCellDao()));
 		}
 		log.info("getcellById "+creating.getCellId()+" creating the cellModel in GLThread");
@@ -159,6 +175,8 @@ public abstract class ServerNetWorldService<W extends NetWorld, P extends NetPla
 		dettachUnusedCells();
 		
 		onUpdateCell(cell);
+		
+		return cell;
 	}
 	
 	

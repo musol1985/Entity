@@ -201,6 +201,17 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 		return new Vector2((int)Math.floor((pos.x-world.getVirtualCellSize())/world.getCellSize()),(int)Math.floor((pos.z-world.getVirtualCellSize())/world.getCellSize()));
 	}
 	
+	
+	/**
+	 * returns a virtual position from a real position
+	 * @param pos
+	 * @return
+	 */
+	public Vector3f getCellLocalPosByReal(Vector3f pos, NetWorldCellDAO cell){
+		Vector3f cellWorld=new Vector3f(cell.getId().id.x*world.getCellSize(),0,cell.getId().id.z*world.getCellSize());
+		return pos.subtract(cellWorld);		
+	}
+	
 	/**
 	 * Returns view from a real position
 	 * @param pos
