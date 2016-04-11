@@ -1,9 +1,9 @@
-package com.entity.anot.components.model;
+package com.entity.anot.effects;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ParticleComponent {
+public @interface EffectParticle {
 	String asset();	
 }
