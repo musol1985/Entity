@@ -41,7 +41,7 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 		for(RigidBodyBean bean:beans){
 			
 			PhysicsControl  body=null;
-			if(bean.getAnnot().nodeName().isEmpty()){
+			if(!bean.getAnnot().nodeName().isEmpty()){
 				Spatial node=item.getNode().getChild(bean.getAnnot().nodeName());
 				if(node!=null){
 					body=node.getControl(PhysicsControl.class);
