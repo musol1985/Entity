@@ -41,7 +41,14 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 		for(RigidBodyBean bean:beans){
 			
 			PhysicsControl  body=null;
-			if(bean.getAnnot().type()==PhysicsBodyType.RIGID_BODY){
+			if(bean.getAnnot().nodeName().isEmpty()){
+				Spatial node=item.getNode().getChild(bean.getAnnot().nodeName());
+				if(node!=null){
+					body=node.getControl(PhysicsControl.class);
+				}else{
+					log.warning("@Body.onInstance: The node "+bean.getAnnot().nodeName()+" doesn't exists in class "+item.getClass().getName());
+				}
+			}else if(bean.getAnnot().type()==PhysicsBodyType.RIGID_BODY){
 				body=new RigidBodyControl(bean.getCollisionShape(item), bean.getAnnot().mass());				
 			}else if(bean.getAnnot().type()==PhysicsBodyType.KINEMATIC_BODY){
 				body=new RigidBodyControl(bean.getCollisionShape(item), bean.getAnnot().mass());

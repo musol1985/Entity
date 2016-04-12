@@ -11,4 +11,17 @@ public @interface Entity {
 	boolean attach() default true;
 	String name() default "";
 	String callOnInject() default "";
+	/**
+	 * Method name that conditions the injection os this entity
+	 * 
+	 * @return true(the entity is injected) false(the entity will not inject. Field=null)
+	 */
+	String conditional() default "";
+	
+	/**
+	 * Substitutes a Node with this name in the model, with the inject of this Entity
+	 * It will copy local translation and rotation
+	 * @return
+	 */
+	String substituteNode() default "";
 }

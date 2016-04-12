@@ -9,9 +9,10 @@ import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
 import com.entity.core.injectors.ListBeanInjector;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
+import com.entity.core.items.ModelBase;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 
 public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<AnnotationFieldBean<Entity>, T>{
 	
@@ -27,23 +28,59 @@ public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<Annota
 	@Override
 	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for(AnnotationFieldBean<Entity> bean:beans){ 
-			IEntity entity=(IEntity) EntityManager.instanceGeneric(bean.getField().getType());
-			if(!bean.getAnnot().callOnInject().isEmpty()){
-				Method m=entity.getClass().getMethod(bean.getAnnot().callOnInject());
-				if(m!=null){
-					m.invoke(e, new Object[]{});
+			if(conditionalInject(bean.getAnnot(), e)){
+				IEntity entity=(IEntity) EntityManager.instanceGeneric(bean.getField().getType());
+				if(!bean.getAnnot().callOnInject().isEmpty()){
+					Method m=entity.getClass().getMethod(bean.getAnnot().callOnInject());
+					if(m!=null){
+						m.invoke(e, new Object[]{});
+					}else{
+						log.warning("@Entity.callOnInject method: "+bean.getAnnot().callOnInject()+" doesn't exists in class "+e.getClass().getName());
+					}
+				}
+	            entity.onInstance(builder, params);
+				bean.getField().set(e, entity);   						
+				
+				if(!bean.getAnnot().name().isEmpty())
+					entity.getNode().setName(bean.getAnnot().name());
+				
+				if(bean.getAnnot().substituteNode().isEmpty()){
+					if(bean.getAnnot().attach())
+						entity.attachToParent((IEntity) e);			
 				}else{
-					log.warning("@Entity.callOnInject method: "+bean.getAnnot().callOnInject()+" doesn't exists in class "+e.getClass().getName());
+					Node n=(Node)e.getNode().getChild(bean.getAnnot().substituteNode());
+					if(n!=null){
+						Vector3f pos=n.getLocalTranslation();
+						Quaternion rot=n.getLocalRotation();
+						
+						if(n.getParent() instanceof ModelBase){
+							ModelBase parent=(ModelBase)n.getParent();
+							parent.detachChild(n);
+							
+							parent.setLocalTranslation(pos);
+							parent.setLocalRotation(rot);
+							
+							entity.attachToParent(parent);		
+						}else{
+							log.warning("@Entity.substituteNode the node: "+bean.getAnnot().substituteNode()+" has a parent that is not an ModelBase "+e.getClass().getName());
+						}
+					}else{
+						log.warning("@Entity.substituteNode method: "+bean.getAnnot().substituteNode()+" doesn't exists in class "+e.getClass().getName());
+					}					
 				}
 			}
-            entity.onInstance(builder, params);
-			bean.getField().set(e, entity);   						
-			
-			if(!bean.getAnnot().name().isEmpty())
-				entity.getNode().setName(bean.getAnnot().name());
-			
-			if(bean.getAnnot().attach())
-				entity.attachToParent((IEntity) e);
 		}
+	}
+	
+	private boolean conditionalInject(Entity anot, T e)throws Exception{
+		if(!anot.conditional().isEmpty()){
+			Method m=e.getClass().getMethod(anot.conditional());
+			if(m!=null){
+				return (Boolean)m.invoke(e, new Object[]{});
+			}else{
+				log.warning("@Entity.conditional method: "+anot.callOnInject()+" doesn't exists in class "+e.getClass().getName());
+			}
+		}
+		return true;
 	}
 }
