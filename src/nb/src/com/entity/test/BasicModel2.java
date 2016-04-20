@@ -6,23 +6,15 @@ import com.entity.anot.entities.ModelEntity;
 import com.entity.core.items.Model;
 
 @ModelEntity
-public class BasicModel2 extends Model implements Runnable{
-	@Entity
-	private BasicModel model1;
+public abstract  class BasicModel2 extends Model {
+	@Entity(conditional="test")
+	public BasicModel model1;
 	
 	
-	public void test(){
-		System.out.println(model1+" "+(model1!=null));
+	public boolean test(Boolean value){
+		System.out.println("test???"+value);
+		return value;
 	}
 	
-	@RayPick()
-	public void t(){
-		
-	}
 
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
-	}
 }

@@ -62,7 +62,7 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 
 	@Override
 	public <G extends EntityGame> void onAttach(G app, T instance)throws Exception {
-		if(EntityManager.getGame().isPhysics())
+		//if(EntityManager.getGame().isPhysics())
 			for(RigidBodyBean bean:beans){
 				if(bean.getAnnot().attachWorld()){
 					PhysicsControl  body=(PhysicsControl)bean.getField().get(instance);	

@@ -8,7 +8,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 
 
-public class MainScene extends Scene<TestEntityGame>{
+public class MainScene extends Scene{
 	
 	@MessageListener(ignoreSyncMessages=true)
 	private NetworkMessageListener listener;

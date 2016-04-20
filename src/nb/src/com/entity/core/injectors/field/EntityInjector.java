@@ -28,8 +28,20 @@ public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<Annota
 	@Override
 	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for(AnnotationFieldBean<Entity> bean:beans){ 
-			if(conditionalInject(bean.getAnnot(), e, params)){
-				IEntity entity=(IEntity) EntityManager.instanceGeneric(bean.getField().getType());
+			Object conditional=conditionalInject(bean, e, params);
+			boolean inject=conditional instanceof Boolean && ((Boolean)conditional==true);
+			if(inject || conditional instanceof Class || conditional instanceof IEntity){
+				IEntity entity=null;
+				
+				if(inject){
+					entity=(IEntity) EntityManager.instanceGeneric(bean.getField().getType());
+				}else if(conditional instanceof IEntity){
+					entity=(IEntity)conditional;
+				}else{
+					entity=(IEntity) EntityManager.instanceGeneric((Class)conditional);
+				}
+				
+				
 				if(!bean.getAnnot().callOnInject().isEmpty()){
 					Method m=entity.getClass().getMethod(bean.getAnnot().callOnInject());
 					if(m!=null){
@@ -72,19 +84,40 @@ public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<Annota
 		}
 	}
 	
-	private boolean conditionalInject(Entity anot, T e, Object[] params)throws Exception{
-		if(!anot.conditional().isEmpty()){
-			Method m=e.getClass().getMethod(anot.conditional());
-			if(m!=null){
-                            if(m.getParameterTypes().length==0){
-				return (Boolean)m.invoke(e, new Object[]{});
-                            }else{
-                                return (Boolean)m.invoke(e, params);
-                            }                            
+	private Object conditionalInject(AnnotationFieldBean<Entity> bean, T e, Object[] params)throws Exception{
+		if(!bean.getAnnot().conditional().isEmpty()){
+			Class[] pTypes=null;
+			
+			if(!bean.getAnnot().conditionalIncludeFieldName()){
+				pTypes=getParams(params);
 			}else{
-				log.warning("@Entity.conditional method: "+anot.callOnInject()+" doesn't exists in class "+e.getClass().getName());
+				pTypes=getParamsAndFieldName(params, bean.getField().getName());
+			}
+			
+			Method m=e.getClass().getMethod(bean.getAnnot().conditional(), pTypes);
+			if(m!=null){
+				return m.invoke(e, params);                           
+			}else{
+				log.warning("@Entity.conditional method: "+bean.getAnnot().callOnInject()+" doesn't exists in class "+e.getClass().getName());
 			}
 		}
 		return true;
+	}
+	
+	private Class[] getParams(Object[] params){
+		Class[] pTypes=new Class[params.length];
+		for(int i=0;i<params.length;i++){
+			pTypes[i]=params[i].getClass();
+		}
+		return pTypes;
+	}
+	
+	private Class[] getParamsAndFieldName(Object[] params, String fieldName){
+		Class[] pTypes=new Class[params.length+1];
+		for(int i=0;i<params.length;i++){
+			pTypes[i]=params[i].getClass();
+		}
+		pTypes[params.length]=String.class;
+		return pTypes;
 	}
 }

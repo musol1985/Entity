@@ -2,9 +2,11 @@ package com.entity.core.builders;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.entity.anot.components.model.SubModelComponent;
+import com.entity.anot.components.model.SubModelMapComponent;
 import com.entity.anot.entities.ModelEntity;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
@@ -33,7 +35,7 @@ public class ModelBuilder<T extends Model> extends BaseModelBuilder<T>{
 	@Override
 	public void loadField(Class<T> cls, Field f) throws Exception {	
 		super.loadField(cls, f);
-		if(EntityManager.isAnnotationPresent(SubModelComponent.class,f)){
+		if(EntityManager.isAnnotationPresent(SubModelComponent.class,f) || EntityManager.isAnnotationPresent(SubModelMapComponent.class,f)){
 			f.setAccessible(true);
 			subModels.add(f);
 		}
@@ -61,15 +63,25 @@ public class ModelBuilder<T extends Model> extends BaseModelBuilder<T>{
 			
 			for(Field f:subModels){
 				SubModelComponent a=EntityManager.getAnnotation(SubModelComponent.class,f);
-				Spatial s=n.getChild(a.name());
-				if(s!=null){
-					if(a.rayPickResponse() && s instanceof Geometry){
-						s.setUserData(ENTITY_GEOMETRY_REFERENCE, e);
+				if(a!=null){
+					Spatial s=n.getChild(a.name());
+					if(s!=null){
+						if(a.rayPickResponse() && s instanceof Geometry){
+							s.setUserData(ENTITY_GEOMETRY_REFERENCE, e);
+						}
+						
+						f.set(e, s);
+					}else{
+						log.warning("No submodel with name: "+a.name());
 					}
-					
-					f.set(e, s);
 				}else{
-					log.warning("No submodel with name: "+a.name());
+					SubModelMapComponent anot=EntityManager.getAnnotation(SubModelMapComponent.class,f);
+					if(anot!=null){
+						HashMap<String, Object> map=new HashMap<String, Object>();
+						getChildMap(map, n, n, anot.nameStartsWith(), anot.rayPickResponse());
+							
+						f.set(e, map);
+					}
 				}
 			}
 			
@@ -77,6 +89,31 @@ public class ModelBuilder<T extends Model> extends BaseModelBuilder<T>{
 		}
 	}
 
+	public void getChildMap(List<Spatial> res, Node parent,  Node n, String name, boolean raypick) {
+		for (Spatial child : n.getChildren()) {
+			if(child instanceof Node){
+				getChildMap(res, parent, (Node)child, name, raypick);
+			}
+			if (child.getName()!=null && child.getName().startsWith(name)){
+				if(raypick && child instanceof Geometry){
+					child.setUserData(ENTITY_GEOMETRY_REFERENCE, parent);
+				}
+				res.add(child);
+			}
+		}
+	}
 
-
+	public void getChildMap(HashMap<String, Object> res, Node parent, Node n, String name, boolean raypick) {
+		for (Spatial child : n.getChildren()) {
+			if(child instanceof Node){
+				getChildMap(res, parent, (Node)child, name, raypick);
+			}
+			if (child.getName()!=null && child.getName().startsWith(name)){
+				if(raypick && child instanceof Geometry){
+					child.setUserData(ENTITY_GEOMETRY_REFERENCE, parent);
+				}
+				res.put(child.getName(), child);
+			}
+		}
+	}
 }
