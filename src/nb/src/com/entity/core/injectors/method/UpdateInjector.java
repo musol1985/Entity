@@ -6,12 +6,14 @@ import com.entity.adapters.ControlAdapter;
 import com.entity.anot.CamNode;
 import com.entity.anot.OnUpdate;
 import com.entity.bean.AnnotationMethodBean;
+import com.entity.core.EntityGame;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
+import com.entity.core.InjectorAttachable;
 import com.entity.core.injectors.ListBeanInjector;
 
-public class UpdateInjector<T extends IEntity>  extends ListBeanInjector<AnnotationMethodBean<OnUpdate>,T>{
+public class UpdateInjector<T extends IEntity>  extends ListBeanInjector<AnnotationMethodBean<OnUpdate>,T>  implements InjectorAttachable<T>{
 
 	@Override
 	public void loadMethod(Class<T> c, Method m) throws Exception {
@@ -35,5 +37,15 @@ public class UpdateInjector<T extends IEntity>  extends ListBeanInjector<Annotat
 				}
 			});	
 		}
+	}
+
+	@Override
+	public <G extends EntityGame> void onAttach(G app, T instance) throws Exception {
+		
+	}
+
+	@Override
+	public <G extends EntityGame> void onDettach(G app, T instance) throws Exception {
+		
 	}
 }

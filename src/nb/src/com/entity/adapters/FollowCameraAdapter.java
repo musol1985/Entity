@@ -102,7 +102,7 @@ public class FollowCameraAdapter extends Model{
 
     @Override
     public void onDettach(IEntity parent) throws Exception {
-        
+        camNode.setEnabled(false);
     }       
     
 	public void setValues(FollowCameraNode anot){

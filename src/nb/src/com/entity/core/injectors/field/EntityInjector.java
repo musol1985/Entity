@@ -32,11 +32,13 @@ public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<Annota
 			boolean inject=conditional instanceof Boolean && ((Boolean)conditional==true);
 			if(inject || conditional instanceof Class || conditional instanceof IEntity){
 				IEntity entity=null;
+				boolean doOnInstance=true;
 				
 				if(inject){
 					entity=(IEntity) EntityManager.instanceGeneric(bean.getField().getType());
 				}else if(conditional instanceof IEntity){
 					entity=(IEntity)conditional;
+					doOnInstance=false;
 				}else{
 					entity=(IEntity) EntityManager.instanceGeneric((Class)conditional);
 				}
@@ -50,7 +52,9 @@ public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<Annota
 						log.warning("@Entity.callOnInject method: "+bean.getAnnot().callOnInject()+" doesn't exists in class "+e.getClass().getName());
 					}
 				}
-	            entity.onInstance(builder, params);
+				if(doOnInstance)
+					entity.onInstance(builder, params);
+				
 				bean.getField().set(e, entity);   						
 				
 				if(!bean.getAnnot().name().isEmpty())
@@ -88,12 +92,16 @@ public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<Annota
 		if(!bean.getAnnot().conditional().isEmpty()){
 			Class[] pTypes=null;
 			
-			if(!bean.getAnnot().conditionalIncludeFieldName()){
-				pTypes=getParams(params);
-			}else{
-				pTypes=getParamsAndFieldName(params, bean.getField().getName());
+			if(bean.getAnnot().conditionalIncludeFieldName()){
+				Object[] pTmp=new Object[params.length+1];
+				for(int i=0;i<params.length;i++){
+					pTmp[i]=params[i];
+				}
+				pTmp[params.length]=bean.getField().getName();
+				params=pTmp;
 			}
 			
+			pTypes=getParams(params);
 			Method m=e.getClass().getMethod(bean.getAnnot().conditional(), pTypes);
 			if(m!=null){
 				return m.invoke(e, params);                           
