@@ -75,6 +75,10 @@ public abstract class ModelBase<R extends ModelBase, T extends BaseModelBuilder>
 			onDettach(parent);
 		}
 	}
+	
+	public boolean isAttached(){
+		return getParent()!=null;
+	}
 
 	/**
 	 * Called when a parent of the tree(this parent's, or his parent, etc) has been dettached
