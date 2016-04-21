@@ -29,6 +29,8 @@ import com.entity.bean.AnnotationFieldBean;
 import com.entity.bean.FieldSceneBean;
 import com.entity.core.interceptors.ClickInterceptor;
 import com.entity.core.items.Scene;
+import com.entity.modules.gui.GUIGame;
+import com.entity.modules.gui.anot.GUI;
 import com.entity.network.core.NetGame;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
@@ -56,6 +58,7 @@ public abstract class EntityGame extends SimpleApplication{
 	private String path;
 	
 	protected NetGame net;
+	protected GUIGame gui;
 	
 	private ScheduledThreadPoolExecutor executor;
 	
@@ -74,6 +77,11 @@ public abstract class EntityGame extends SimpleApplication{
 				bullet.setEnabled(physics.active());
 				
 				getStateManager().attach(bullet);
+			}
+			
+			GUI anotGUI=getClass().getAnnotation(GUI.class);
+			if(anotGUI!=null){
+				gui=new GUIGame(anotGUI);
 			}
 			
 			Network network=getClass().getAnnotation(Network.class);
@@ -265,6 +273,12 @@ public abstract class EntityGame extends SimpleApplication{
 		if(net==null)
 			throw new RuntimeException("No network started");
 		return net;
+	}
+	
+	public GUIGame getGUI() {
+		if(gui==null)
+			throw new RuntimeException("No gui started");
+		return gui;
 	}
 	
 	public String getPersistPath(){

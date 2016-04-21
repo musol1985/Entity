@@ -28,6 +28,7 @@ import com.entity.core.injectors.input.InputInjector;
 import com.entity.core.injectors.method.UpdateInjector;
 import com.entity.core.items.Model;
 import com.entity.core.items.Scene;
+import com.entity.modules.gui.injector.ScreenInjector;
 
 public class SceneBuilder extends Builder<Scene>{
 	private boolean mustEnhance;
@@ -50,6 +51,7 @@ public class SceneBuilder extends Builder<Scene>{
         addInjector(new MapInjector<Model>());
         addInjector(new PersistableInjector<Scene>());
         addInjector(new TaskInjector<Scene>());
+        addInjector(new ScreenInjector<Scene>());
                 
                 Class<? extends Injector>[] customInjectors=EntityManager.getSceneCustomInjectors();
 		if(customInjectors!=null){
