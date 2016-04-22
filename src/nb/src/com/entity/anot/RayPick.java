@@ -8,7 +8,17 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface RayPick {
+	/**
+	 * The nodeName in rootNode scene(getChild(String)) 
+	 * By default it searchs in root
+	 * @return
+	 */
 	public String NodeName() default "";
+	/**
+	 * The field name that represents the node to find in 
+	 * By default it searchs in root
+	 * @return
+	 */
 	public String Node() default "";
 	public Class[] EntityFilter() default {};
 }

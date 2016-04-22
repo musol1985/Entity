@@ -38,11 +38,6 @@ public class RayPickInterceptor {
 		}else if(anot.Node().length()>0){
 			Field f=obj.getClass().getSuperclass().getDeclaredField(anot.Node());
 			f.setAccessible(true);
-                    /*String method = anot.Node().substring(0, 1).toUpperCase() + anot.Node().substring(1);
-                    Method getMethod=obj.getClass().getSuperclass().getMethod("get"+method, null);
-                    if(getMethod==null){
-                        throw new Exception("No "+method+"() method for "+anot.Node()+" field");
-                    }*/
 		    n=(Node)f.get(obj);
 		}
 		
@@ -64,22 +59,23 @@ public class RayPickInterceptor {
                     
 		}
                 
-                Ray ray=null;
-                
-                if(argsRay==-1){
-                    Vector3f pos=EntityManager.getCamera().getWorldCoordinates(EntityManager.getInputManager().getCursorPosition(), 0).clone();
-                    Vector3f dir=EntityManager.getCamera().getWorldCoordinates(EntityManager.getInputManager().getCursorPosition(), 0.3f).clone();
-                    dir.subtractLocal(pos).normalizeLocal();
-                    ray=new Ray(pos, dir);
-                }else{
-                   ray=(Ray) args[argsRay]; 
-                }
+        Ray ray=null;
+        
+        if(argsRay==-1){
+        	log.info("Throwing a RayPick from the camera in "+n.getName());      
+            Vector3f pos=EntityManager.getCamera().getWorldCoordinates(EntityManager.getInputManager().getCursorPosition(), 0).clone();
+            Vector3f dir=EntityManager.getCamera().getWorldCoordinates(EntityManager.getInputManager().getCursorPosition(), 0.3f).clone();
+            dir.subtractLocal(pos).normalizeLocal();
+            ray=new Ray(pos, dir);
+        }else{
+           ray=(Ray) args[argsRay]; 
+        }
 
 		n.collideWith(ray, results);
 		
 		Object[] argsProcesed=new Object[args.length];
-                if(argsRay>-1)
-                    argsProcesed[argsRay]=ray;
+        if(argsRay>-1)
+            argsProcesed[argsRay]=ray;
 		
 		if(argsCollisionResults>-1)
 			argsProcesed[argsCollisionResults]=results;
