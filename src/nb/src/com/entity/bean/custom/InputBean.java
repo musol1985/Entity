@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import com.entity.anot.components.input.Input;
 import com.entity.bean.AnnotationMethodBean;
+import com.entity.core.IEntity;
 
 public class InputBean extends AnnotationMethodBean<Input>{
 	protected boolean digital;
@@ -14,6 +15,10 @@ public class InputBean extends AnnotationMethodBean<Input>{
 
 		this.digital=isDigitalMethod(m);
                 this.tpf=isNeedTpf(m);
+	}
+	
+	public String getActionName(IEntity obj){
+		return obj.getClass()+"."+getAnnot().action();
 	}
 
 	public boolean isDigital() {

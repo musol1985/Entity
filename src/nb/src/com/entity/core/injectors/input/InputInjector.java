@@ -21,8 +21,7 @@ public class InputInjector<T extends IEntity>  extends ListBeanInjector<InputBea
 	public void loadMethod(Class<T> c, Method m) throws Exception {
 		if(EntityManager.isAnnotationPresent(Input.class,m)){
 			log.info("Input annotation detected : "+m.getParameterTypes().length+" "+m.getParameterTypes()[0]);
-
-                        beans.add(new InputBean(m, Input.class));
+			beans.add(new InputBean(m, Input.class));
 		}
 	}
 
@@ -35,7 +34,7 @@ public class InputInjector<T extends IEntity>  extends ListBeanInjector<InputBea
 				InputListener listener=new ActionListener() {
 					public void onAction(String arg0, boolean arg1, float arg2) {
 						try {
-							if(bean.getAnnot().guiLeftButton()){
+							/*if(bean.getAnnot().guiLeftButton()){
 								if(!EntityManager.getGame().getClickInterceptor().onLeftClick(arg1, arg2)){
 									bean.getMethod().invoke(e, arg1, arg2);
 								}
@@ -43,17 +42,17 @@ public class InputInjector<T extends IEntity>  extends ListBeanInjector<InputBea
 								if(!EntityManager.getGame().getClickInterceptor().onRightClick(arg1, arg2)){
 									bean.getMethod().invoke(e, arg1, arg2);
 								}
-							}else{
-                                                                bean.invoke(e, arg1, arg2);
+							}else{*/
+                                bean.invoke(e, arg1, arg2);
 								//bean.getMethod().invoke(e, arg1, arg2);
-							}
+							//}
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
 				};
-				log.info("Registering digitalInput listener for "+ bean.getAnnot().action());
-				EntityManager.getInputManager().addListener(listener, bean.getAnnot().action());	
+				log.info("Registering digitalInput listener for "+ bean.getActionName(e));
+				EntityManager.getInputManager().addListener(listener,bean.getActionName(e));	
 			}else{
 				InputListener listener=new AnalogListener() {
 					public void onAnalog(String arg0, float arg1, float tpf) {
@@ -64,8 +63,8 @@ public class InputInjector<T extends IEntity>  extends ListBeanInjector<InputBea
 						}
 					}	
 				};
-				log.info("Registering analogInput listener for "+bean.getAnnot().action());
-				EntityManager.getInputManager().addListener(listener, bean.getAnnot().action());	
+				log.info("Registering analogInput listener for "+bean.getActionName(e));
+				EntityManager.getInputManager().addListener(listener, bean.getActionName(e));	
 			}
 		}
 		

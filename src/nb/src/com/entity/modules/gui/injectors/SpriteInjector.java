@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.entity.modules.gui.injector;
+package com.entity.modules.gui.injectors;
 
 import java.lang.reflect.Field;
 

@@ -12,13 +12,15 @@ import com.entity.core.EntityManager;
 import com.entity.core.builders.BaseModelBuilder;
 import com.entity.core.items.ModelBase;
 import com.entity.modules.gui.GUIGame;
-import com.entity.modules.gui.builders.ScreenBuilder;
 import com.entity.modules.gui.builders.SpriteBuilder;
+import com.entity.modules.gui.events.ClickEvent;
+import com.entity.modules.gui.events.IOnLeftClick;
+import com.entity.modules.gui.events.IOnMiddleClick;
+import com.entity.modules.gui.events.IOnRightClick;
 import com.jme3.asset.TextureKey;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
@@ -31,6 +33,9 @@ import com.jme3.texture.Texture2D;
  */
 @BuilderDefinition(builderClass=SpriteBuilder.class)
 public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase, BaseModelBuilder>{
+	
+	public enum BUTTON{LEFT, RIGHT, MIDDLE};
+	
     protected G geo;
     protected float width  = 1f;
     protected float height = 1f;
@@ -175,7 +180,7 @@ public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase
     }
     
     
-    public boolean colisiona(Vector2f pos){
-        return pos.x>=getX()+getWidth()/4 && pos.x<getX()+getWidth()+getWidth()/2 && pos.y>=getY()+getHeight()/4 && pos.y<getY()+getHeight()+getHeight()/2;        
+    public boolean colisiona(ClickEvent event){ 
+        return event.isClickable(this) && event.pos.x>=getX()+getWidth()/4 && event.pos.x<getX()+getWidth()+getWidth()/2 && event.pos.y>=getY()+getHeight()/4 && event.pos.y<getY()+getHeight()+getHeight()/2;        
     }
 }

@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import com.entity.core.builders.BaseModelBuilder;
-import com.entity.modules.gui.injector.SpriteInjector;
+import com.entity.modules.gui.injectors.SpriteInjector;
 
 public class ScreenBuilder extends BaseModelBuilder{
 

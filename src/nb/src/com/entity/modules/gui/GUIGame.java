@@ -20,6 +20,7 @@ public class GUIGame extends Node implements IEntity{
     public float ratioH;
     
     private Screen screen;
+
 	
 	public GUIGame(GUI gui){
 		super("GUI_GAME_NODE");
@@ -99,5 +100,7 @@ public class GUIGame extends Node implements IEntity{
 	public void attachChilFromInjector(Spatial s) {
 		
 	}
+
+	
 	
 }

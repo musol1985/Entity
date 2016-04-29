@@ -9,7 +9,6 @@ import net.sf.cglib.proxy.MethodProxy;
 import com.entity.anot.RayPick;
 import com.entity.core.EntityManager;
 import com.entity.core.builders.ModelBuilder;
-import com.entity.core.injectors.BaseInjector;
 import com.entity.core.items.Model;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -24,6 +23,25 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 public class RayPickInterceptor {
 	
 	protected static final Logger log = Logger.getLogger(RayPickInterceptor.class.getName());
+	
+	
+	public static CollisionResults rayClickCollisionResult(String body)throws Exception{
+		Vector3f pos=EntityManager.getCamera().getWorldCoordinates(EntityManager.getInputManager().getCursorPosition(), 0).clone();
+        Vector3f dir=EntityManager.getCamera().getWorldCoordinates(EntityManager.getInputManager().getCursorPosition(), 0.3f).clone();
+        dir.subtractLocal(pos).normalizeLocal();
+        Ray ray=new Ray(pos, dir);
+        
+        Node n=EntityManager.getCurrentScene().getApp().getRootNode();
+        if(!body.isEmpty()){
+        	n=(Node)n.getChild(body);
+        }
+        
+        CollisionResults results=new CollisionResults();
+        n.collideWith(ray, results);
+        
+        return results;
+  
+	}
 
 	public static Object rayPick(Object obj, Method m, Object[] args, MethodProxy mp, BaseMethodInterceptor mi)throws Exception, Throwable{
 		RayPick anot=EntityManager.getAnnotation(RayPick.class,m);
@@ -125,15 +143,16 @@ public class RayPickInterceptor {
 		}
 		return null;
 	}
+
 	
-	private static Model getEntityByGeometry(Geometry geo){
+	public static Model getEntityByGeometry(Geometry geo){
 		Model res=null;
 		
-                if(geo instanceof TerrainPatch){
-                    res=(Model) getSpatialByTerrain((TerrainPatch) geo);
-                }else{
-                    res=geo.getUserData(ModelBuilder.ENTITY_GEOMETRY_REFERENCE);
-                }
+        if(geo instanceof TerrainPatch){
+            res=(Model) getSpatialByTerrain((TerrainPatch) geo);
+        }else{
+            res=geo.getUserData(ModelBuilder.ENTITY_GEOMETRY_REFERENCE);
+        }
                 
 		
 		if(res==null && geo.getParent()!=null)

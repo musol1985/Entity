@@ -93,7 +93,7 @@ public class TriggerInjector<T extends IEntity>  extends BaseInjector<T> impleme
                     	log.info("Adding MouseButtonMapping: "+key.buttons()[i]);
                             triggers[i]=new MouseButtonTrigger(key.buttons()[i]);
                     }			
-                    addTrigger(key.action(), triggers);
+                    addTrigger(c.getName(), key.action(), triggers);
             }else if(a instanceof MouseMoveInputMapping){
                     MouseMoveInputMapping key=(MouseMoveInputMapping)a;
 
@@ -102,7 +102,7 @@ public class TriggerInjector<T extends IEntity>  extends BaseInjector<T> impleme
                     	log.info("Adding MouseAxisMapping: "+key.axis()[i]);
                         triggers[i]=new MouseAxisTrigger(key.axis()[i], key.negate());
                     }
-                    addTrigger(key.action(), triggers);			
+                    addTrigger(c.getName(), key.action(), triggers);			
             }else if(a instanceof KeyInputMapping){			
                     KeyInputMapping key=(KeyInputMapping)a;
 
@@ -111,16 +111,16 @@ public class TriggerInjector<T extends IEntity>  extends BaseInjector<T> impleme
                             log.info("Adding keyInputMapping: "+key.keys()[i]);
                             triggers[i]=new KeyTrigger(key.keys()[i]);
                     }
-                    addTrigger(key.action(), triggers);
+                    addTrigger(c.getName(), key.action(), triggers);
             }
         }
 
-	private void addTrigger(String action, Trigger[] triggers){
+	private void addTrigger(String className, String action, Trigger[] triggers){
             Trigger[] actual=this.triggers.get(action);
             if(actual!=null){
-                this.triggers.put(action, concat(actual, triggers));
+                this.triggers.put(className+"."+action, concat(actual, triggers));
             }else{
-                this.triggers.put(action, triggers);
+                this.triggers.put(className+"."+action, triggers);
             }
         }
         

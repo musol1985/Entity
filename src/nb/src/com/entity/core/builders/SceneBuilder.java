@@ -13,6 +13,7 @@ import com.entity.core.Injector;
 import com.entity.core.injectors.ListBeanSingletonInjector;
 import com.entity.core.injectors.TriggerInjector;
 import com.entity.core.injectors.field.CameraInjector;
+import com.entity.core.injectors.field.CamerasInjector;
 import com.entity.core.injectors.field.EffectInjector;
 import com.entity.core.injectors.field.EntityInjector;
 import com.entity.core.injectors.field.LightInjector;
@@ -20,7 +21,6 @@ import com.entity.core.injectors.field.ListInjector;
 import com.entity.core.injectors.field.MapInjector;
 import com.entity.core.injectors.field.NetworkListenerInjector;
 import com.entity.core.injectors.field.PersistableInjector;
-import com.entity.core.injectors.field.CamerasInjector;
 import com.entity.core.injectors.field.SkyInjector;
 import com.entity.core.injectors.field.TaskInjector;
 import com.entity.core.injectors.field.TerrainInjector;
@@ -28,7 +28,7 @@ import com.entity.core.injectors.input.InputInjector;
 import com.entity.core.injectors.method.UpdateInjector;
 import com.entity.core.items.Model;
 import com.entity.core.items.Scene;
-import com.entity.modules.gui.injector.ScreenInjector;
+import com.entity.modules.gui.injectors.ScreenInjector;
 
 public class SceneBuilder extends Builder<Scene>{
 	private boolean mustEnhance;
