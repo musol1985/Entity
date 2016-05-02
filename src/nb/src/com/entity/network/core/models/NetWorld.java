@@ -13,6 +13,7 @@ import com.entity.network.core.beans.CellId;
 import com.entity.network.core.beans.CellViewQuad;
 import com.entity.network.core.dao.NetWorldDAO;
 import com.entity.utils.Vector2;
+
 import java.util.List;
 
 @ModelEntity
@@ -35,7 +36,7 @@ public abstract class NetWorld<T extends NetWorldDAO, C extends NetWorldCell, P 
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void onInstance(IBuilder builder, Object[] params) {
+	public void onInstance(IBuilder builder, Object[] params)  throws Exception{
 		dao=(T) EntityManager.getGame().getNet().getWorldService().getWorldDAO();
 		EntityManager.getGame().getNet().getWorldService().setWorld(this);
 		

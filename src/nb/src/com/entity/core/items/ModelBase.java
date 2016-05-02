@@ -168,7 +168,7 @@ public abstract class ModelBase<R extends ModelBase, T extends BaseModelBuilder>
 	}
 
 	@Override
-	public void onInstance(IBuilder builder, Object[] params) {
+	public void onInstance(IBuilder builder, Object[] params) throws Exception{
 		// TODO Auto-generated method stub
 		
 	}
