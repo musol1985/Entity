@@ -33,8 +33,11 @@ public abstract class Builder<T extends IEntity> implements IBuilder<T>{
 	
 	protected boolean cache;
 
+	protected abstract void initBuilder(Class<T> c)throws Exception;
+	
 	@Override
 	public void onCreate(Class<T> c) throws Exception {
+		initBuilder(c);
 		loadInjectors(c);
 		
 		for(Entry<Class<BaseInjector>, BaseInjector> e: injectors.entrySet()){

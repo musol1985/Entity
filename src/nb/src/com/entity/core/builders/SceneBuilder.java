@@ -108,6 +108,12 @@ public class SceneBuilder extends Builder<Scene>{
 		super.onInstance(item, builder, params);
 	}
 
+	@Override
+	protected void initBuilder(Class<Scene> c) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 

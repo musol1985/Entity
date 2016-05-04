@@ -28,7 +28,6 @@ public class ModelBuilder<T extends Model> extends BaseModelBuilder<T>{
 	@Override
 	public void loadInjectors(Class<T> c) throws Exception {
 		super.loadInjectors(c);
-		model=c.getAnnotation(ModelEntity.class);
 	}
 	
 	
@@ -115,5 +114,11 @@ public class ModelBuilder<T extends Model> extends BaseModelBuilder<T>{
 				res.put(child.getName(), child);
 			}
 		}
+	}
+
+
+	@Override
+	protected void initBuilder(Class<T> c) throws Exception {
+		model=c.getAnnotation(ModelEntity.class);
 	}
 }

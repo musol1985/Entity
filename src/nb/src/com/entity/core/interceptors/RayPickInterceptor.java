@@ -7,9 +7,11 @@ import java.util.logging.Logger;
 import net.sf.cglib.proxy.MethodProxy;
 
 import com.entity.anot.RayPick;
+import com.entity.bean.OnPickModel;
 import com.entity.core.EntityManager;
 import com.entity.core.builders.ModelBuilder;
 import com.entity.core.items.Model;
+import com.entity.core.items.ModelBase;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.math.Ray;
@@ -41,6 +43,48 @@ public class RayPickInterceptor {
         
         return results;
   
+	}
+	
+	public static OnPickModel rayPickOver(Class<? extends ModelBase> model)throws Exception{
+		return rayPickOver(model, "");
+	}
+	
+	public static OnPickModel rayPickOver(Class<? extends ModelBase> model, String node)throws Exception{
+        Node n=EntityManager.getCurrentScene().getApp().getRootNode();
+		if(!node.isEmpty()){
+			n=(Node)n.getChild(node);
+			if(n==null)
+				throw new NullPointerException("The node "+node+" not found in the rood node for raypick");
+		}
+		
+		return rayPickOver(model, n);
+	}
+	
+	public static OnPickModel rayPickOver(Class<? extends ModelBase> model, Node n)throws Exception{
+		log.info("Throwing a RayPick from the camera");      
+        Vector3f pos=EntityManager.getCamera().getWorldCoordinates(EntityManager.getInputManager().getCursorPosition(), 0).clone();
+        Vector3f dir=EntityManager.getCamera().getWorldCoordinates(EntityManager.getInputManager().getCursorPosition(), 0.3f).clone();
+        dir.subtractLocal(pos).normalizeLocal();
+        
+        return rayPickOver(new Ray(pos, dir), model, n);
+	}
+	
+	public static OnPickModel rayPickOver(Ray ray, Class<? extends ModelBase> model, Node n)throws Exception{
+		CollisionResults results=new CollisionResults();
+		n.collideWith(ray, results);
+		
+		
+		for(CollisionResult colision:results){
+			log.info("Collision with "+colision.getGeometry().getName());                            
+			ModelBase entity=getEntityByGeometry(colision.getGeometry());
+            if(entity!=null){
+            	if(entity.getClass().getName().equals(model.getName())){
+            		return new OnPickModel(entity, colision);
+            	}
+            }
+		}
+		
+		return null;
 	}
 
 	public static Object rayPick(Object obj, Method m, Object[] args, MethodProxy mp, BaseMethodInterceptor mi)throws Exception, Throwable{
@@ -176,4 +220,6 @@ public class RayPickInterceptor {
 		}
 		return false;
 	}
+	
+
 }

@@ -10,5 +10,11 @@ public class SpriteBuilder extends BaseModelBuilder{
         addInjector(new SpriteInjector());
     }
 
+	@Override
+	protected void initBuilder(Class c) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

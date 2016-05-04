@@ -5,8 +5,11 @@
  */
 package com.entity.core.injectors;
 
+import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
+import com.entity.anot.Conditional;
+import com.entity.core.EntityManager;
 import com.entity.core.IEntity;
 import com.entity.core.Injector;
 
@@ -22,4 +25,59 @@ public abstract class BaseInjector<T extends IEntity> implements Injector<T>,Com
     public int compareTo(BaseInjector t) {
         return -1;
     }
+    
+	
+	protected boolean conditional(T e, Method m, Object[] params)throws Exception{
+		if(EntityManager.isAnnotationPresent(Conditional.class,m)){
+			Conditional condition=EntityManager.getAnnotation(Conditional.class,m);
+			
+			if(condition.includeParams()){
+				Class[] pTypes=null;
+				
+				if(condition.includeFieldName()){
+					Object[] pTmp=new Object[params.length+1];
+					for(int i=0;i<params.length;i++){
+						pTmp[i]=params[i];
+					}
+					pTmp[params.length]=m.getName();
+					params=pTmp;
+				}
+				
+				pTypes=getParams(params);
+				
+				Method me=e.getClass().getMethod(condition.method(), pTypes);
+				if(m!=null){
+					return (Boolean)me.invoke(e, params);                           
+				}else{
+					log.warning("@BaseInjector("+this+").conditional with params method: "+condition.method()+" doesn't exists in class "+e.getClass().getName());
+				}
+			}else{
+				Method me=e.getClass().getMethod(condition.method());
+				if(m!=null){
+					return (Boolean)me.invoke(e);                           
+				}else{
+					log.warning("@BaseInjector("+this+").conditional without params method: "+condition.method()+" doesn't exists in class "+e.getClass().getName());
+				}
+			}
+		}
+		return true;
+	}
+
+	
+	private Class[] getParams(Object[] params){
+		Class[] pTypes=new Class[params.length];
+		for(int i=0;i<params.length;i++){
+			pTypes[i]=params[i].getClass();
+		}
+		return pTypes;
+	}
+	
+	private Class[] getParamsAndFieldName(Object[] params, String fieldName){
+		Class[] pTypes=new Class[params.length+1];
+		for(int i=0;i<params.length;i++){
+			pTypes[i]=params[i].getClass();
+		}
+		pTypes[params.length]=String.class;
+		return pTypes;
+	}
 }

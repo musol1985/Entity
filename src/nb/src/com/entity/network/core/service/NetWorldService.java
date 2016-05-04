@@ -87,7 +87,7 @@ public abstract class NetWorldService<W extends NetWorld, P extends NetPlayer, C
 		return null;
 	}
 	
-	protected C getCellFromCache(Vector2 cellId){
+	public C getCellFromCache(Vector2 cellId){
 		return (C) world.getCells().get(cellId);
 	}
 	

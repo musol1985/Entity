@@ -38,4 +38,10 @@ public class NetWorldServiceBuilder extends Builder<NetWorldService>{
 	public boolean isMustEnhance() {
 		return mustEnhance;
 	}
+
+	@Override
+	protected void initBuilder(Class<NetWorldService> c) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 }

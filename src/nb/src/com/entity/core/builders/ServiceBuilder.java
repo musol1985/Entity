@@ -71,5 +71,12 @@ public class ServiceBuilder extends Builder<BaseService>{
 	}
 
 
+	@Override
+	protected void initBuilder(Class<BaseService> c) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 
 }
