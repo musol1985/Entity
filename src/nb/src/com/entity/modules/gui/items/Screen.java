@@ -33,7 +33,9 @@ import com.jme3.scene.Spatial;
 })
 @ComposedMouseMoveInputMapping(inputs={
 		@MouseMoveInputMapping(action="mouseMoveX", axis={MouseInput.AXIS_X}),
-		@MouseMoveInputMapping(action="mouseMoveY", axis={MouseInput.AXIS_Y})
+                @MouseMoveInputMapping(action="mouseMoveXNeg", axis={MouseInput.AXIS_X}, negate = true),
+		@MouseMoveInputMapping(action="mouseMoveY", axis={MouseInput.AXIS_Y}),
+                @MouseMoveInputMapping(action="mouseMoveYNeg", axis={MouseInput.AXIS_Y}, negate = true)
 })
 public class Screen extends ModelBase<Screen, ScreenBuilder>{
 	
@@ -83,9 +85,23 @@ public class Screen extends ModelBase<Screen, ScreenBuilder>{
     	onMouseMove();
     }
     
+    @Input(action = "mouseMoveXNeg")
+    @Conditional(method="captureMove")
+    public void mouseMoveNeg(float value, float tpf)throws Exception{
+    	onMouseMove();
+    }
+    
+    @Input(action = "mouseMoveYNeg")
+    @Conditional(method="captureMove")
+    public void mouseMoveYNeg(float value, float tpf)throws Exception{
+    	onMouseMove();
+    }
+    
     private void onMouseMove()throws Exception{
     	if(drag!=null){
+            
     		OnPickModel plain=RayPickInterceptor.rayPickOver(drop, in);
+
     		if(plain!=null){
     			drag.setLocalTranslation(plain.getCollision().getContactPoint());
     			if(drag instanceof IDraggable){
@@ -96,7 +112,8 @@ public class Screen extends ModelBase<Screen, ScreenBuilder>{
     }
 	
 	public void onClick(BUTTON button, boolean value, float tpf)throws Exception{
-		if(drag!=null){
+            if(value)
+		if(drag==null){
 			Vector2f pos=EntityManager.getInputManager().getCursorPosition();
 			ClickEvent event=new ClickEvent(button, value, tpf, pos);
 			
@@ -115,14 +132,14 @@ public class Screen extends ModelBase<Screen, ScreenBuilder>{
 		}
 	}
 	
-	public boolean clickGUI(List<Spatial> children, ClickEvent event){
+	public boolean clickGUI(List<Spatial> children, ClickEvent event)throws Exception{
 		for(Spatial s:children){
 			if(s instanceof SpriteBase){
 				if(clickGUI(((SpriteBase)s).getChildren(), event))
 					return true;
 				
 				if(((SpriteBase) s).colisiona(event)){
-					return event.click((ModelBase) s);
+					return event.click((SpriteBase) s);
 				}
 			}
 		}
@@ -131,7 +148,7 @@ public class Screen extends ModelBase<Screen, ScreenBuilder>{
 	
 	
 	
-	private static boolean click3D(Spatial s, ClickEvent event){
+	private static boolean click3D(Spatial s, ClickEvent event)throws Exception{
 		ModelBase m=null;
 		
 		if(s instanceof Geometry){
@@ -144,10 +161,8 @@ public class Screen extends ModelBase<Screen, ScreenBuilder>{
 		
 		
 		if(m!=null){
-			if(event.isClickable(m)){
-				if(event.click(m))
-					return true;
-			}
+			if(event.click(m))
+				return true;
 			if(m.getParent()!=null){
 				return click3D(m.getParent(),event);
 			}

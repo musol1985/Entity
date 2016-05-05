@@ -14,12 +14,13 @@ public class ScreenBuilder extends BaseModelBuilder<Screen>{
 
 	@Override
 	protected void initBuilder(Class<Screen> c) throws Exception {
-		anot=(ScreenGUI) c.getAnnotation(ScreenGUI.class);
+		anot=(ScreenGUI) c.getAnnotation(ScreenGUI.class);                
 	}
 
 	
     @Override
     public void loadInjectors(Class<Screen> c) throws Exception {
+        super.loadInjectors(c);
         addInjector(new SpriteInjector<Screen>());
     }
 

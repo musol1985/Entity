@@ -11,6 +11,7 @@ import org.reflections.Reflections;
 import com.entity.anot.collections.ListEntity;
 import com.entity.anot.collections.MapEntity;
 import com.entity.bean.AnnotationFieldBean;
+import com.jme3.network.serializing.Serializable;
 
 public class CollectionBean<T extends Annotation> extends AnnotationFieldBean<T>{
 	private List<Class> packages;
@@ -19,20 +20,22 @@ public class CollectionBean<T extends Annotation> extends AnnotationFieldBean<T>
 	public CollectionBean(Field f, Class<T> anot)throws Exception{
 		super(f, anot);		
 		if(anot==ListEntity.class){
-			setPackage(((ListEntity)getAnnot()).packageItems());
-		}
+			setPackage(((ListEntity)getAnnot()).packageItems(), null);
+		}else if(anot==MapEntity.class){
+                    setPackage(((MapEntity)getAnnot()).packageItems(), ((MapEntity)getAnnot()).packageFilter());
+                }
 	}
 	
-	private void setPackage(String pack)throws Exception{
+	private void setPackage(String pack, Class<? extends Annotation> filter)throws Exception{
 		if(!pack.isEmpty()){
 			Reflections reflections = new Reflections(pack);
 			
-			 Set<String> messages=reflections.getAllTypes();
+			 Set<Class<? extends Object>> messages=reflections.getTypesAnnotatedWith(filter);
 			 
 			 packages=new ArrayList<Class>();
 			 
-			 for(String c:messages){
-				 packages.add(Class.forName(c));
+			 for(Class<? extends Object> c:messages){
+				 packages.add(c);
 			 }
 		}
 	}

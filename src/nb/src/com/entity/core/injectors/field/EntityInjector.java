@@ -102,7 +102,7 @@ public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<Annota
 			}
 			
 			pTypes=getParams(params);
-			Method m=e.getClass().getMethod(bean.getAnnot().conditional(), pTypes);
+			Method m=e.getClass().getDeclaredMethod(bean.getAnnot().conditional(), pTypes);
 			if(m!=null){
 				return m.invoke(e, params);                           
 			}else{

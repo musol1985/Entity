@@ -1,6 +1,6 @@
 package com.entity.modules.gui.events;
 
-import com.entity.core.items.ModelBase;
+import com.entity.modules.gui.items.SpriteBase;
 import com.entity.modules.gui.items.SpriteBase.BUTTON;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Spatial;
@@ -59,23 +59,34 @@ public class ClickEvent {
 		this.pos = pos;
 	}
 	
-	public boolean click(ModelBase model){
-		switch(button){
-			case LEFT:
-				return ((IOnLeftClick)model).onLeftClick(value, tpf);
-			case RIGHT:
-				return ((IOnRightClick)model).onRightClick(value, tpf);
-			case MIDDLE:
-				return ((IOnMiddleClick)model).onMiddleClick(value, tpf);
-		}
+	public boolean click(Spatial model)throws Exception{
+		if(isClickableClass(model))
+			if(model instanceof SpriteBase && ((SpriteBase)model).onClick(this))
+				return true;
+		if(isClickableInterface(model))
+			switch(button){
+				case LEFT:
+					return ((IOnLeftClick)model).onLeftClick(value, tpf);
+				case RIGHT:
+					return ((IOnRightClick)model).onRightClick(value, tpf);
+				case MIDDLE:
+					return ((IOnMiddleClick)model).onMiddleClick(value, tpf);
+			}
+			
 		return false;
 	}
 	
 	
-	public boolean isClickable(Spatial m){
+	private boolean isClickableInterface(Spatial m){
+		//if(m!=null && m instanceof SpriteBase && ((SpriteBase)m).isClickInterceptor())return true;
 		if(button==BUTTON.LEFT && m instanceof IOnLeftClick)return true;
 		if(button==BUTTON.RIGHT && m instanceof IOnRightClick)return true;
 		if(button==BUTTON.MIDDLE && m instanceof IOnMiddleClick)return true;
+		return false;
+	}
+	
+	private boolean isClickableClass(Spatial m){
+		if(m!=null && m instanceof SpriteBase && ((SpriteBase)m).isClickInterceptor())return true;
 		return false;
 	}
 }

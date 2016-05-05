@@ -33,8 +33,8 @@ public class GUIGame extends Node implements IEntity{
 		
 		int RATIO=width/height;
 		ratio=((float)EntityManager.getGame().getContext().getSettings().getWidth()/(float)EntityManager.getGame().getContext().getSettings().getHeight())-RATIO+1f;
-        ratioW=EntityManager.getGame().getContext().getSettings().getWidth()/ratioW;
-        ratioH=EntityManager.getGame().getContext().getSettings().getHeight()/ratioH;  
+        ratioW=1;//EntityManager.getGame().getContext().getSettings().getWidth()/ratio;
+        ratioH=1;//EntityManager.getGame().getContext().getSettings().getHeight()/ratio;  
         
         EntityManager.getGame().getGuiNode().attachChild(this);		
 	}

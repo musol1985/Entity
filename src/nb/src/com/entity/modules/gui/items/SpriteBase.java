@@ -180,13 +180,17 @@ public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase
     
     
     public boolean colisiona(ClickEvent event){ 
-        return event.isClickable(this) && event.pos.x>=getX()+getWidth()/4 && event.pos.x<getX()+getWidth()+getWidth()/2 && event.pos.y>=getY()+getHeight()/4 && event.pos.y<getY()+getHeight()+getHeight()/2;        
+        return event.pos.x>=getX()+getWidth()/4 && event.pos.x<getX()+getWidth()+getWidth()/2 && event.pos.y>=getY()+getHeight()/4 && event.pos.y<getY()+getHeight()+getHeight()/2;        
     }
     
     public boolean onClick(ClickEvent event)throws Exception{
     	if(interceptor!=null)
     		return interceptor.onClick(event, this);
     	return false;
+    }
+    
+    public boolean isClickInterceptor(){
+    	return interceptor!=null;
     }
 
 

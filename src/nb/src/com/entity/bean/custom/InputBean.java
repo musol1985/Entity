@@ -18,7 +18,7 @@ public class InputBean extends AnnotationMethodBean<Input>{
 	}
 	
 	public String getActionName(IEntity obj){
-		return obj.getClass()+"."+getAnnot().action();
+		return obj.getClass().getName()+"."+getAnnot().action();
 	}
 
 	public boolean isDigital() {
