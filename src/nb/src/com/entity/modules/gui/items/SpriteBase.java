@@ -14,9 +14,7 @@ import com.entity.core.items.ModelBase;
 import com.entity.modules.gui.GUIGame;
 import com.entity.modules.gui.builders.SpriteBuilder;
 import com.entity.modules.gui.events.ClickEvent;
-import com.entity.modules.gui.events.IOnLeftClick;
-import com.entity.modules.gui.events.IOnMiddleClick;
-import com.entity.modules.gui.events.IOnRightClick;
+import com.entity.modules.gui.events.ClickInterceptor;
 import com.jme3.asset.TextureKey;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
@@ -41,6 +39,7 @@ public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase
     protected float height = 1f;
     protected ColorRGBA color;
     protected float size=1f;
+    protected ClickInterceptor interceptor;    
 
     
     protected void instance(String name,  G geo, String texture) {
@@ -183,4 +182,17 @@ public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase
     public boolean colisiona(ClickEvent event){ 
         return event.isClickable(this) && event.pos.x>=getX()+getWidth()/4 && event.pos.x<getX()+getWidth()+getWidth()/2 && event.pos.y>=getY()+getHeight()/4 && event.pos.y<getY()+getHeight()+getHeight()/2;        
     }
+    
+    public boolean onClick(ClickEvent event)throws Exception{
+    	if(interceptor!=null)
+    		return interceptor.onClick(event, this);
+    	return false;
+    }
+
+
+	public void setInterceptor(ClickInterceptor interceptor) {
+		this.interceptor = interceptor;
+	}
+    
+    
 }

@@ -17,6 +17,7 @@ import com.entity.core.IEntity;
 import com.entity.core.InjectorAttachable;
 import com.entity.core.injectors.BaseInjector;
 import com.entity.core.injectors.ListBeanInjector;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -54,7 +55,12 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 				body=new RigidBodyControl(bean.getCollisionShape(item), bean.getAnnot().mass());
 				((RigidBodyControl)body).setKinematic(true);
 			}else{
-				body=new GhostControl(bean.getCollisionShape(item));
+				CollisionShape shape=bean.getCollisionShape(item);
+				if(shape!=null){
+					body=new GhostControl(shape);
+				}else{
+					body=new GhostControl();
+				}
 			}
 			bean.getField().set(item, body);			
 		}

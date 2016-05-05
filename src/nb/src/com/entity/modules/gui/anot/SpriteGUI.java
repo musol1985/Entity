@@ -12,4 +12,6 @@ public @interface SpriteGUI {
     String name();
     String texture() default "";
     float[] position() default {};
+    String onLeftClick() default "";
+    String onRightClick() default "";
 }

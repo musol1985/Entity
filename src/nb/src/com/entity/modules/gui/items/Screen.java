@@ -38,7 +38,7 @@ import com.jme3.scene.Spatial;
 public class Screen extends ModelBase<Screen, ScreenBuilder>{
 	
 	private ModelBase drag;//Element to drag
-	private ModelBase drop;//Element where the drag will drop(terrain)
+	private Class<? extends ModelBase> drop;//Element where the drag will drop(terrain)
 	private Node in;//Node where to calculate raypicks(rootNode)
 	
 	public void attachSprite(SpriteBase s)throws Exception{
@@ -85,11 +85,11 @@ public class Screen extends ModelBase<Screen, ScreenBuilder>{
     
     private void onMouseMove()throws Exception{
     	if(drag!=null){
-    		OnPickModel plain=RayPickInterceptor.rayPickOver(drop.getClass(), in);
+    		OnPickModel plain=RayPickInterceptor.rayPickOver(drop, in);
     		if(plain!=null){
     			drag.setLocalTranslation(plain.getCollision().getContactPoint());
     			if(drag instanceof IDraggable){
-    				((IDraggable)drag).onDragging(drop);
+    				((IDraggable)drag).onDragging(plain.getM());
     			}
     		}
     	}    	
@@ -166,22 +166,25 @@ public class Screen extends ModelBase<Screen, ScreenBuilder>{
 	 * @param plain -> Plain where the model will move(terrain)
 	 * @param in    -> Node where to calculate raypicks(rootNode)
 	 */
-	public void drag(ModelBase model, ModelBase plain, Node in)throws Exception{
+	public void drag(ModelBase model, Class<? extends ModelBase> plain, Node in)throws Exception{
 		this.drag=model;
 		this.drop=plain;
 		this.in=in;
 		
 		if(model instanceof IDraggable){
-			((IDraggable)model).onDrag(plain);
+			((IDraggable)model).onDrag();
 		}
 	}
 	
 	public void drop(BUTTON button)throws Exception{
+		boolean cancel=false;
 		if(drag instanceof IDraggable){
-			((IDraggable)drag).onDrop(drop, button);
+			cancel=((IDraggable)drag).onDrop(button);
 		}
-		this.drag=null;
-		this.drop=null;
-		this.in=null;
+		if(!cancel){
+			this.drag=null;
+			this.drop=null;
+			this.in=null;
+		}
 	}
 }

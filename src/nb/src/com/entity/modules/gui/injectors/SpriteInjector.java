@@ -13,28 +13,30 @@ import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
 import com.entity.core.injectors.ListBeanInjector;
 import com.entity.modules.gui.anot.SpriteGUI;
+import com.entity.modules.gui.beans.ClickInterceptorBean;
 import com.entity.modules.gui.items.Sprite;
 
 /**
  *
  * @author Edu
  */
-public class SpriteInjector<T  extends IEntity>  extends ListBeanInjector<AnnotationFieldBean<SpriteGUI>, T>{
+public class SpriteInjector<T  extends IEntity>  extends ListBeanInjector<ClickInterceptorBean, T>{
 
 
     @Override
     public void loadField(Class<T> c, Field f) throws Exception {
     	if(EntityManager.isAnnotationPresent(SpriteGUI.class,f)){
-			beans.add(new AnnotationFieldBean<SpriteGUI>(f, SpriteGUI.class));
+			beans.add(new ClickInterceptorBean(c, f, SpriteGUI.class));
 		}
     }
 
 	@Override
 	public void onInstance(T item, IBuilder builder, Object[] params) throws Exception {
-		for(AnnotationFieldBean<SpriteGUI> bean:beans){
+		for(ClickInterceptorBean bean:beans){
             Sprite sprite=(Sprite)bean.instanceEntity();
             
             sprite.instance(bean.getAnnot().name(), bean.getAnnot().texture());
+            sprite.setInterceptor(bean.getInterceptor(item));
             
             bean.getField().set(item, sprite);
             
