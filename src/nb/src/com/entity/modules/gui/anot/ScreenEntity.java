@@ -4,10 +4,9 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import com.entity.core.items.Model;
-
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-public @interface ScreenGUI	 {
-	boolean attach() default true;
+public @interface ScreenEntity	 {
+	boolean captureClick()default true;
+	boolean captureMove()default true;
 }

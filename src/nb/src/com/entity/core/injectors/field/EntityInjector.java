@@ -28,7 +28,7 @@ public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<Annota
 	@Override
 	public void onInstance(final T e, IBuilder builder, Object[] params) throws Exception {
 		for(AnnotationFieldBean<Entity> bean:beans){ 
-			Object conditional=conditionalInject(bean, e, params);
+			Object conditional=conditional(e, bean.getField(), params);
 			boolean inject=conditional instanceof Boolean && ((Boolean)conditional==true);
 			if(inject || conditional instanceof Class || conditional instanceof IEntity){
 				IEntity entity=null;
@@ -86,46 +86,5 @@ public class EntityInjector<T  extends IEntity>  extends ListBeanInjector<Annota
 				}
 			}
 		}
-	}
-	
-	private Object conditionalInject(AnnotationFieldBean<Entity> bean, T e, Object[] params)throws Exception{
-		if(!bean.getAnnot().conditional().isEmpty()){
-			Class[] pTypes=null;
-			
-			if(bean.getAnnot().conditionalIncludeFieldName()){
-				Object[] pTmp=new Object[params.length+1];
-				for(int i=0;i<params.length;i++){
-					pTmp[i]=params[i];
-				}
-				pTmp[params.length]=bean.getField().getName();
-				params=pTmp;
-			}
-			
-			pTypes=getParams(params);
-			Method m=e.getClass().getDeclaredMethod(bean.getAnnot().conditional(), pTypes);
-			if(m!=null){
-				return m.invoke(e, params);                           
-			}else{
-				log.warning("@Entity.conditional method: "+bean.getAnnot().callOnInject()+" doesn't exists in class "+e.getClass().getName());
-			}
-		}
-		return true;
-	}
-	
-	private Class[] getParams(Object[] params){
-		Class[] pTypes=new Class[params.length];
-		for(int i=0;i<params.length;i++){
-			pTypes[i]=params[i].getClass();
-		}
-		return pTypes;
-	}
-	
-	private Class[] getParamsAndFieldName(Object[] params, String fieldName){
-		Class[] pTypes=new Class[params.length+1];
-		for(int i=0;i<params.length;i++){
-			pTypes[i]=params[i].getClass();
-		}
-		pTypes[params.length]=String.class;
-		return pTypes;
 	}
 }

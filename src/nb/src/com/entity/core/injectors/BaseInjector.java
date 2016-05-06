@@ -5,6 +5,7 @@
  */
 package com.entity.core.injectors;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
@@ -26,11 +27,17 @@ public abstract class BaseInjector<T extends IEntity> implements Injector<T>,Com
         return -1;
     }
     
+    protected boolean conditional(T e, Method m, Object[] params)throws Exception{
+    	return conditional(e, m.getName(), EntityManager.getAnnotation(Conditional.class, m), params);
+    }
+    
+    protected boolean conditional(T e, Field f, Object[] params)throws Exception{
+    	return conditional(e, f.getName(), EntityManager.getAnnotation(Conditional.class, f), params);
+    }
+    
 	
-	protected boolean conditional(T e, Method m, Object[] params)throws Exception{
-		if(EntityManager.isAnnotationPresent(Conditional.class,m)){
-			Conditional condition=EntityManager.getAnnotation(Conditional.class,m);
-			
+	protected boolean conditional(T e, String name, Conditional condition, Object[] params)throws Exception{
+		if(condition!=null){
 			if(condition.includeParams()){
 				Class[] pTypes=null;
 				
@@ -39,21 +46,21 @@ public abstract class BaseInjector<T extends IEntity> implements Injector<T>,Com
 					for(int i=0;i<params.length;i++){
 						pTmp[i]=params[i];
 					}
-					pTmp[params.length]=m.getName();
+					pTmp[params.length]=name;
 					params=pTmp;
 				}
 				
 				pTypes=getParams(params);
 				
 				Method me=e.getClass().getMethod(condition.method(), pTypes);
-				if(m!=null){
+				if(me!=null){
 					return (Boolean)me.invoke(e, params);                           
 				}else{
 					log.warning("@BaseInjector("+this+").conditional with params method: "+condition.method()+" doesn't exists in class "+e.getClass().getName());
 				}
 			}else{
 				Method me=e.getClass().getMethod(condition.method());
-				if(m!=null){
+				if(me!=null){
 					return (Boolean)me.invoke(e);                           
 				}else{
 					log.warning("@BaseInjector("+this+").conditional without params method: "+condition.method()+" doesn't exists in class "+e.getClass().getName());

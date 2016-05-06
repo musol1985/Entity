@@ -4,17 +4,18 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import com.entity.core.builders.BaseModelBuilder;
+import com.entity.modules.gui.anot.ScreenEntity;
 import com.entity.modules.gui.anot.ScreenGUI;
 import com.entity.modules.gui.injectors.SpriteInjector;
 import com.entity.modules.gui.items.Screen;
 
 public class ScreenBuilder extends BaseModelBuilder<Screen>{
-	private ScreenGUI anot;
+	private ScreenEntity anot;
 	
 
 	@Override
 	protected void initBuilder(Class<Screen> c) throws Exception {
-		anot=(ScreenGUI) c.getAnnotation(ScreenGUI.class);                
+		anot=(ScreenEntity) c.getAnnotation(ScreenEntity.class);                
 	}
 
 	
@@ -42,7 +43,7 @@ public class ScreenBuilder extends BaseModelBuilder<Screen>{
 		
 	}
 
-	public ScreenGUI getAnot() {
+	public ScreenEntity getAnot() {
 		return anot;
 	}
 

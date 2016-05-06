@@ -16,6 +16,8 @@ import com.entity.core.items.ModelBase;
 import com.entity.modules.gui.builders.ScreenBuilder;
 import com.entity.modules.gui.events.ClickEvent;
 import com.entity.modules.gui.events.IDraggable;
+import com.entity.modules.gui.events.IOnMouseMove;
+import com.entity.modules.gui.events.MoveEvent;
 import com.entity.modules.gui.items.SpriteBase.BUTTON;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -43,16 +45,22 @@ public class Screen extends ModelBase<Screen, ScreenBuilder>{
 	private Class<? extends ModelBase> drop;//Element where the drag will drop(terrain)
 	private Node in;//Node where to calculate raypicks(rootNode)
 	
+	private MoveEvent me=new MoveEvent();
+	
 	public void attachSprite(SpriteBase s)throws Exception{
 		s.attachToParent(this);
 	}
 	
 	public boolean captureClick(){
-		return builder.getAnot().captureClick();
+		if(builder.getAnot()!=null)
+			return builder.getAnot().captureClick();
+		return true;
 	}
 	
 	public boolean captureMove(){
-		return builder.getAnot().captureMouseMove();
+		if(builder.getAnot()!=null)
+			return builder.getAnot().captureMove();
+		return true;
 	}
 	
 	@Input(action="leftClick")
@@ -76,28 +84,29 @@ public class Screen extends ModelBase<Screen, ScreenBuilder>{
     @Input(action = "mouseMoveX")
     @Conditional(method="captureMove")
     public void mouseMove(float value, float tpf)throws Exception{
-    	onMouseMove();
+    	onMouseMove(tpf);
     }
     
     @Input(action = "mouseMoveY")
     @Conditional(method="captureMove")
     public void mouseMoveY(float value, float tpf)throws Exception{
-    	onMouseMove();
+    	onMouseMove(tpf);
     }
     
     @Input(action = "mouseMoveXNeg")
     @Conditional(method="captureMove")
     public void mouseMoveNeg(float value, float tpf)throws Exception{
-    	onMouseMove();
+    	onMouseMove(tpf);
     }
     
     @Input(action = "mouseMoveYNeg")
     @Conditional(method="captureMove")
     public void mouseMoveYNeg(float value, float tpf)throws Exception{
-    	onMouseMove();
+    	onMouseMove(tpf);
     }
     
-    private void onMouseMove()throws Exception{
+    private void onMouseMove(float tpf)throws Exception{
+    	me.update(EntityManager.getInputManager().getCursorPosition(), tpf);
     	if(drag!=null){
             
     		OnPickModel plain=RayPickInterceptor.rayPickOver(drop, in);
@@ -108,8 +117,30 @@ public class Screen extends ModelBase<Screen, ScreenBuilder>{
     				((IDraggable)drag).onDragging(plain.getM());
     			}
     		}
-    	}    	
+    	}else{
+    		moveGUI(getChildren());
+    	}
     }
+    
+    
+    public boolean moveGUI(List<Spatial> children)throws Exception{
+		for(Spatial s:children){
+			if(s instanceof SpriteBase){
+				if(moveGUI(((SpriteBase)s).getChildren()))
+					return true;
+				if(s instanceof IOnMouseMove){
+					if(((SpriteBase) s).isMouseIn(me)){
+						((IOnMouseMove) s).onIn(me);
+					}else if(((SpriteBase) s).isMouseMove(me)){
+						((IOnMouseMove) s).onMove(me);
+					}else if(((SpriteBase) s).isMouseOut(me)){
+						((IOnMouseMove) s).onOut(me);
+					}
+				}
+			}
+		}
+		return false;
+	}
 	
 	public void onClick(BUTTON button, boolean value, float tpf)throws Exception{
             if(value)

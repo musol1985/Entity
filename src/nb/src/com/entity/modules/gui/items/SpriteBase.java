@@ -15,10 +15,12 @@ import com.entity.modules.gui.GUIGame;
 import com.entity.modules.gui.builders.SpriteBuilder;
 import com.entity.modules.gui.events.ClickEvent;
 import com.entity.modules.gui.events.ClickInterceptor;
+import com.entity.modules.gui.events.MoveEvent;
 import com.jme3.asset.TextureKey;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
@@ -178,9 +180,12 @@ public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase
     	return getParent() instanceof SpriteBase;
     }
     
+    public boolean isIn(Vector2f pos){
+    	return pos.x>=getX()+getWidth()/4 && pos.x<getX()+getWidth()+getWidth()/2 && pos.y>=getY()+getHeight()/4 && pos.y<getY()+getHeight()+getHeight()/2;
+    }
     
     public boolean colisiona(ClickEvent event){ 
-        return event.pos.x>=getX()+getWidth()/4 && event.pos.x<getX()+getWidth()+getWidth()/2 && event.pos.y>=getY()+getHeight()/4 && event.pos.y<getY()+getHeight()+getHeight()/2;        
+        return isIn(event.pos);      
     }
     
     public boolean onClick(ClickEvent event)throws Exception{
@@ -198,5 +203,15 @@ public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase
 		this.interceptor = interceptor;
 	}
     
+    public boolean isMouseIn(MoveEvent event){
+    	return isIn(event.getPos()) && !isIn(event.getOldPos());
+    }
     
+    public boolean isMouseOut(MoveEvent event){
+    	return !isIn(event.getPos()) && isIn(event.getOldPos());
+    }
+    
+    public boolean isMouseMove(MoveEvent event){
+    	return isIn(event.getPos()) && isIn(event.getOldPos());
+    }
 }
