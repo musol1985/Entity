@@ -49,7 +49,9 @@ public class MaterialBean extends AnnotationFieldBean<MaterialComponent>{
 			if(isGetFromComponent(material)){
 				component=clas.getField(EntityManager.getAnnotation(GetFromComponent.class,material).component());
 			}else{
+                            if(material.getType()!=Material.class){
 				geometry=EntityManager.getAnnotation(GetFromGeometry.class,material).geometry();
+                            }
 			}
 		}
 	}
@@ -113,7 +115,11 @@ public class MaterialBean extends AnnotationFieldBean<MaterialComponent>{
 					throw new Exception("Field type "+f.getType().getName()+" not supported for set Material");
 				}
 			}else{
+                            if(geometry!=null){
 				m=((Geometry)e.getChild(geometry)).getMaterial();
+                            }else{
+                                m=EntityManager.getAssetManager().loadMaterial(annot.asset());
+                            }
 			}
 			f.set(e, m);
 		}
