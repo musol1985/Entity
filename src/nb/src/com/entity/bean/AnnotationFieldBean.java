@@ -21,6 +21,12 @@ public class AnnotationFieldBean<T extends Annotation> {
 		this.f=f;
 		this.annot=EntityManager.getAnnotation(annotationClass,f);
 	}
+	
+	public AnnotationFieldBean(Field f, T annotationClass)throws Exception{
+		f.setAccessible(true);
+		this.f=f;
+		this.annot=annotationClass;
+	}
 
 	public Field getField() {
 		return f;

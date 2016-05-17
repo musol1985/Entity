@@ -11,31 +11,30 @@ import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.IEntity;
 import com.entity.core.injectors.ListBeanInjector;
-import com.entity.modules.gui.anot.SpriteGUI;
-import com.entity.modules.gui.beans.SpriteBean;
-import com.entity.modules.gui.items.Sprite;
+import com.entity.modules.gui.anot.ButtonGUI;
+import com.entity.modules.gui.beans.ButtonBean;
+import com.entity.modules.gui.items.Button;
 
 /**
  *
  * @author Edu
  */
-public class SpriteInjector<T  extends IEntity>  extends ListBeanInjector<SpriteBean, T>{
+public class ButtonInjector<T  extends IEntity>  extends ListBeanInjector<ButtonBean, T>{
 
 
     @Override
     public void loadField(Class<T> c, Field f) throws Exception {
-    	if(EntityManager.isAnnotationPresent(SpriteGUI.class,f)){
-			beans.add(new SpriteBean(c, f, SpriteGUI.class));
+    	if(EntityManager.isAnnotationPresent(ButtonGUI.class,f)){
+			beans.add(new ButtonBean(c, f, ButtonGUI.class));
 		}
     }
 
 	@Override
 	public void onInstance(T item, IBuilder builder, Object[] params) throws Exception {
-		for(SpriteBean bean:beans){
-            Sprite sprite=bean.create();
-            bean.initialize(item, sprite);
+		for(ButtonBean bean:beans){
+            Button button=bean.create(item);
             
-            bean.getField().set(item, sprite);
+            bean.getField().set(item, button);
         }
 	}
 }

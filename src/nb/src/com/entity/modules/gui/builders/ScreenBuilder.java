@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 
 import com.entity.core.builders.BaseModelBuilder;
 import com.entity.modules.gui.anot.ScreenEntity;
-import com.entity.modules.gui.anot.ScreenGUI;
+import com.entity.modules.gui.injectors.ButtonInjector;
 import com.entity.modules.gui.injectors.SpriteInjector;
 import com.entity.modules.gui.items.Screen;
 
@@ -23,6 +23,7 @@ public class ScreenBuilder extends BaseModelBuilder<Screen>{
     public void loadInjectors(Class<Screen> c) throws Exception {
         super.loadInjectors(c);
         addInjector(new SpriteInjector<Screen>());
+        addInjector(new ButtonInjector<Screen>());
     }
 
 	@Override
