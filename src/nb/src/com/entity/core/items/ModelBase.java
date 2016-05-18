@@ -100,6 +100,7 @@ public abstract class ModelBase<R extends ModelBase, T extends BaseModelBuilder>
 	 * @throws Exception
 	 */
 	public void onAParentAttached(IEntity parent) throws Exception {
+            if(builder!=null)
 		builder.onAttachInstance(this);
 		//Notify my ModelBase children that a parent has been attached
 		for(Spatial s:getChildren()){

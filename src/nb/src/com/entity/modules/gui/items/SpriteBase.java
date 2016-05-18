@@ -48,7 +48,7 @@ public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase
         setName(name);
         this.geo=geo;
         create();
-        
+        if(texture!=null && !texture.isEmpty())
         setImage(texture, true);
     }
     
@@ -181,7 +181,8 @@ public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase
     }
     
     public boolean isIn(Vector2f pos){
-    	return pos.x>=getX()+getWidth()/4 && pos.x<getX()+getWidth()+getWidth()/2 && pos.y>=getY()+getHeight()/4 && pos.y<getY()+getHeight()+getHeight()/2;
+    	//return pos.x>=getX()+getWidth()/4 && pos.x<getX()+getWidth()+getWidth()/2 && pos.y>=getY()+getHeight()/4 && pos.y<getY()+getHeight()+getHeight()/2;
+        return pos.x>=getX() && pos.x<getX()+getWidth() && pos.y>=getY() && pos.y<getY()+getHeight();
     }
     
     public boolean colisiona(ClickEvent event){ 
@@ -204,7 +205,7 @@ public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase
 	}
     
     public boolean isMouseIn(MoveEvent event){
-    	return isIn(event.getPos()) && !isIn(event.getOldPos());
+   	return isIn(event.getPos()) && !isIn(event.getOldPos());
     }
     
     public boolean isMouseOut(MoveEvent event){

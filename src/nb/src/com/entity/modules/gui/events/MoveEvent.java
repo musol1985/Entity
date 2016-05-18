@@ -8,14 +8,15 @@ public class MoveEvent {
 	public float tpf;
 	
 	public MoveEvent() {
-
+            pos=new Vector2f(0,0);
+            oldPos=new Vector2f(0,0);
 	}
 
 	public void update(Vector2f pos, float tpf){
-		if(this.pos!=null)
-			this.oldPos=pos;
+		this.oldPos.x=this.pos.x;
+                this.oldPos.y=this.pos.y;
 		
-		this.pos=pos;
+		this.pos.set(pos);
 		this.tpf=tpf;
 	}
 

@@ -114,15 +114,9 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
 
 	
 	public Method collidesWith(Model local, Model remote){
-		AnnotationMethodBean<OnCollision> bean=collisions.get(local.getClass());
+		AnnotationMethodBean<OnCollision> bean=collisions.get(remote.getClass());
 		if(bean!=null){
-			if(!bean.getAnnot().localFilterId().isEmpty()){
-				String filterID=local.getUserData(ModelBuilder.COLLISION_FILTER_ID);
-				if(filterID.equals(bean.getAnnot().localFilterId()))
-					return bean.getMethod();
-			}else{
-				return bean.getMethod();
-			}
+			return bean.getMethod();
 		}
 		return null;
 	}
