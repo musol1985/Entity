@@ -16,6 +16,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 public class ModelBuilder<T extends Model> extends BaseModelBuilder<T>{
+	public static final String COLLISION_FILTER_ID="CollisionFilterID";
 	public static final String ENTITY_MODEL_REFERENCE="EntityModelReference";
 	public static final String ENTITY_GEOMETRY_REFERENCE="EntityGeometryReference";
 	

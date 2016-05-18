@@ -12,6 +12,7 @@ import com.entity.anot.Instance;
 import com.entity.anot.OnCollision;
 import com.entity.anot.RayPick;
 import com.entity.anot.RunOnGLThread;
+import com.entity.bean.AnnotationMethodBean;
 import com.entity.core.EntityManager;
 import com.entity.core.IEntity;
 import com.entity.core.Injector;
@@ -42,7 +43,7 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
 	private boolean mustEnhance;
 
 	
-	protected HashMap<Class<Model>, Method> collisions=new HashMap<Class<Model>, Method>();
+	protected HashMap<Class<Model>, AnnotationMethodBean<OnCollision>> collisions=new HashMap<Class<Model>, AnnotationMethodBean<OnCollision>>();
 	
 	protected List<Field> daoFields=new ArrayList<Field>();
 
@@ -94,7 +95,8 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
                         }
 		}
 		if(EntityManager.isAnnotationPresent(OnCollision.class,m)){
-			collisions.put((Class<Model>) m.getParameterTypes()[0], m);
+			AnnotationMethodBean<OnCollision> bean=new AnnotationMethodBean<OnCollision>(m, OnCollision.class);
+			collisions.put((Class<Model>) m.getParameterTypes()[0], bean);
 		}	
 	}
 
@@ -111,8 +113,18 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
 	
 
 	
-	public Method collidesWith(Model e){
-		return collisions.get(e.getClass());
+	public Method collidesWith(Model local, Model remote){
+		AnnotationMethodBean<OnCollision> bean=collisions.get(local.getClass());
+		if(bean!=null){
+			if(!bean.getAnnot().localFilterId().isEmpty()){
+				String filterID=local.getUserData(ModelBuilder.COLLISION_FILTER_ID);
+				if(filterID.equals(bean.getAnnot().localFilterId()))
+					return bean.getMethod();
+			}else{
+				return bean.getMethod();
+			}
+		}
+		return null;
 	}
 
 

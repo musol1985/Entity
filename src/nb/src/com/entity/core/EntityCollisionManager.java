@@ -58,8 +58,8 @@ public class EntityCollisionManager implements PhysicsCollisionListener{
 				ModelBuilder tB=(ModelBuilder) EntityManager.getBuilder(B.getClass());
 				
 
-				onCollision(tA.collidesWith(B), A, B, event);
-				onCollision(tB.collidesWith(A), B, A, event);
+				onCollision(tA.collidesWith(A,B), A, B, event);
+				onCollision(tB.collidesWith(B, A), B, A, event);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
