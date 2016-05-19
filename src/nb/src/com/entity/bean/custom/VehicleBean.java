@@ -36,6 +36,9 @@ public class VehicleBean extends BodyBean<VehicleComponent>{
 		Vector3f direction=arrayToVector(wheel.direction());
 		Vector3f axe=arrayToVector(wheel.axe());
 		
+		if(offset.length()==0)
+			offset=model.getChild(wheel.nodeName()).getLocalTranslation();
+		
 		v.addWheel(model.getChild(wheel.nodeName()), offset,
                 direction, axe, wheel.restLength(), wheel.radius(), wheel.frontWheel());
 	}

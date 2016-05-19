@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import com.entity.anot.DAO;
@@ -44,6 +45,7 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
 
 	
 	protected HashMap<Class<Model>, AnnotationMethodBean<OnCollision>> collisions=new HashMap<Class<Model>, AnnotationMethodBean<OnCollision>>();
+	protected HashMap<Class, AnnotationMethodBean<OnCollision>> collisionsExt=new HashMap<Class,AnnotationMethodBean<OnCollision>>();
 	
 	protected List<Field> daoFields=new ArrayList<Field>();
 
@@ -96,7 +98,12 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
 		}
 		if(EntityManager.isAnnotationPresent(OnCollision.class,m)){
 			AnnotationMethodBean<OnCollision> bean=new AnnotationMethodBean<OnCollision>(m, OnCollision.class);
-			collisions.put((Class<Model>) m.getParameterTypes()[0], bean);
+			
+			if(!bean.getAnnot().includeSubClass()){
+				collisions.put((Class<Model>) m.getParameterTypes()[0], bean);
+			}else{
+				collisionsExt.put(m.getParameterTypes()[0], bean);
+			}
 		}	
 	}
 
@@ -113,10 +120,15 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
 	
 
 	
-	public Method collidesWith(Model local, Model remote){
+	public Method collidesWith(Model local, Model remote){		
 		AnnotationMethodBean<OnCollision> bean=collisions.get(remote.getClass());
 		if(bean!=null){
 			return bean.getMethod();
+		}		
+		for(Entry<Class,AnnotationMethodBean<OnCollision>> beanExt:collisionsExt.entrySet()){
+			if(beanExt.getKey().isAssignableFrom(remote.getClass())){
+				return beanExt.getValue().getMethod();
+			}
 		}
 		return null;
 	}
