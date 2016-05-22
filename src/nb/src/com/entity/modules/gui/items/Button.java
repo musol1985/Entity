@@ -8,6 +8,7 @@ package com.entity.modules.gui.items;
 
 
 import com.entity.modules.gui.anot.SpriteGUI;
+import com.entity.modules.gui.anot.SpriteGUI.ALIGN;
 import com.entity.modules.gui.events.IOnMouseMove;
 import com.entity.modules.gui.events.MoveEvent;
 import com.jme3.scene.Geometry;
@@ -24,27 +25,23 @@ public class Button extends Sprite implements IOnMouseMove{
 	
 	private boolean enabled;
 	
-	@SpriteGUI(name="buttonIcon", position = {0,0})
+	@SpriteGUI(name="buttonIcon", position = {0,0}, align = ALIGN.CENTER_XY)
 	public Sprite icon;
     
-    public void instance(String name,  String imgBack, String imgHover, String imgDisabled, String icon, boolean enabled)throws Exception {
-    	super.instance(name, new Geometry(name+"geo", new Quad(1,1,false)), imgBack);
+    public void instance(String name,  String imgBack, String imgHover, String imgDisabled, String icon, boolean enabled, ALIGN align)throws Exception {
+    	super.instance(name, new Geometry(name+"geo", new Quad(1,1,false)), imgBack, align);
     	
     	this.imgBack=imgBack;
     	this.imgHover=imgHover;
     	this.imgDisabled=imgDisabled;
     	this.enabled=enabled;      
-        //this.icon.instance(name+"Ico", icon);
+
         setIcon(icon);
         setEnabled(enabled);
-        this.icon.dettach();
-        this.icon.attachToParent(this);
-        this.icon.centerInParent();
-       /*Sprite t=new Sprite();
-        t.instance("icoRecursos","Interface/icons/molinoEolico.png");
-        t.attachToParent(this);
-        t.centerInParent();*/
-        //getNode().attachChild(t);
+
+        
+        setInterceptor(this.icon.getInterceptor());
+        this.icon.setInterceptor(null);
     }
     
     public void setIcon(String iconImg){    	

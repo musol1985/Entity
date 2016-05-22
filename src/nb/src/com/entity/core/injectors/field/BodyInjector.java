@@ -49,18 +49,18 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 				}else{
 					log.warning("@Body.onInstance: The node "+bean.getAnnot().nodeName()+" doesn't exists in class "+item.getClass().getName());
 				}
-			}else if(bean.getAnnot().type()==PhysicsBodyType.RIGID_BODY){
-				body=new RigidBodyControl(bean.getCollisionShape(item), bean.getAnnot().mass());				
-			}else if(bean.getAnnot().type()==PhysicsBodyType.KINEMATIC_BODY){
-				body=new RigidBodyControl(bean.getCollisionShape(item), bean.getAnnot().mass());
-				((RigidBodyControl)body).setKinematic(true);
-			}else{
+			}else if(bean.getField().getType()==GhostControl.class || bean.getAnnot().type()==PhysicsBodyType.GHOST_BODY){
 				CollisionShape shape=bean.getCollisionShape(item);
 				if(shape!=null){
 					body=new GhostControl(shape);
 				}else{
 					body=new GhostControl();
 				}
+			}else if(bean.getAnnot().type()==PhysicsBodyType.RIGID_BODY){
+				body=new RigidBodyControl(bean.getCollisionShape(item), bean.getAnnot().mass());				
+			}else if(bean.getAnnot().type()==PhysicsBodyType.KINEMATIC_BODY){
+				body=new RigidBodyControl(bean.getCollisionShape(item), bean.getAnnot().mass());
+				((RigidBodyControl)body).setKinematic(true);
 			}
 			bean.getField().set(item, body);			
 		}

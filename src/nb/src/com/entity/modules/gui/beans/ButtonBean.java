@@ -19,7 +19,7 @@ public class ButtonBean extends AnnotationFieldBean<ButtonGUI>{
 	public Button create(IEntity parent)throws Exception{
 		Button button=(Button)instanceEntity();
 
-		button.instance(bean.getAnnot().name(), annot.imgBack(), annot.imgHover(), annot.imgDisabled(), annot.icon(), annot.enabled());
+		button.instance(bean.getAnnot().name(), annot.imgBack(), annot.imgHover(), annot.imgDisabled(), annot.icon(), annot.enabled(), bean.getAnnot().align());
 		
 		bean.initialize(parent, button);
         

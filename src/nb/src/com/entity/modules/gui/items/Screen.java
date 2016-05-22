@@ -125,19 +125,19 @@ public class Screen extends ModelBase<Screen, ScreenBuilder>{
     
     public boolean moveGUI(List<Spatial> children)throws Exception{
 		for(Spatial s:children){
-			if(s instanceof SpriteBase){
-				if(moveGUI(((SpriteBase)s).getChildren()))
-					return true;
-				if(s instanceof IOnMouseMove){
-					if(((SpriteBase) s).isMouseIn(me)){
-						((IOnMouseMove) s).onIn(me);
-					}else if(((SpriteBase) s).isMouseMove(me)){
-						((IOnMouseMove) s).onMove(me);
-					}else if(((SpriteBase) s).isMouseOut(me)){
-						((IOnMouseMove) s).onOut(me);
-					}
-				}
-			}
+                    if(s instanceof SpriteBase){
+                        if(moveGUI(((SpriteBase)s).getChildren()))
+                                return true;
+                        if(s instanceof IOnMouseMove){
+                            if(((SpriteBase) s).isMouseIn(me)){
+                                    ((IOnMouseMove) s).onIn(me);
+                            }else if(((SpriteBase) s).isMouseMove(me)){
+                                    ((IOnMouseMove) s).onMove(me);
+                            }else if(((SpriteBase) s).isMouseOut(me)){
+                                    ((IOnMouseMove) s).onOut(me);
+                            }
+                        }
+                    }
 		}
 		return false;
 	}

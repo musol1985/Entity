@@ -7,6 +7,7 @@ package com.entity.modules.gui.items;
 
 
 
+import com.entity.modules.gui.anot.SpriteGUI.ALIGN;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
 
@@ -14,10 +15,10 @@ import com.jme3.scene.shape.Quad;
  *
  * @author Edu
  */
-public class Sprite extends SpriteBase{
+public class Sprite<P extends SpriteBase> extends SpriteBase<Geometry, P>{
     
-    public void instance(String name,  String texture) {
-    	super.instance(name, new Geometry(name+"geo", new Quad(1,1,false)), texture);
+    public void instance(String name,  String texture, ALIGN align) {
+    	super.instance(name, new Geometry(name+"geo", new Quad(1,1,false)), texture, align);
     }
     
 }

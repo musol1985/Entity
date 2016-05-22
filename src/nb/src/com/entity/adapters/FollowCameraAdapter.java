@@ -5,6 +5,10 @@
  */
 package com.entity.adapters;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.entity.adapters.listeners.ICameraUpdate;
 import com.entity.adapters.listeners.IFollowCameraListener;
 import com.entity.anot.CamNode;
 import com.entity.anot.FollowCameraNode;
@@ -60,6 +64,9 @@ public class FollowCameraAdapter extends Model{
     private Vector3f tmp=new Vector3f();
     private IFollowCameraListener listener;
     private Geometry debug;
+    
+    private List<ICameraUpdate> updates=new ArrayList<ICameraUpdate>();
+    private Vector3f oldPos=new Vector3f();
 
     @Override
     public void onInstance(IBuilder builder, Object[] params) {
@@ -78,9 +85,11 @@ public class FollowCameraAdapter extends Model{
     public void mouseMove(float valor, float tpf){
     	if(wheelClick){
     		if(valor>0){
-    			rotate(0, rotateSpeed*tpf, 0);
+    			rotate(0, rotateSpeed*tpf, 0);    	
+    			callUpdates();
     		}else if(valor<0){
     			rotate(0, -rotateSpeed*tpf, 0);
+    			callUpdates();
     		}
     	}
     }
@@ -88,11 +97,13 @@ public class FollowCameraAdapter extends Model{
     @Input(action = MOUSE_WHEEL_POSITIVE)
     public void mouseWheel(float valor, float tpf){
         camNode.move(0,5*valor,-5*valor);
+        callUpdates();
     }
     
     @Input(action = MOUSE_WHEEL_NEGATIVE)
     public void mouseWheelNeg(float valor, float tpf){
         camNode.move(0,-5*valor,5*valor);
+        callUpdates();
     }
     
     @Input(action = MOUSE_WHEEL_CLICK)
@@ -163,6 +174,25 @@ public class FollowCameraAdapter extends Model{
        if(listener!=null){
        	listener.onUpdate(this);
        }
+       if(!oldPos.equals(getWorldTranslation())){
+           callUpdates();
+       }
+   }
+   
+   public void addUpdate(ICameraUpdate update){
+	   updates.add(update);
+   }
+   
+   public void removeUpdate(ICameraUpdate update){
+	   updates.remove(update);
+   }
+   
+   public void callUpdates(){
+	   if(updates.size()>0){
+		   for(ICameraUpdate upd:updates){
+			   upd.onPositionUpdate(camNode.getCamera());
+		   }
+	   }
    }
 }
 

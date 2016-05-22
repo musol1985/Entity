@@ -38,11 +38,11 @@ public class SpriteBean extends AnnotationFieldBean<SpriteGUI>{
 	}
 	
 	public Sprite create()throws Exception{
-		Sprite sprite=(Sprite)instanceEntity();
+            Sprite sprite=(Sprite)instanceEntity();
         
-        sprite.instance(getAnnot().name(), getAnnot().texture());
-        
-        return sprite;
+            sprite.instance(getAnnot().name(), getAnnot().texture(), getAnnot().align());
+
+            return sprite;
 	}
 	
 	public void initialize(IEntity parent, Sprite sprite)throws Exception{

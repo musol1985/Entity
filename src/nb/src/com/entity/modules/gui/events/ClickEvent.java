@@ -60,10 +60,10 @@ public class ClickEvent {
 	}
 	
 	public boolean click(Spatial model)throws Exception{
-		if(isClickableClass(model))
+		if(isClickableClass(model))//2D
 			if(model instanceof SpriteBase && ((SpriteBase)model).onClick(this))
 				return true;
-		if(isClickableInterface(model))
+		if(isClickableInterface(model))//3D
 			switch(button){
 				case LEFT:
 					return ((IOnLeftClick)model).onLeftClick(value, tpf);
@@ -76,7 +76,11 @@ public class ClickEvent {
 		return false;
 	}
 	
-	
+	/**
+         * Para lo smodelos 3D
+         * @param m
+         * @return 
+         */
 	private boolean isClickableInterface(Spatial m){
 		//if(m!=null && m instanceof SpriteBase && ((SpriteBase)m).isClickInterceptor())return true;
 		if(button==BUTTON.LEFT && m instanceof IOnLeftClick)return true;

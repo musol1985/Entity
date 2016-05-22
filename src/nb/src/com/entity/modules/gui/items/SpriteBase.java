@@ -9,9 +9,11 @@ package com.entity.modules.gui.items;
 
 import com.entity.anot.BuilderDefinition;
 import com.entity.core.EntityManager;
+import com.entity.core.IEntity;
 import com.entity.core.builders.BaseModelBuilder;
 import com.entity.core.items.ModelBase;
 import com.entity.modules.gui.GUIGame;
+import com.entity.modules.gui.anot.SpriteGUI.ALIGN;
 import com.entity.modules.gui.builders.SpriteBuilder;
 import com.entity.modules.gui.events.ClickEvent;
 import com.entity.modules.gui.events.ClickInterceptor;
@@ -32,7 +34,7 @@ import com.jme3.texture.Texture2D;
  * @author Edu
  */
 @BuilderDefinition(builderClass=SpriteBuilder.class)
-public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase, BaseModelBuilder>{
+public abstract class SpriteBase<G extends Spatial, P extends SpriteBase> extends ModelBase<P, BaseModelBuilder>{
 	
 	public enum BUTTON{LEFT, RIGHT, MIDDLE};
 	
@@ -41,15 +43,17 @@ public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase
     protected float height = 1f;
     protected ColorRGBA color;
     protected float size=1f;
-    protected ClickInterceptor interceptor;    
+    protected ClickInterceptor interceptor;  
+    private ALIGN align;
 
     
-    protected void instance(String name,  G geo, String texture) {
+    protected void instance(String name,  G geo, String texture, ALIGN align) {
         setName(name);
         this.geo=geo;
         create();
         if(texture!=null && !texture.isEmpty())
-        setImage(texture, true);
+        setImage(texture, true);                
+        this.align=align;
     }
     
 
@@ -58,7 +62,7 @@ public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase
         setCullHint(CullHint.Never);
         color=new ColorRGBA(1,1,1,1);
         
-        attachChild(geo);
+        attachChildAt(geo,0);
     }
     
     public GUIGame getGUI(){
@@ -71,6 +75,14 @@ public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase
     
     public int getY(){
         return (int)(getLocalTranslation().y/getGUI().ratioH);
+    }
+    
+    public int getWorldX(){
+        return (int)(getWorldTranslation().x/getGUI().ratioW);
+    }
+    
+    public int getWorldY(){
+        return (int)(getWorldTranslation().y/getGUI().ratioH);
     }
     
     public void setPosition(float x, float y) {
@@ -176,13 +188,19 @@ public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase
         }
     }
     
+    public void centerInParentY(){
+        if(isParentASprite()){
+            setPosition(getX(), getParentModel().height/2-getHeight()/2);
+        }
+    }
+    
     private boolean isParentASprite(){
     	return getParent() instanceof SpriteBase;
     }
     
     public boolean isIn(Vector2f pos){
     	//return pos.x>=getX()+getWidth()/4 && pos.x<getX()+getWidth()+getWidth()/2 && pos.y>=getY()+getHeight()/4 && pos.y<getY()+getHeight()+getHeight()/2;
-        return pos.x>=getX() && pos.x<getX()+getWidth() && pos.y>=getY() && pos.y<getY()+getHeight();
+        return pos.x>=getWorldX() && pos.x<getWorldX()+getWidth() && pos.y>=getWorldY() && pos.y<getWorldY()+getHeight();
     }
     
     public boolean colisiona(ClickEvent event){ 
@@ -200,9 +218,15 @@ public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase
     }
 
 
-	public void setInterceptor(ClickInterceptor interceptor) {
-		this.interceptor = interceptor;
-	}
+    public void setInterceptor(ClickInterceptor interceptor) {
+            this.interceptor = interceptor;
+    }
+
+    public ClickInterceptor getInterceptor() {
+        return interceptor;
+    }
+    
+    
     
     public boolean isMouseIn(MoveEvent event){
    	return isIn(event.getPos()) && !isIn(event.getOldPos());
@@ -215,4 +239,23 @@ public abstract class SpriteBase<G extends Spatial> extends ModelBase<SpriteBase
     public boolean isMouseMove(MoveEvent event){
     	return isIn(event.getPos()) && isIn(event.getOldPos());
     }
+
+    public void updateAlign(){
+        if(align==ALIGN.CENTER_Y){
+            centerInParentY();
+        }else if(align==ALIGN.CENTER_XY){
+            centerInParent();
+        }
+    }
+
+    @Override
+    public void onAttachToParent(IEntity parent) throws Exception {
+        for(Spatial s:getChildren()){
+            if(s instanceof SpriteBase){
+                ((SpriteBase)s).updateAlign();
+            }
+        }
+    }
+    
+    
 }
