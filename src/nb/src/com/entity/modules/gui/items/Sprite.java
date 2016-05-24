@@ -21,4 +21,6 @@ public class Sprite<P extends SpriteBase> extends SpriteBase<Geometry, P>{
     	super.instance(name, new Geometry(name+"geo", new Quad(1,1,false)), texture, align);
     }
     
+    
+    
 }

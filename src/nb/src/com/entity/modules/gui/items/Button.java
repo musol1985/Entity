@@ -27,9 +27,13 @@ public class Button extends Sprite implements IOnMouseMove{
 	
 	@SpriteGUI(name="buttonIcon", position = {0,0}, align = ALIGN.CENTER_XY)
 	public Sprite icon;
+	
+	public void instance(String name,  String imgBack, String imgHover, String imgDisabled, String icon, boolean enabled, ALIGN align)throws Exception {
+		instance(name, imgBack, imgHover, imgDisabled, icon, enabled, align, new Geometry(name+"geo", new Quad(1,1,false)));
+	}
     
-    public void instance(String name,  String imgBack, String imgHover, String imgDisabled, String icon, boolean enabled, ALIGN align)throws Exception {
-    	super.instance(name, new Geometry(name+"geo", new Quad(1,1,false)), imgBack, align);
+    public void instance(String name,  String imgBack, String imgHover, String imgDisabled, String icon, boolean enabled, ALIGN align, Geometry geo)throws Exception {
+    	super.instance(name, geo, imgBack, align);
     	
     	this.imgBack=imgBack;
     	this.imgHover=imgHover;

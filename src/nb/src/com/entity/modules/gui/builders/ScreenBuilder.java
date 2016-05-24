@@ -4,9 +4,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import com.entity.core.builders.BaseModelBuilder;
+import com.entity.core.items.Scene;
 import com.entity.modules.gui.anot.ScreenEntity;
 import com.entity.modules.gui.injectors.ButtonInjector;
 import com.entity.modules.gui.injectors.SpriteInjector;
+import com.entity.modules.gui.injectors.TextInjector;
 import com.entity.modules.gui.items.Screen;
 
 public class ScreenBuilder extends BaseModelBuilder<Screen>{
@@ -24,6 +26,7 @@ public class ScreenBuilder extends BaseModelBuilder<Screen>{
         super.loadInjectors(c);
         addInjector(new SpriteInjector<Screen>());
         addInjector(new ButtonInjector<Screen>());
+        addInjector(new TextInjector<Screen>());
     }
 
 	@Override

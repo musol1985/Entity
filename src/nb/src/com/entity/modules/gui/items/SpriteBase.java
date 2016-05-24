@@ -46,13 +46,16 @@ public abstract class SpriteBase<G extends Spatial, P extends SpriteBase> extend
     protected ClickInterceptor interceptor;  
     private ALIGN align;
 
+    protected void instance(String name,  G geo, ALIGN align) {
+    	instance(name, geo, null, align);
+    }
     
     protected void instance(String name,  G geo, String texture, ALIGN align) {
         setName(name);
         this.geo=geo;
         create();
         if(texture!=null && !texture.isEmpty())
-        setImage(texture, true);                
+        	setImage(texture, true);                
         this.align=align;
     }
     

@@ -6,18 +6,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.entity.modules.gui.anot.SpriteGUI.ALIGN;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface SpriteGUI {
-    public enum ALIGN{
-        NONE,CENTER_XY,CENTER_Y
-    }
-    float patchOffset() default 0;
+public @interface TextGUI {
     boolean attach() default true;
     String name();
-    String texture() default "";
+    String font();
     float[] position() default {};
-    String onLeftClick() default "";
-    String onRightClick() default "";
+    float[] color() default {1f,1f,1f,1f};
+    String text() default "";
     ALIGN align() default ALIGN.NONE;
 }

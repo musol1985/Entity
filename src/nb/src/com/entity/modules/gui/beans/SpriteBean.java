@@ -10,6 +10,7 @@ import com.entity.modules.gui.anot.SpriteGUI;
 import com.entity.modules.gui.events.ClickEvent;
 import com.entity.modules.gui.events.ClickInterceptor;
 import com.entity.modules.gui.items.Sprite;
+import com.entity.modules.gui.items.Sprite2Patch;
 
 public class SpriteBean extends AnnotationFieldBean<SpriteGUI>{
 	private Method leftClick;
@@ -40,7 +41,11 @@ public class SpriteBean extends AnnotationFieldBean<SpriteGUI>{
 	public Sprite create()throws Exception{
             Sprite sprite=(Sprite)instanceEntity();
         
-            sprite.instance(getAnnot().name(), getAnnot().texture(), getAnnot().align());
+            if(sprite instanceof Sprite2Patch){
+            	((Sprite2Patch)sprite).instance(getAnnot().name(), getAnnot().texture(), getAnnot().align(), getAnnot().patchOffset());
+            }else{
+            	sprite.instance(getAnnot().name(), getAnnot().texture(), getAnnot().align());
+            }
 
             return sprite;
 	}
