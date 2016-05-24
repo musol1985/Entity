@@ -38,5 +38,14 @@ public class Text<Parent extends SpriteBase> extends SpriteBase<BitmapText, Pare
     public String getText(){
     	return geo.getText();
     }
+
+    @Override
+    public float getHeight() {
+        return geo.getHeight(); //To change body of generated methods, choose Tools | Templates.
+    }
     
+    public void setPosition(int x, int y) {
+        setLocalTranslation(x*getGUI().ratioW, y*getGUI().ratioH+getHeight(), getLocalTranslation().z);      
+    }
+
 }
