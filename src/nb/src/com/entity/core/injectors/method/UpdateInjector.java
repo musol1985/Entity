@@ -26,16 +26,18 @@ public class UpdateInjector<T extends IEntity>  extends ListBeanInjector<Annotat
 	public void onInstance(final T item, IBuilder builder, Object[] params) throws Exception {
 		for(AnnotationMethodBean<OnUpdate> bean:beans){
 			final Method update=bean.getMethod();
-			item.getNode().addControl(new ControlAdapter() {
-				@Override
-				public void update(float tpf) {
-					try{
-						update.invoke(item, tpf);
-					}catch(Exception e){
-						e.printStackTrace();
+			if(conditional(item, update, params)){
+				item.getNode().addControl(new ControlAdapter() {
+					@Override
+					public void update(float tpf) {
+						try{
+							update.invoke(item, tpf);
+						}catch(Exception e){
+							e.printStackTrace();
+						}
 					}
-				}
-			});	
+				});	
+			}
 		}
 	}
 
