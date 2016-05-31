@@ -8,8 +8,8 @@ public class Quad2Patch extends Mesh{
 	private float width;
 	private float height;
 	
-	public Quad2Patch(float offset) {		
-		createGeometry(1, 1, offset);
+	public Quad2Patch(float offset,float txWidth) {		
+		createGeometry(1, 1, offset, txWidth);
 	}
 	
 
@@ -32,8 +32,9 @@ public class Quad2Patch extends Mesh{
 		setStatic();
 	}
 
+
 	
-	public void createGeometry(float width, float height, float offset) {
+	public void createGeometry(float width, float height, float offset, float txWidth) {
 		this.offset=offset;
 		this.width = width;
 		this.height = height;
@@ -44,13 +45,13 @@ public class Quad2Patch extends Mesh{
 				width-offset, 0.0F, 0.0F, width, 0.0F, 0.0F, width, height, 0.0F, width-offset, height, 0.0F
 		});
 
-		float txOffset=100-width/100;
+		float txOffset=offset/txWidth;
 		
-		setBuffer(VertexBuffer.Type.TexCoord, 2, new float[] { 
-				0.0F, 0.0F,txOffset, 0.0F, txOffset, 1.0F, 0.0F, 1.0F,
-				txOffset, 0.0F,1.0F-txOffset, 0.0F, 1.0F-txOffset, 1.0F, txOffset, 1.0F,
-				1.0F-txOffset, 0.0F,1.0F, 0.0F, 1.0F, 1.0F, 1.0F-txOffset, 1.0F
-		});
+                setBuffer(VertexBuffer.Type.TexCoord, 2, new float[] { 
+                                0.0F, 0.0F,txOffset, 0.0F, txOffset, 1.0F, 0.0F, 1.0F,
+                                txOffset, 0.0F,1.0F-txOffset, 0.0F, 1.0F-txOffset, 1.0F, txOffset, 1.0F,
+                                1.0F-txOffset, 0.0F,1.0F, 0.0F, 1.0F, 1.0F, 1.0F-txOffset, 1.0F
+                });
 		
 
 		setBuffer(VertexBuffer.Type.Normal, 3, new float[] { 
