@@ -49,7 +49,7 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 				}else{
 					log.warning("@Body.onInstance: The node "+bean.getAnnot().nodeName()+" doesn't exists in class "+item.getClass().getName());
 				}
-			}else if(bean.getField().getType()==GhostControl.class || bean.getAnnot().type()==PhysicsBodyType.GHOST_BODY){
+			}else if(bean.isGhost(item)){
 				CollisionShape shape=bean.getCollisionShape(item);
 				if(shape!=null){
 					body=new GhostControl(shape);
@@ -71,7 +71,7 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 		//if(EntityManager.getGame().isPhysics())
 			for(RigidBodyBean bean:beans){
 				if(bean.getAnnot().attachWorld()){
-					PhysicsControl  body=(PhysicsControl)bean.getField().get(instance);	
+					PhysicsControl  body=(PhysicsControl)bean.getField().get(instance);
 					if(bean.getComponentField()!=null){
 						Object component=bean.getComponentField().get(instance);
 						if(component instanceof IEntity){

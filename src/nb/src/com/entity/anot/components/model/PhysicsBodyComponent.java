@@ -13,6 +13,7 @@ public @interface PhysicsBodyComponent {
 	float mass() default 0f;
 	boolean attachWorld() default true;
 	PhysicsBodyType type() default PhysicsBodyType.RIGID_BODY;
+	String typeMethod() default "";
 	
 	public enum PhysicsBodyType{
 		RIGID_BODY, GHOST_BODY, KINEMATIC_BODY

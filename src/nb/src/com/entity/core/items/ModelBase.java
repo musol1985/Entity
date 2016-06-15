@@ -37,13 +37,14 @@ public abstract class ModelBase<R extends ModelBase, T extends BaseModelBuilder>
 		if(parent.getNode()==null)
 			throw new Exception(getClass().getName()+" Cannot attach to a "+parent.getClass().getName());
 				
+		if(getParent()!=parent.getNode()){
+                    parent.getNode().attachChild(this);
+                    onAParentAttached(parent);
 		
-		parent.getNode().attachChild(this);
+                    onAttachToParent(parent);
+                }
 		
-		//Call to all the childs and their childs injector attached event
-		onAParentAttached(parent);
-		
-		onAttachToParent(parent);
+		//Call to all the childs and their childs injector attached event		
 	}
 	
 	public R getParentModel(){
