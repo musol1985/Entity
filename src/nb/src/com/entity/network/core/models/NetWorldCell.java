@@ -37,4 +37,10 @@ public abstract class NetWorldCell<T extends NetWorldCellDAO> extends Model{
 	public void save(){		
 		((IWorldInGameScene)EntityManager.getCurrentScene()).getService().onUpdateCell(this);		
 	}
+        
+        public Vector3f localToWorld(Vector3f pos){
+            return new Vector3f(dao.getId().id.x*getCELL_SIZE()+pos.x,pos.y, dao.getId().id.z*getCELL_SIZE()+pos.z);
+        }
+        
+        public abstract int getCELL_SIZE();
 }

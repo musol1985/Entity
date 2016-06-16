@@ -40,7 +40,7 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 	@Override
 	public void onInstance(T item, IBuilder builder, Object[] params) throws Exception {
 		for(RigidBodyBean bean:beans){
-			
+			boolean addControl=true;
 			PhysicsControl  body=null;
 			if(!bean.getAnnot().nodeName().isEmpty()){
 				Spatial node=item.getNode().getChild(bean.getAnnot().nodeName());
@@ -55,6 +55,7 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 					body=new GhostControl(shape);
 				}else{
 					body=new GhostControl();
+                                        addControl=false;
 				}
 			}else if(bean.getAnnot().type()==PhysicsBodyType.RIGID_BODY){
 				body=new RigidBodyControl(bean.getCollisionShape(item), bean.getAnnot().mass());				
@@ -62,7 +63,21 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 				body=new RigidBodyControl(bean.getCollisionShape(item), bean.getAnnot().mass());
 				((RigidBodyControl)body).setKinematic(true);
 			}
-			bean.getField().set(item, body);			
+			bean.getField().set(item, body);	
+                        
+                        
+                        if(bean.getAnnot().attachWorld() && addControl){
+                                if(bean.getComponentField()!=null){
+                                        Object component=bean.getComponentField().get(item);
+                                        if(component instanceof IEntity){
+                                                ((IEntity)component).getNode().addControl(body);
+                                        }else{
+                                                ((Spatial)component).addControl(body);
+                                        }
+                                }else{
+                                        item.getNode().addControl(body);
+                                }                                
+                        }
 		}
 	}
 
@@ -71,17 +86,7 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 		//if(EntityManager.getGame().isPhysics())
 			for(RigidBodyBean bean:beans){
 				if(bean.getAnnot().attachWorld()){
-					PhysicsControl  body=(PhysicsControl)bean.getField().get(instance);
-					if(bean.getComponentField()!=null){
-						Object component=bean.getComponentField().get(instance);
-						if(component instanceof IEntity){
-							((IEntity)component).getNode().addControl(body);
-						}else{
-							((Spatial)component).addControl(body);
-						}
-					}else{
-						instance.getNode().addControl(body);
-					}                                
+                                        PhysicsControl body=(PhysicsControl)bean.getField().get(instance);	
 					EntityManager.getCurrentScene().getPhysics().add(body);
 				}
 			}
@@ -89,21 +94,13 @@ public class BodyInjector<T extends IEntity> extends ListBeanInjector<RigidBodyB
 
 	@Override
 	public <G extends EntityGame> void onDettach(G app, T instance)throws Exception {
-            if(EntityManager.getGame().isPhysics())
+            //if(EntityManager.getGame().isPhysics())
 		for(RigidBodyBean bean:beans){
 			if(bean.getAnnot().attachWorld()){
-				PhysicsControl body=(PhysicsControl)bean.getField().get(instance);	
-				if(bean.getComponentField()!=null){
-                                        Object component=bean.getComponentField().get(instance);
-					if(component instanceof IEntity){
-						((IEntity)component).getNode().removeControl(body);
-					}else{
-						((Spatial)component).removeControl(body);
-					}
-				}else{
-					instance.getNode().removeControl(body);
+				if(bean.getAnnot().attachWorld()){
+                                        PhysicsControl body=(PhysicsControl)bean.getField().get(instance);	
+					EntityManager.getCurrentScene().getPhysics().remove(body);
 				}
-				EntityManager.getCurrentScene().getPhysics().remove(body);
 			}
 		}
 	}
