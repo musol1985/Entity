@@ -6,6 +6,7 @@ import com.entity.core.IBuilder;
 import com.entity.core.items.Model;
 import com.entity.network.core.dao.NetWorldCellDAO;
 import com.entity.network.core.items.IWorldInGameScene;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 
 @ModelEntity
@@ -40,6 +41,14 @@ public abstract class NetWorldCell<T extends NetWorldCellDAO> extends Model{
         
         public Vector3f localToWorld(Vector3f pos){
             return new Vector3f(dao.getId().id.x*getCELL_SIZE()+pos.x,pos.y, dao.getId().id.z*getCELL_SIZE()+pos.z);
+        }
+        
+        public Vector3f localToWorld(Vector2f pos){
+            return new Vector3f(dao.getId().id.x*getCELL_SIZE()+pos.x,0, dao.getId().id.z*getCELL_SIZE()+pos.y);
+        }
+        
+        public Vector3f worldToLocal(Vector3f world){
+            return new Vector3f(world.x-dao.getId().id.x*getCELL_SIZE(),world.y, world.z-dao.getId().id.z*getCELL_SIZE());
         }
         
         public abstract int getCELL_SIZE();
