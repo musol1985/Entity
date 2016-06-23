@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import java.util.Random;
 
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 
 public class Utils {
 	public static ColorRGBA getColorFromFloats(float[] v){
@@ -18,4 +20,10 @@ public class Utils {
         public static String toHex(String arg) {
             return String.format("%x", new BigInteger(1, arg.getBytes()));
         }
+        
+    public static Vector3f getAngles(Spatial s){
+    	float[] ang=new float[3];
+    	s.getLocalRotation().toAngles(ang);
+    	return new Vector3f(ang[0], ang[1], ang[2]);
+    }
 }
