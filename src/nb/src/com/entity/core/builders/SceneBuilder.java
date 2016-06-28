@@ -14,7 +14,7 @@ import com.entity.core.injectors.ListBeanSingletonInjector;
 import com.entity.core.injectors.TriggerInjector;
 import com.entity.core.injectors.field.CameraInjector;
 import com.entity.core.injectors.field.CamerasInjector;
-import com.entity.core.injectors.field.EffectInjector;
+import com.entity.core.injectors.field.PostEffectInjector;
 import com.entity.core.injectors.field.EntityInjector;
 import com.entity.core.injectors.field.LightInjector;
 import com.entity.core.injectors.field.ListInjector;
@@ -46,7 +46,7 @@ public class SceneBuilder extends Builder<Scene>{
         addInjector(new CameraInjector<Scene>());
         addInjector(new CamerasInjector<Scene>());
         addInjector(new TerrainInjector<Scene>());
-        addInjector(new EffectInjector<Scene>());
+        addInjector(new PostEffectInjector<Scene>());
         addInjector(new ListInjector<Model>());
         addInjector(new MapInjector<Model>());
         addInjector(new PersistableInjector<Scene>());

@@ -3,10 +3,10 @@ package com.entity.adapters.modifiers;
 import com.entity.adapters.Modifier;
 import com.entity.adapters.bean.ModifierValueBean;
 import com.entity.adapters.listeners.IModifierOnFinish;
-import com.entity.core.items.ModelBase;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 
-public class ModifierPosition<T extends ModelBase> extends Modifier<T>{
+public class ModifierPosition<S extends Spatial> extends Modifier<S>{
 
 	
 	public ModifierPosition(Vector3f from, Vector3f to, float time) {

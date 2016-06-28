@@ -22,7 +22,7 @@ public class EffectBean<T extends Filter> extends AnnotationFieldBean implements
 		super(f, anot);		
 	}
 	
-	public static boolean isEffect(Field f){
+	public static boolean isPostEffect(Field f){
 		return isWaterEffect(f) || isBloomEffect(f) || isSSAOEffect(f);
 	}
 	

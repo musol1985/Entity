@@ -21,7 +21,6 @@ import com.entity.core.injectors.ListBeanSingletonInjector;
 import com.entity.core.injectors.TriggerInjector;
 import com.entity.core.injectors.field.BodyInjector;
 import com.entity.core.injectors.field.CameraInjector;
-import com.entity.core.injectors.field.EffectInjector;
 import com.entity.core.injectors.field.EntityInjector;
 import com.entity.core.injectors.field.LightInjector;
 import com.entity.core.injectors.field.ListInjector;
@@ -29,11 +28,15 @@ import com.entity.core.injectors.field.MapInjector;
 import com.entity.core.injectors.field.MaterialInjector;
 import com.entity.core.injectors.field.ParticleInjector;
 import com.entity.core.injectors.field.PersistableInjector;
+import com.entity.core.injectors.field.PostEffectInjector;
+import com.entity.core.injectors.field.ProcessorInjector;
+import com.entity.core.injectors.field.SkyInjector;
 import com.entity.core.injectors.field.TerrainInjector;
 import com.entity.core.injectors.field.VehicleInjector;
 import com.entity.core.injectors.input.InputInjector;
 import com.entity.core.injectors.method.UpdateInjector;
 import com.entity.core.items.Model;
+import com.entity.core.items.Scene;
 
 public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
 	protected static final Logger log = Logger.getLogger(BaseModelBuilder.class.getName());
@@ -51,6 +54,7 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
 
 	@Override
 	public void loadInjectors(Class<T> c) throws Exception {
+		addInjector(new SkyInjector<Scene>());
 		addInjector(new UpdateInjector<T>());
 		addInjector(new InputInjector<T>());
 		addInjector(new LightInjector<T>());
@@ -59,7 +63,8 @@ public abstract class BaseModelBuilder<T extends IEntity> extends Builder<T>{
         addInjector(new TriggerInjector<T>());
         addInjector(new TerrainInjector<T>());
         addInjector(new MaterialInjector<T>());
-        addInjector(new EffectInjector<T>());
+        addInjector(new PostEffectInjector<T>());
+        addInjector(new ProcessorInjector<T>());        
         addInjector(new BodyInjector<T>());
         addInjector(new VehicleInjector<T>());
         addInjector(new ListInjector<T>());

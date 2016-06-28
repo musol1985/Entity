@@ -40,6 +40,7 @@ import com.jme3.network.serializing.Serializable;
 import com.jme3.network.serializing.Serializer;
 import com.jme3.post.Filter;
 import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.SceneProcessor;
 
 public abstract class EntityGame extends SimpleApplication{
 	protected static final Logger log = Logger.getLogger(EntityGame.class.getName());
@@ -177,6 +178,14 @@ public abstract class EntityGame extends SimpleApplication{
 	
 	public void removePostProcessor(Filter f)throws Exception{
 		postProcessor.removeFilter(f);
+	}
+	
+	public void addProcessor(SceneProcessor p)throws Exception{
+		viewPort.addProcessor(p);
+	}
+	
+	public void removeProcessor(SceneProcessor p)throws Exception{
+		viewPort.removeProcessor(p);
 	}
 	
         public void onAddShadowRender(){
