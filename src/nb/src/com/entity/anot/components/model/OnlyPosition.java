@@ -4,8 +4,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SubModelComponent {
-	String name();	
-	boolean rayPickResponse() default false;
-	boolean dettach() default false;
+public @interface OnlyPosition {
+	public enum TYPE_POSITION{LOCAL, WORLD}
+
+	TYPE_POSITION positionVector() default TYPE_POSITION.LOCAL;
 }

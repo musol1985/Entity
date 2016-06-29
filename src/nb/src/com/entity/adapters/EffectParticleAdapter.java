@@ -5,8 +5,6 @@
  */
 package com.entity.adapters;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 import com.entity.adapters.listeners.ParticleDettachListener;
@@ -25,41 +23,54 @@ public class EffectParticleAdapter<T extends ModelBase>{
 	public static final String EMITER_INITIAL_PARTICLES="numParticles";
 	
 	private String asset;
+	private ParticleEmitter currentPE;
 	
 	public EffectParticleAdapter(String asset){
 		this.asset=asset;
 	}
 	
 	public void attach(T parent, Vector3f position){
-		ParticleEmitter pe=null;
+		attach(parent, position, false);
+	}
+	
+	public void attach(T parent, Vector3f position, boolean loop){
 		Stack<ParticleEmitter> stack=EntityManager.getGame().getParticlesCache().get(asset);
 		if(stack!=null){
             if(stack.size()>0)
-            	pe=(ParticleEmitter)stack.pop();
+            	currentPE=(ParticleEmitter)stack.pop();
 		}else{
 			stack=new Stack<ParticleEmitter>();
 			EntityManager.getGame().getParticlesCache().put(asset, stack);
 		}
 		
-		if(pe==null){
-			pe=(ParticleEmitter)((Node)EntityManager.getAssetManager().loadModel(asset)).getChild(0);
-			pe.setUserData(EMITER_INITIAL_PARTICLES, pe.getParticlesPerSec());
+		if(currentPE==null){
+			currentPE=(ParticleEmitter)((Node)EntityManager.getAssetManager().loadModel(asset)).getChild(0);
+			currentPE.setUserData(EMITER_INITIAL_PARTICLES, currentPE.getParticlesPerSec());
 		}else{
-			pe.setParticlesPerSec((Float)pe.getUserData(EMITER_INITIAL_PARTICLES));				
+			currentPE.setParticlesPerSec((Float)currentPE.getUserData(EMITER_INITIAL_PARTICLES));				
 		}
 		
-		parent.getNode().attachChild(pe);
+		parent.getNode().attachChild(currentPE);
 		
-		pe.setLocalTranslation(position);
+		currentPE.setLocalTranslation(position);
 		
-		pe.emitAllParticles();
-		pe.setParticlesPerSec(0);
-		pe.addControl(new ParticleDettachListener(pe){
-			@Override
-			public void onDettach(ParticleEmitter emiter) {
-				EntityManager.getGame().getParticlesCache().get(asset).push(emiter);
-			}
-		});
+		if(!loop){
+			currentPE.emitAllParticles();
+			currentPE.setParticlesPerSec(0);
+			currentPE.addControl(new ParticleDettachListener(currentPE){
+				@Override
+				public void onDettach(ParticleEmitter emiter) {
+					EntityManager.getGame().getParticlesCache().get(asset).push(emiter);
+				}
+			});
+		}
+	}
+	
+	public void dettach(){
+		if(currentPE!=null){
+			EntityManager.getGame().getParticlesCache().get(asset).push(currentPE);
+			currentPE=null;
+		}
 	}
         
 	

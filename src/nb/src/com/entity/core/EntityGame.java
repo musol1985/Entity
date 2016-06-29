@@ -28,14 +28,19 @@ import com.entity.anot.network.Network;
 import com.entity.bean.AnnotationFieldBean;
 import com.entity.bean.FieldSceneBean;
 import com.entity.core.interceptors.ClickInterceptor;
+import com.entity.core.items.ModelBase;
 import com.entity.core.items.Scene;
 import com.entity.modules.gui.GUIGame;
 import com.entity.modules.gui.anot.GUI;
 import com.entity.network.core.NetGame;
 import com.jme3.app.SimpleApplication;
+import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.effect.ParticleEmitter;
+import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.network.serializing.Serializer;
 import com.jme3.post.Filter;
@@ -345,4 +350,5 @@ public abstract class EntityGame extends SimpleApplication{
 		tasks.shutdownNow();
 	}
 	
+
 }

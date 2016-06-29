@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.entity.anot.components.model.OnlyPosition;
 import com.entity.anot.components.model.SubModelComponent;
 import com.entity.anot.components.model.SubModelMapComponent;
 import com.entity.anot.entities.ModelEntity;
 import com.entity.core.EntityManager;
 import com.entity.core.IBuilder;
 import com.entity.core.items.Model;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -66,11 +68,24 @@ public class ModelBuilder<T extends Model> extends BaseModelBuilder<T>{
 				if(a!=null){
 					Spatial s=n.getChild(a.name());
 					if(s!=null){
-						if(a.rayPickResponse() && s instanceof Geometry){
-							s.setUserData(ENTITY_GEOMETRY_REFERENCE, e);
+						OnlyPosition opA=EntityManager.getAnnotation(OnlyPosition.class,f);
+						if(opA!=null){
+							Vector3f pos=null;
+							if(opA.positionVector()==OnlyPosition.TYPE_POSITION.LOCAL){
+								pos=s.getLocalTranslation().clone();
+							}else{
+								pos=s.getWorldTranslation().clone();
+							}
+							f.set(e, pos);
+						}else{
+							if(a.rayPickResponse() && s instanceof Geometry){
+								s.setUserData(ENTITY_GEOMETRY_REFERENCE, e);
+							}
+
+							f.set(e, s);
 						}
-						
-						f.set(e, s);
+						if(a.dettach() && s.getParent()!=null)
+							s.getParent().detachChild(s);
 					}else{
 						log.warning("No submodel with name: "+a.name());
 					}
